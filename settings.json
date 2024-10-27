@@ -1,0 +1,122 @@
+[
+  {
+      "uniqueID": "hemScale",
+      "type": "number",
+      "title": "The hit error meter scale",
+      "description": "The scale factor of the hit error meter. Must be a number between 0.5 and 5.",
+      "options": [],
+      "value": 1
+  },
+  {
+      "uniqueID": "urScale",
+      "type": "number",
+      "title": "The Unstable Rate display scale",
+      "description": "The scale factor of the Unstable Rate display. Must be a number between 0.5 and 5.",
+      "options": [],
+      "value": 1
+  },
+  {
+      "uniqueID": "showHemInCatch",
+      "type": "checkbox",
+      "title": "Show the hit error meter in osu!catch",
+      "description": "By default, osu!catch uses the hit error array to store where the fruit landed on the catcher's plate relative to their center, which is probably not that useful for most people. This option is for anyone that wants to see the hit error meter in osu!catch anyway.",
+      "options": [],
+      "value": false
+  },
+  {
+      "uniqueID": "showHitWindows",
+      "type": "checkbox",
+      "title": "Show hit windows",
+      "description": "Show hit windows of the hit error meter. The equivalent of this being toggled off can be seen in some VSRGs out there.",
+      "options": [],
+      "value": true
+  },
+  {
+      "uniqueID": "showMovingAverageArrow",
+      "type": "checkbox",
+      "title": "Show the moving average arrow",
+      "description": "Show the moving average arrow on top of the hit error meter.",
+      "options": [],
+      "value": true
+  },
+  {
+      "uniqueID": "showUR",
+      "type": "checkbox",
+      "title": "Show the Unstable Rate display",
+      "description": "Show Unstable Rate display alongside the hit error meter. Note: By enabling this option, it will also show the Unstable Rate when playing osu!catch, however it will be in the context of fruits falling onto the catcher's plate relative to the catcher's center.",
+      "options": [],
+      "value": true
+  },
+  {
+      "uniqueID": "hit320Color",
+      "type": "color",
+      "title": "320's hit window colo(u)r",
+      "description": "The colo(u)r used for 320's hit windows. Note: this only affects osu!mania.",
+      "options": [],
+      "value": "#99ddff"
+  },
+  {
+      "uniqueID": "hit300Color",
+      "type": "color",
+      "title": "300's hit window colo(u)r",
+      "description": "The colo(u)r used for 300's hit windows.",
+      "options": [],
+      "value": "#47b6eb"
+  },
+  {
+      "uniqueID": "hit200Color",
+      "type": "color",
+      "title": "200's hit window colo(u)r",
+      "description": "The colo(u)r used for 200's hit windows. Note: this only affects osu!mania.",
+      "options": [],
+      "value": "#99ffa0"
+  },
+  {
+      "uniqueID": "hit100Color",
+      "type": "color",
+      "title": "100's hit window colo(u)r",
+      "description": "The colo(u)r used for 100's hit windows.",
+      "options": [],
+      "value": "#47eb54"
+  },
+  {
+      "uniqueID": "hit50Color",
+      "type": "color",
+      "title": "50's hit window colo(u)r",
+      "description": "The colo(u)r used for 50's hit windows.",
+      "options": [],
+      "value": "#ebc247"
+  },
+  {
+      "uniqueID": "mainTickHeight",
+      "type": "number",
+      "title": "The height of the main tick (in pixels)",
+      "description": "The height of the main tick that always sits in the center, dividing the hit error meter into \"early\" and \"late\" segments. Must be a number bigger or equal 6.",
+      "options": [],
+      "value": 24
+  },
+  {
+      "uniqueID": "tickHeight",
+      "type": "number",
+      "title": "The height of hit error ticks (in px)",
+      "description": "The height of hit error ticks in the hit error meter when their animation is complete. Must be a number bigger or equal 6.",
+      "options": [],
+      "value": 36
+  },
+  {
+      "uniqueID": "tickWidth",
+      "type": "number",
+      "title": "The width of hit error ticks (in px)",
+      "description": "The width of hit error ticks in the hit error meter. Must be a number between 1 and 8.",
+      "options": [],
+      "value": 4
+  },
+  {
+      "uniqueID": "widthMultiplier",
+      "type": "number",
+      "title": "The width multiplier of hit windows",
+      "description": "The width multiplier of hit error meter segments. Must be a number between 0.5 and 5.",
+      "options": [],
+      "value": 1
+  }
+]
