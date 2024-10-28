@@ -60,7 +60,7 @@
 
 ## Roadmap to v1.0
 - [ ] Add support for mania converts
-- [ ] Add support for gosumemory and StreamCompanion
+- [ ] Add support for StreamCompanion ~~and gosumemory~~ actually no gosu support - that would be maintaining a third different version of the overlay with no real benefit, since gosu is probably abandoned by this point
 
 ## Support
 
