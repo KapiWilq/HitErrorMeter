@@ -59,8 +59,8 @@
 |  The width multiplier of hit windows    |  number  |      1        |
 
 ## Roadmap to v1.0
-[ ] Add support for mania converts
-[ ] Add support for gosumemory and StreamCompanion
+- [ ] Add support for mania converts
+- [ ] Add support for gosumemory and StreamCompanion
 
 ## Support
 
