@@ -22,7 +22,7 @@ jobs:
         with:
           name: v${{ inputs.overlay-version }}
           tag_name: v${{ inputs.overlay-version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUBPAT }}
           fail_on_unmatched_files: true
           files: HitErrorMeter.by.KapiWilq.zip
           make_latest: true
