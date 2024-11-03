@@ -61,8 +61,12 @@
 
 ## Roadmap to v1.0
 - [ ] Add support for mania converts (current status: waiting for the property in the JSON response to be able to support this (either that, or changing the `beatmap.mode` to return the ruleset that the map was originally created for), see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
-- [ ] Add support for StreamCompanion ~~and gosumemory~~ actually no gosu support - that would be maintaining a third different version of the overlay with no real benefit, since gosu is probably abandoned by this point (maybe in 1.1???)
-- [X] Add support for hiding the in-game score meter (100% background dim only for now)
+- [X] Add basic support for hiding the in-game score meter (100% background dim only for now)
+
+- Roadmap to v1.1
+- [ ] Update `index.js` to use the new tosu v4 API
+- [ ] Add proper support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
+- [ ] Stretch: Add support for StreamCompanion
 
 ## Support
 
