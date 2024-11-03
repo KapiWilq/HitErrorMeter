@@ -1,0 +1,26 @@
+name: Create a new release of the overlay
+on:
+  workflow_dispatch:
+    inputs:
+      overlay-version:
+        description: 'The overlay version; must be semantic, you can omit the patch number though (e.g. 1.2.3)'
+        required: true
+        type: string
+jobs:
+  prepare-release:
+    name: Prepare the release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Put the release into the ZIP archive
+        run: |
+          cd ../
+          rm -rf HitErrorMeter.by.KapiWilq.zip
+          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter -x ".git/*" ".github/workflows"
+      - name: Publish a new release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: v${{ inputs.overlay-version }}
+          fail_on_unmatched_files: true
+          files: HitErrorMeter.by.KapiWilq.zip
+          make_latest: true
+
