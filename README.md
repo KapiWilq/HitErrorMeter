@@ -40,23 +40,24 @@
 
 ## Settings
 
-| Setting                                 | Type     | Default value |
-| --------------------------------------- | -------- | ------------- |
-| Hit error meter scale                   | number   | 1             |
-| Unstable Rate display scale             | number   | 1             |
-| Show the hit error meter in osu!catch   | checkbox | false         |
-| Show hit windows                        | checkbox | true          |
-| Show the moving average arrow           | checkbox | true          |
-| Show the Unstable Rate display          | checkbox | true          |
-| 320's hit window colo(u)r               | color    | #99ddff       |
-| 300's hit window colo(u)r               | color    | #47b6eb       |
-| 200's hit window colo(u)r               | color    | #99ffa0       |
-| 100's hit window colo(u)r               | color    | #47eb54       |
-| 50's hit window colo(u)r                | color    | #ebc247       |
-| Height of the main tick (in pixels)     | number   | 24            |
-| Height of hit error ticks (in px)       | number   | 36            |
-| Width of hit error ticks (in px)        | number   | 4             |
-| Width multiplier of hit windows         | number   | 1             |
+| Setting                                        | Type     | Default value |
+| ---------------------------------------------- | -------- | ------------- |
+| Hit error meter scale                          | number   | 1             |
+| Unstable Rate display scale                    | number   | 1             |
+| Automatically hide the in-game hit error meter | checkbox | true          |
+| Show the hit error meter in osu!catch          | checkbox | false         |
+| Show hit windows                               | checkbox | true          |
+| Show the moving average arrow                  | checkbox | true          |
+| Show the Unstable Rate display                 | checkbox | true          |
+| 320's hit window colo(u)r                      | color    | #99ddff       |
+| 300's hit window colo(u)r                      | color    | #47b6eb       |
+| 200's hit window colo(u)r                      | color    | #99ffa0       |
+| 100's hit window colo(u)r                      | color    | #47eb54       |
+| 50's hit window colo(u)r                       | color    | #ebc247       |
+| Height of the main tick (in pixels)            | number   | 24            |
+| Height of hit error ticks (in px)              | number   | 36            |
+| Width of hit error ticks (in px)               | number   | 4             |
+| Width multiplier of hit windows                | number   | 1             |
 
 ## Roadmap to v1.0
 - [ ] Add support for mania converts
