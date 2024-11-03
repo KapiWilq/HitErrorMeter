@@ -124,9 +124,10 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
       document.querySelector('.inGameHemHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameHem);
 
       let hitWindows = hemManager.getHitWindows();
-      // 1 pixel for each side is added for a good measure, in case the in-game hit error meter peaks on one side.
+      // 1 pixel for each side is added for a good measure, in case the in-game hit error meter peaks on one side or the other.
+      // This additional 19px is for 50's hit window that doesn't actually do anything.
       if (cache.rulesetID === 1) {
-        document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit100 * 1.125 * 2 + 2) / 16}rem`;
+        document.querySelector('.inGameHemHider').style.width = `${((hitWindows.hit100 * 1.125 + 19) * 2 + 2) / 16}rem`;
       } else if (cache.rulesetID === 2) {
         document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) / 16}rem`;
       } else {
