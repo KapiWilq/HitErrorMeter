@@ -227,6 +227,10 @@ class HitErrorMeter {
     };
   };
 
+  getHitWindows() {
+    return this.hitWindows;
+  }
+
   /**
    * A helper method to get the rate change based on given mods list. This implementation uses mods saved locally inside the class.
    * @returns {0.75 | 1 | 1.5} Rate change.

@@ -3,6 +3,7 @@ import HitErrorMeter from './js/hitErrorMeter.js';
 const socket = new WebSocketManager('127.0.0.1:24050');
 
 let cache = {
+  hideInGameHem: true,
   showUR: true,
   showHemInCatch: false,
   previousState: '',
@@ -10,6 +11,7 @@ let cache = {
   rulesetID: 0,
   overallDiff: 0,
   mods: 'asdf',
+  scoreMeterSize: 0,
   hitErrors: [14, 34, 69, 420, 1337, 2137],
   hitErrorsPreviousAmount: -1,
   relativeMovingAverageArrowPosition: 0
@@ -90,10 +92,12 @@ socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
 socket.commands(({ command, message }) => {
   try {
     if (command === 'getSettings') {
+      cache.hideInGameHem = message.hideInGameHem;
       cache.showHemInCatch = message.showHemInCatch;
 
       hemManager.applyUserSettings(message);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetID !== 2));
+      document.querySelector('.inGameHemHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameHem);
       
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.showUR);
     };
@@ -117,6 +121,23 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.showUR);
       hemManager.prepareHitErrorMeter(cache.rulesetID, cache.overallDiff, cache.mods);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetID !== 2));
+      document.querySelector('.inGameHemHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameHem);
+
+      let hitWindows = hemManager.getHitWindows();
+      // 1 pixel for each side is added for a good measure, in case the in-game hit error meter peaks on one side.
+      if (cache.rulesetID === 1) {
+        document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit100 * 1.125 * 2 + 2) / 16}rem`;
+      } else if (cache.rulesetID === 2) {
+        document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) / 16}rem`;
+      } else {
+        document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) / 16}rem`;
+      };
+    };
+
+    if (cache.scoreMeterSize !== settings.scoreMeter.size) {
+      cache.scoreMeterSize = settings.scoreMeter.size;
+
+      document.querySelector('.inGameHemHider').style.transform = `scale(${cache.scoreMeterSize})`;
     };
   } catch (error) {
     console.error(error);

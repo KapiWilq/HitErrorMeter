@@ -142,3 +142,16 @@ body {
   transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
   background-color: var(--hit50BG);
 }
+
+/* ---------- IN-GAME HIT ERROR METER HIDER ---------- */
+
+.inGameHemHider {
+  transform-origin: bottom;
+  position: absolute;
+  z-index: -1;
+  bottom: -0.5rem;
+  width: 28.125rem;
+  height: 1.6875rem;
+  transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
+  background-color: black;
+}
