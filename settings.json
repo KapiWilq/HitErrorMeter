@@ -98,7 +98,7 @@
   {
       "uniqueID": "mainTickHeight",
       "type": "number",
-      "title": "The height of the main tick (in pixels)",
+      "title": "Height of the main tick (in pixels)",
       "description": "The height of the main tick that always sits in the center, dividing the hit error meter into \"early\" and \"late\" segments. Must be a number bigger or equal 6.",
       "options": [],
       "value": 24
@@ -106,7 +106,7 @@
   {
       "uniqueID": "tickHeight",
       "type": "number",
-      "title": "The height of hit error ticks (in px)",
+      "title": "Height of hit error ticks (in px)",
       "description": "The height of hit error ticks in the hit error meter when their animation is complete. Must be a number bigger or equal 6.",
       "options": [],
       "value": 36
@@ -114,7 +114,7 @@
   {
       "uniqueID": "tickWidth",
       "type": "number",
-      "title": "The width of hit error ticks (in px)",
+      "title": "Width of hit error ticks (in px)",
       "description": "The width of hit error ticks in the hit error meter. Must be a number between 1 and 8.",
       "options": [],
       "value": 4
@@ -122,7 +122,7 @@
   {
       "uniqueID": "widthMultiplier",
       "type": "number",
-      "title": "The width multiplier of hit windows",
+      "title": "Width multiplier of hit windows",
       "description": "The width multiplier of hit error meter segments. Must be a number between 0.5 and 5.",
       "options": [],
       "value": 1
