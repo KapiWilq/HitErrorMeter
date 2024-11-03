@@ -22,6 +22,7 @@ class HitErrorMeter {
    * A helper method to apply user's settings.
    * @param {{hemScale: number,
    *          urScale: number,
+   *          hideInGameHem: boolean,
    *          showHemInCatch: boolean,
    *          showHitWindows: boolean,
    *          showMovingAverageArrow: boolean,
