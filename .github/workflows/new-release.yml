@@ -15,7 +15,7 @@ jobs:
           rm -rf HitErrorMeter.by.KapiWilq.zip
           cd ../
           cp -r HitErrorMeter HitErrorMeter\ by\ KapiWilq
-          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter\ by\ KapiWilq -x ".git/*" ".github/*" "README.md"
+          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter\ by\ KapiWilq -x "HitErrorMeter\ by\ KapiWilq/.git/*" "HitErrorMeter\ by\ KapiWilq/.github/*" "HitErrorMeter\ by\ KapiWilq/README.md"
           mv HitErrorMeter.by.KapiWilq.zip HitErrorMeter/
       - name: Publish a new release
         uses: softprops/action-gh-release@v2
