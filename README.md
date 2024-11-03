@@ -14,15 +14,19 @@
 
 **Note**: The GIFs might make the overlay look pretty bad, I promise it looks better in person.
 
-### osu! (OD10 for this example)
+### osu! (OD10 in this example)
 
 <img src=".github/images/osu_ruleset.png">  <img src=".github/gifs/osu_ruleset.gif">
 
-### osu!mania (OD8.2 for this example)
+### osu!mania (OD8.2 in this example)
 
 <img src=".github/images/mania_ruleset.png">  <img src=".github/gifs/mania_ruleset.gif">
 
-### osu!taiko (OD7 for this example)
+### osu!mania (with disabled hit windows; OD8.2 in this example)
+
+<img src=".github/images/mania_ruleset_no-hitwindows.png">  <img src=".github/gifs/mania_ruleset_no-hitwindows.gif">
+
+### osu!taiko (OD7 in this example)
 
 <img src=".github/images/taiko_ruleset.png">  <img src=".github/gifs/taiko_ruleset.gif">
 
