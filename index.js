@@ -3,7 +3,7 @@ import HitErrorMeter from './js/hitErrorMeter.js';
 const socket = new WebSocketManager('127.0.0.1:24050');
 
 let cache = {
-  hideInGameHem: true,
+  hideInGameScoreMeter: true,
   showUR: true,
   showHemInCatch: false,
   previousState: '',
@@ -92,12 +92,12 @@ socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
 socket.commands(({ command, message }) => {
   try {
     if (command === 'getSettings') {
-      cache.hideInGameHem = message.hideInGameHem;
+      cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
       cache.showHemInCatch = message.showHemInCatch;
 
       hemManager.applyUserSettings(message);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetID !== 2));
-      document.querySelector('.inGameHemHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameHem);
+      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
       
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.showUR);
     };
@@ -121,24 +121,35 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.showUR);
       hemManager.prepareHitErrorMeter(cache.rulesetID, cache.overallDiff, cache.mods);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetID !== 2));
-      document.querySelector('.inGameHemHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameHem);
+      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
 
       let hitWindows = hemManager.getHitWindows();
-      // 1 pixel for each side is added for a good measure, in case the in-game hit error meter peaks on one side or the other.
-      // This additional 19px is for 50's hit window that doesn't actually do anything.
-      if (cache.rulesetID === 1) {
-        document.querySelector('.inGameHemHider').style.width = `${((hitWindows.hit100 * 1.125 + 19) * 2 + 2) / 16}rem`;
-      } else if (cache.rulesetID === 2) {
-        document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) / 16}rem`;
-      } else {
-        document.querySelector('.inGameHemHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) / 16}rem`;
+
+      if (settings.scoreMeter.type.name === 'Colour') {
+        // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
+        // Also yes, the size at 1x scale is the same across the board.
+        document.querySelector('.inGameScoreMeterHider').style.height = `${22 / 16}rem`;
+
+        // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
+        document.querySelector('.inGameScoreMeterHider').style.width = `${641 / 16}rem`;
+      } else if (settings.scoreMeter.type.name === 'Error') {
+        document.querySelector('.inGameScoreMeterHider').style.height = '1.6875rem';
+
+        if (cache.rulesetID === 1) {
+          // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
+          document.querySelector('.inGameScoreMeterHider').style.width = `${((hitWindows.hit100 * 1.125 + 19) * 2 + 2) / 16}rem`;
+        } else if (cache.rulesetID === 2) {
+          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) / 16}rem`;
+        } else {
+          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) / 16}rem`;
+        };
       };
     };
 
     if (cache.scoreMeterSize !== settings.scoreMeter.size) {
       cache.scoreMeterSize = settings.scoreMeter.size;
 
-      document.querySelector('.inGameHemHider').style.transform = `scale(${cache.scoreMeterSize})`;
+      document.querySelector('.inGameScoreMeterHider').style.transform = `scale(${cache.scoreMeterSize})`;
     };
   } catch (error) {
     console.error(error);

@@ -16,10 +16,10 @@
       "value": 1
   },
   {
-      "uniqueID": "hideInGameHem",
+      "uniqueID": "hideInGameScoreMeter",
       "type": "checkbox",
-      "title": "Automatically hide the in-game hit error meter",
-      "description": "Automatically hide the in-game hit error meter. Useful for people, who want to both see the in-game hit error meter, and use this overlay somewhere else. !!! IMPORTANT !!! If this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
+      "title": "Automatically hide the in-game score meter",
+      "description": "Automatically hide the in-game score meter. Useful for people, who want to both see the in-game score meter, and use this overlay somewhere else. !!! IMPORTANT !!! If this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
       "options": [],
       "value": true
   },

@@ -40,29 +40,29 @@
 
 ## Settings
 
-| Setting                                        | Type     | Default value |
-| ---------------------------------------------- | -------- | ------------- |
-| Hit error meter scale                          | number   | 1             |
-| Unstable Rate display scale                    | number   | 1             |
-| Automatically hide the in-game hit error meter | checkbox | true          |
-| Show the hit error meter in osu!catch          | checkbox | false         |
-| Show hit windows                               | checkbox | true          |
-| Show the moving average arrow                  | checkbox | true          |
-| Show the Unstable Rate display                 | checkbox | true          |
-| 320's hit window colo(u)r                      | color    | #99ddff       |
-| 300's hit window colo(u)r                      | color    | #47b6eb       |
-| 200's hit window colo(u)r                      | color    | #99ffa0       |
-| 100's hit window colo(u)r                      | color    | #47eb54       |
-| 50's hit window colo(u)r                       | color    | #ebc247       |
-| Height of the main tick (in pixels)            | number   | 24            |
-| Height of hit error ticks (in px)              | number   | 36            |
-| Width of hit error ticks (in px)               | number   | 4             |
-| Width multiplier of hit windows                | number   | 1             |
+| Setting                                    | Type     | Default value |
+| ------------------------------------------ | -------- | ------------- |
+| Hit error meter scale                      | number   | 1             |
+| Unstable Rate display scale                | number   | 1             |
+| Automatically hide the in-game score meter | checkbox | true          |
+| Show the hit error meter in osu!catch      | checkbox | false         |
+| Show hit windows                           | checkbox | true          |
+| Show the moving average arrow              | checkbox | true          |
+| Show the Unstable Rate display             | checkbox | true          |
+| 320's hit window colo(u)r                  | color    | #99ddff       |
+| 300's hit window colo(u)r                  | color    | #47b6eb       |
+| 200's hit window colo(u)r                  | color    | #99ffa0       |
+| 100's hit window colo(u)r                  | color    | #47eb54       |
+| 50's hit window colo(u)r                   | color    | #ebc247       |
+| Height of the main tick (in pixels)        | number   | 24            |
+| Height of hit error ticks (in px)          | number   | 36            |
+| Width of hit error ticks (in px)           | number   | 4             |
+| Width multiplier of hit windows            | number   | 1             |
 
 ## Roadmap to v1.0
-- [ ] Add support for mania converts
+- [ ] Add support for mania converts (current status: waiting for the property in the JSON response to be able to support this (either that, or changing the `beatmap.mode` to return the ruleset that the map was originally created for), see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
 - [ ] Add support for StreamCompanion ~~and gosumemory~~ actually no gosu support - that would be maintaining a third different version of the overlay with no real benefit, since gosu is probably abandoned by this point (maybe in 1.1???)
-- [X] Add support for hiding the in-game hit error meter (100% background dim only for now)
+- [X] Add support for hiding the in-game score meter (100% background dim only for now)
 
 ## Support
 

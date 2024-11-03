@@ -142,9 +142,9 @@ body {
   background-color: var(--hit50BG);
 }
 
-/* ---------- IN-GAME HIT ERROR METER HIDER ---------- */
+/* ---------- IN-GAME SCORE METER HIDER ---------- */
 
-.inGameHemHider {
+.inGameScoreMeterHider {
   transform-origin: bottom;
   position: absolute;
   z-index: -1;
