@@ -13,9 +13,8 @@ jobs:
     steps:
       - name: Put the release into the ZIP archive
         run: |
-          cd ../
           rm -rf HitErrorMeter.by.KapiWilq.zip
-          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter -x ".git/*" ".github/workflows"
+          zip -r HitErrorMeter.by.KapiWilq.zip * -x ".git/*" ".github/workflows"
       - name: Publish a new release
         uses: softprops/action-gh-release@v2
         with:
