@@ -6,7 +6,7 @@
   --hit200BG: #99ffa2ff;
   --hit100BG: #47eb55ff;
   --hit50BG: #ebc247ff;
-  
+
   --tickHeightRem: 2;
   --tickWidthRem: 0.25;
 }
@@ -20,7 +20,6 @@
 body {
   user-select: none;
   overflow: hidden;
-  background-color: black;
   font-family: "Roboto", sans-serif;
   color: white;
 }
@@ -95,7 +94,7 @@ body {
 .mainTick {
   box-shadow: 0 0 0.3125rem black;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   left: 50%;
   transform: translateX(-50%);
   width: 0.25rem;
@@ -150,6 +149,7 @@ body {
   position: absolute;
   z-index: -1;
   bottom: -0.5rem;
+  opacity: 0;
   width: 28.125rem;
   height: 1.6875rem;
   transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
