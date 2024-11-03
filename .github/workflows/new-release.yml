@@ -12,8 +12,12 @@ jobs:
             echo "OVERLAY_VERSION=$(cat metadata.txt | grep "Version: " | cut -c 10-)" >> $GITHUB_ENV
       - name: Put the repo into the ZIP archive
         run: |
+          # This is purely for the one-time clean-up after the previous workflow version 
           rm -rf HitErrorMeter.by.KapiWilq.zip
-          zip -r HitErrorMeter.by.KapiWilq.zip * -x ".git/*" ".github/*" "README.md"
+          cd ../
+          cp HitErrorMeter HitErrorMeter\ by\ KapiWilq
+          rm -rf HitErrorMeter.by.KapiWilq.zip
+          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter\ by\ KapiWilq -x ".git/*" ".github/*" "README.md"
       - name: Publish a new release
         uses: softprops/action-gh-release@v2
         with:
