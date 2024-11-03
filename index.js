@@ -143,6 +143,9 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
         } else {
           document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) / 16}rem`;
         };
+      } else {
+        document.querySelector('.inGameScoreMeterHider').style.width = '0';
+        document.querySelector('.inGameScoreMeterHider').style.height = '0';
       };
     };
 
