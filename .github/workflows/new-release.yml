@@ -14,13 +14,14 @@ jobs:
       - name: Put the release into the ZIP archive
         run: |
           rm -rf HitErrorMeter.by.KapiWilq.zip
-          zip -r HitErrorMeter.by.KapiWilq.zip * -x ".git/*" ".github/workflows"
-      - name: Publish a new release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: v${{ inputs.overlay-version }}
-          tag_name: v${{ inputs.overlay-version }}
-          fail_on_unmatched_files: true
-          files: HitErrorMeter.by.KapiWilq.zip
-          make_latest: true
+          pwd
+          ls
+      # - name: Publish a new release
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     name: v${{ inputs.overlay-version }}
+      #     tag_name: v${{ inputs.overlay-version }}
+      #     fail_on_unmatched_files: true
+      #     files: HitErrorMeter.by.KapiWilq.zip
+      #     make_latest: true
 
