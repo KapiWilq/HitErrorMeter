@@ -16,13 +16,13 @@ jobs:
       - name: Put the repo into the ZIP archive
         run: |
           rm -rf HitErrorMeter.by.KapiWilq.zip
-          ls
-      # - name: Publish a new release
-      #   uses: softprops/action-gh-release@v2
-      #   with:
-      #     name: v${{ inputs.overlay-version }}
-      #     tag_name: v${{ inputs.overlay-version }}
-      #     fail_on_unmatched_files: true
-      #     files: HitErrorMeter.by.KapiWilq.zip
-      #     make_latest: true
+          zip -r HitErrorMeter.by.KapiWilq.zip * -x ".git/*" ".github/*" "README.md"
+      - name: Publish a new release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: v${{ inputs.overlay-version }}
+          tag_name: v${{ inputs.overlay-version }}
+          fail_on_unmatched_files: true
+          files: HitErrorMeter.by.KapiWilq.zip
+          make_latest: true
 
