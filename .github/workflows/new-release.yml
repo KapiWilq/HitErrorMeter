@@ -11,11 +11,12 @@ jobs:
     name: Prepare the release
     runs-on: ubuntu-latest
     steps:
-      - name: Put the release into the ZIP archive
+      - name: Download the repo
+        uses: actions/checkout@v4
+      - name: Put the repo into the ZIP archive
         run: |
           rm -rf HitErrorMeter.by.KapiWilq.zip
-          pwd
-          ls ../
+          ls
       # - name: Publish a new release
       #   uses: softprops/action-gh-release@v2
       #   with:
