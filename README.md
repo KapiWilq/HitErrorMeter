@@ -40,27 +40,27 @@
 
 ## Settings
 
-|                 Setting                 |   Type   | Default value |
+| Setting                                 | Type     | Default value |
 | --------------------------------------- | -------- | ------------- |
-|        The hit error meter scale        |  number  |       1       |
-|     The Unstable Rate display scale     |  number  |       1       |
-|  Show the hit error meter in osu!catch  | checkbox |     false     |
-|            Show hit windows             | checkbox |     true      |
-|     Show the moving average arrow       | checkbox |     true      |
-|     Show the Unstable Rate display      | checkbox |     true      |
-|       320's hit window colo(u)r         |  color   |    #99ddff    |
-|       300's hit window colo(u)r         |  color   |    #47b6eb    |
-|       200's hit window colo(u)r         |  color   |    #99ffa0    |
-|       100's hit window colo(u)r         |  color   |    #47eb54    |
-|       50's hit window colo(u)r          |  color   |    #ebc247    |
-| The height of the main tick (in pixels) |  number  |      24       |
-|  The height of hit error ticks (in px)  |  number  |      36       |
-|  The width of hit error ticks (in px)   |  number  |      4        |
-|  The width multiplier of hit windows    |  number  |      1        |
+| Hit error meter scale                   | number   | 1             |
+| Unstable Rate display scale             | number   | 1             |
+| Show the hit error meter in osu!catch   | checkbox | false         |
+| Show hit windows                        | checkbox | true          |
+| Show the moving average arrow           | checkbox | true          |
+| Show the Unstable Rate display          | checkbox | true          |
+| 320's hit window colo(u)r               | color    | #99ddff       |
+| 300's hit window colo(u)r               | color    | #47b6eb       |
+| 200's hit window colo(u)r               | color    | #99ffa0       |
+| 100's hit window colo(u)r               | color    | #47eb54       |
+| 50's hit window colo(u)r                | color    | #ebc247       |
+| Height of the main tick (in pixels)     | number   | 24            |
+| Height of hit error ticks (in px)       | number   | 36            |
+| Width of hit error ticks (in px)        | number   | 4             |
+| Width multiplier of hit windows         | number   | 1             |
 
 ## Roadmap to v1.0
 - [ ] Add support for mania converts
-- [ ] Add support for StreamCompanion ~~and gosumemory~~ actually no gosu support - that would be maintaining a third different version of the overlay with no real benefit, since gosu is probably abandoned by this point
+- [ ] Add support for StreamCompanion ~~and gosumemory~~ actually no gosu support - that would be maintaining a third different version of the overlay with no real benefit, since gosu is probably abandoned by this point (maybe in 1.1???)
 - [X] Add support for hiding the in-game hit error meter (100% background dim only for now)
 
 ## Support
