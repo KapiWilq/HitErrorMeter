@@ -15,7 +15,7 @@ jobs:
         run: |
           rm -rf HitErrorMeter.by.KapiWilq.zip
           pwd
-          ls
+          ls ../
       # - name: Publish a new release
       #   uses: softprops/action-gh-release@v2
       #   with:
