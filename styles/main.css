@@ -25,6 +25,7 @@ body {
 }
 
 .main {
+  transform-origin: bottom;
   display: flex;
   flex-direction: column;
   align-items: center;

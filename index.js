@@ -11,6 +11,9 @@ let cache = {
   rulesetID: 0,
   overallDiff: 0,
   mods: 'asdf',
+  isFullscreen: true,
+  gameWindowedHeight: -1,
+  gameFullscreenHeight: -1,
   scoreMeterSize: 0,
   hitErrors: [14, 34, 69, 420, 1337, 2137],
   hitErrorsPreviousAmount: -1,
@@ -146,6 +149,18 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
       } else {
         document.querySelector('.inGameScoreMeterHider').style.width = '0';
         document.querySelector('.inGameScoreMeterHider').style.height = '0';
+      };
+    };
+
+    if (cache.isFullscreen !== settings.resolution.fullscreen || cache.gameWindowedHeight !== settings.resolution.height || cache.gameFullscreenHeight !== settings.resolution.heightFullscreen) {
+      cache.isFullscreen = settings.resolution.fullscreen;
+      cache.gameWindowedHeight = settings.resolution.height;
+      cache.gameFullscreenHeight = settings.resolution.heightFullscreen;
+
+      if (cache.isFullscreen) {
+        document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
+      } else {
+        document.querySelector('.main').style.transform = `scale(${cache.gameWindowedHeight / 1080})`;
       };
     };
 
