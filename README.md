@@ -64,13 +64,13 @@
 | Width multiplier of hit windows            | number   | 1             |
 
 ## Roadmap to v1.0
-- [ ] Add support for adjusting hit error tick appear and disappear duration
-- [ ] Add support for mania converts (current status: waiting for the property in the JSON response to be able to support this (either that, or changing the `beatmap.mode` to return the ruleset that the map was originally created for), see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
 - [X] Add basic support for hiding the in-game score meter (100% background dim only for now)
+- [ ] Add support for adjusting hit error tick appear and disappear duration
+- [ ] Add support for mania converts (current status: waiting for a new tosu release with a new `beatmap.isConvert` field, see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
+- [ ] Add proper support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
 
 # Roadmap to v1.1
 - [ ] Update `index.js` to use the new tosu v4 API
-- [ ] Add proper support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
 - [ ] Stretch: Add support for StreamCompanion
 
 ## Support
