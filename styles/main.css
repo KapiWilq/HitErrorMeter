@@ -152,9 +152,8 @@ body {
   bottom: -0.5rem;
   opacity: 0;
   overflow: hidden;
-  width: 28.125rem;
-  height: 1.6875rem;
-  transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
+  width: 0;
+  height: 0;
 }
 
 #background {
