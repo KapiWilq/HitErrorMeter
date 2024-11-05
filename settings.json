@@ -2,7 +2,7 @@
   {
       "uniqueID": "hemScale",
       "type": "number",
-      "title": "The hit error meter scale",
+      "title": "Hit error meter scale",
       "description": "The scale factor of the hit error meter. Must be a number between 0.5 and 5.",
       "options": [],
       "value": 1
@@ -10,7 +10,7 @@
   {
       "uniqueID": "urScale",
       "type": "number",
-      "title": "The Unstable Rate display scale",
+      "title": "Unstable Rate display scale",
       "description": "The scale factor of the Unstable Rate display. Must be a number between 0.5 and 5.",
       "options": [],
       "value": 1
