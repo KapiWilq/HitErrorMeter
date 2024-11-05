@@ -110,7 +110,7 @@
   {
       "uniqueID": "tickHeight",
       "type": "number",
-      "title": "Height of hit error ticks (in px)",
+      "title": "Height of hit error ticks (in pixels)",
       "description": "The height of hit error ticks in the hit error meter when their animation is complete. Must be a number bigger or equal 6.",
       "options": [],
       "value": 36
@@ -118,10 +118,26 @@
   {
       "uniqueID": "tickWidth",
       "type": "number",
-      "title": "Width of hit error ticks (in px)",
+      "title": "Width of hit error ticks (in pixels)",
       "description": "The width of hit error ticks in the hit error meter. Must be a number between 1 and 8.",
       "options": [],
       "value": 4
+  },
+  {
+      "uniqueID": "tickAppearanceDuration",
+      "type": "number",
+      "title": "Duration of the tick appearance animation (in milliseconds)",
+      "description": "The time it takes for the hit error tick to fully expand. Must be a positive number smaller or equal 5000 (so 5 seconds).",
+      "options": [],
+      "value": 250
+  },
+  {
+      "uniqueID": "tickDisappearanceDuration",
+      "type": "number",
+      "title": "Duration of the tick disppearance animation (in milliseconds)",
+      "description": "The time it takes for the hit error tick to fully disappear right after fully expanding. Must be a positive number smaller or equal 10000 (so 10 seconds).",
+      "options": [],
+      "value": 3000
   },
   {
       "uniqueID": "widthMultiplier",

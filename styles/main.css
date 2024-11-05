@@ -112,7 +112,7 @@ body {
   transform: translate(-50%, -50%);
   width: calc(var(--tickWidthRem) * 1rem);
   height: 0;
-  transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
+  transition: cubic-bezier(0, 1, 0.33, 1) 250ms;
   background-color: var(--hit300BG);
   border-radius: calc(var(--tickWidthRem) * 0.5rem);
 }

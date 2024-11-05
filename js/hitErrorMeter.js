@@ -15,6 +15,8 @@ class HitErrorMeter {
       hit50: 200
     };
     this.hemScale = 1;
+    this.tickAppearanceDuration = 500;
+    this.tickDisappearanceDuration = 3000;
     this.widthMultiplier = 1;
   };
 
@@ -35,6 +37,8 @@ class HitErrorMeter {
    *          mainTickHeight: number,
    *          tickHeight: number,
    *          tickWidth: number,
+   *          tickAppearanceDuration: number,
+   *          tickDisappearanceDuration: number,
    *          widthMultiplier: number}} settings - User settings.
    */
   applyUserSettings(settings) {
@@ -71,6 +75,9 @@ class HitErrorMeter {
     this.applyColorToRootProperty('--hit200BG', settings.hit200Color, settings.showHitWindows);
     this.applyColorToRootProperty('--hit100BG', settings.hit100Color, settings.showHitWindows);
     this.applyColorToRootProperty('--hit50BG', settings.hit50Color, settings.showHitWindows);
+
+    this.tickAppearanceDuration = this.clamp(settings.tickAppearanceDuration, 0, 5000)
+    this.tickDisappearanceDuration = this.clamp(settings.tickDisappearanceDuration, 0, 10000);
 
     this.widthMultiplier = this.clamp(settings.widthMultiplier, 0.5, 5);
 
@@ -400,7 +407,6 @@ class HitErrorMeter {
     if (this.rulesetID === 2) {
       hitError = -hitError;
     };
-
     if (hitError <= 0) {
       segmentForTheTick = this.getHitWindowSegment(-hitError, 'Early');
     } else {
@@ -416,9 +422,10 @@ class HitErrorMeter {
     // RegExp source: https://regex101.com/library/dVOwn0
     const RGBA_REGEXP = /rgba?\((?<r>[.\d]+)[, ]+(?<g>[.\d]+)[, ]+(?<b>[.\d]+)(?:\s?[,\/]\s?(?<a>[.\d]+%?))?\)/;
     let tickColor = getComputedStyle(segmentForTheTick).getPropertyValue('background-color').match(RGBA_REGEXP).groups;
-
     tick.style.backgroundColor = `rgba(${tickColor.r}, ${tickColor.g}, ${tickColor.b}, 1)`;
     tick.style.left = `${tickPositionPercentage * 100}%`;
+
+    tick.style.transition = `cubic-bezier(0, 1, 0.33, 1) ${this.tickAppearanceDuration}ms`;
 
     segmentForTheTick.appendChild(tick);
 
@@ -427,14 +434,14 @@ class HitErrorMeter {
     }, ANIMATION_DELAY);
 
     setTimeout(() => {
-      tick.style.transition = 'linear 3000ms';
+      tick.style.transition = `linear ${this.tickDisappearanceDuration}ms`;
       tick.style.opacity = 0;
 
       setTimeout(() => {
         tick.remove();
-      }, 3000);
+      }, this.tickDisappearanceDuration);
 
-    }, 500 + ANIMATION_DELAY);
+    }, this.tickAppearanceDuration + ANIMATION_DELAY);
   };
 
   /**
