@@ -1,6 +1,6 @@
 import WebSocketManager from './js/socket.js';
 import HitErrorMeter from './js/hitErrorMeter.js';
-const socket = new WebSocketManager('127.0.0.1:24050');
+const socket = new WebSocketManager(`${location.origin}`);
 
 let cache = {
   hideInGameScoreMeter: true,
