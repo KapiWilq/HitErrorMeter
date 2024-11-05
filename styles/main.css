@@ -151,8 +151,20 @@ body {
   z-index: -1;
   bottom: -0.5rem;
   opacity: 0;
+  overflow: hidden;
   width: 28.125rem;
   height: 1.6875rem;
   transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
+}
+
+#background {
+  object-fit: cover;
+  filter: brightness(0.1);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120rem;
+  height: 67.5rem;
   background-color: black;
 }

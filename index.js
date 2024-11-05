@@ -14,6 +14,9 @@ let cache = {
   isFullscreen: true,
   gameWindowedHeight: -1,
   gameFullscreenHeight: -1,
+  foldersBeatmap: '',
+  filesBackground: '',
+  backgroundDim: -1,
   scoreMeterSize: 0,
   hitErrors: [14, 34, 69, 420, 1337, 2137],
   hitErrorsPreviousAmount: -1,
@@ -109,7 +112,7 @@ socket.commands(({ command, message }) => {
   };
 });
 
-socket.api_v2(({ state, settings, beatmap, play }) => {
+socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
   try {
     // Normally, all of these checks would be separate `if` statements (especially the state check),
     // however this approach wouldn't work in a way that I want this overlay to work.
@@ -128,23 +131,27 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
 
       let hitWindows = hemManager.getHitWindows();
 
+      if (cache.scoreMeterSize !== settings.scoreMeter.size) {
+        cache.scoreMeterSize = settings.scoreMeter.size;
+      };
+
       if (settings.scoreMeter.type.name === 'Colour') {
         // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
         // Also yes, the size at 1x scale is the same across the board.
-        document.querySelector('.inGameScoreMeterHider').style.height = `${22 / 16}rem`;
+        document.querySelector('.inGameScoreMeterHider').style.height = `${22 * cache.scoreMeterSize / 16}rem`;
 
         // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
-        document.querySelector('.inGameScoreMeterHider').style.width = `${641 / 16}rem`;
+        document.querySelector('.inGameScoreMeterHider').style.width = `${639 + 2 * cache.scoreMeterSize / 16}rem`;
       } else if (settings.scoreMeter.type.name === 'Error') {
-        document.querySelector('.inGameScoreMeterHider').style.height = '1.6875rem';
+        document.querySelector('.inGameScoreMeterHider').style.height = `${1.6875 * cache.scoreMeterSize}rem`;
 
         if (cache.rulesetID === 1) {
           // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
-          document.querySelector('.inGameScoreMeterHider').style.width = `${((hitWindows.hit100 * 1.125 + 19) * 2 + 2) / 16}rem`;
+          document.querySelector('.inGameScoreMeterHider').style.width = `${((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize / 16}rem`;
         } else if (cache.rulesetID === 2) {
-          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) / 16}rem`;
+          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) * cache.scoreMeterSize / 16}rem`;
         } else {
-          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) / 16}rem`;
+          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize / 16}rem`;
         };
       } else {
         document.querySelector('.inGameScoreMeterHider').style.width = '0';
@@ -164,10 +171,21 @@ socket.api_v2(({ state, settings, beatmap, play }) => {
       };
     };
 
-    if (cache.scoreMeterSize !== settings.scoreMeter.size) {
-      cache.scoreMeterSize = settings.scoreMeter.size;
+    if (cache.foldersBeatmap !== folders.beatmap || cache.filesBackground !== files.background) {
+      cache.foldersBeatmap = folders.beatmap;
+      cache.filesBackground = files.background;
 
-      document.querySelector('.inGameScoreMeterHider').style.transform = `scale(${cache.scoreMeterSize})`;
+      if (cache.filesBackground !== '') {
+        document.getElementById('background').src = `${location.origin}/files/beatmap/${cache.foldersBeatmap}/${cache.filesBackground}`;
+      } else {
+        document.getElementById('background').src = '';
+      };
+    };
+
+    if (cache.backgroundDim !== settings.background.dim) {
+      cache.backgroundDim = settings.background.dim;
+
+      document.getElementById('background').style.filter = `brightness(${1 - cache.backgroundDim / 100})`;
     };
   } catch (error) {
     console.error(error);
