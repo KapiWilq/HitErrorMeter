@@ -61,8 +61,8 @@
 | Height of the main tick (in pixels)                                      | Number   | 24                                   | A number bigger or equal `6`                                                |
 | Height of hit error ticks (in pixels)                                    | Number   | 36                                   | A number bigger or equal `6`                                                |
 | Width of hit error ticks (in pixels)                                     | Number   | 4                                    | A number from `1` to `8`                                                    |
-| Duration of the hit error tick appearance animation (in milliseconds)    | Number   | 250                                  | A positive number smaller or equal 5000 (so 5 seconds)                      |
-| Duration of the hit error tick disappearance animation (in milliseconds) | Number   | 3000                                 | A positive number smaller or equal 10000 (so 10 seconds)                    |
+| Duration of the hit error tick appearance animation (in milliseconds)    | Number   | 250                                  | A positive number smaller or equal `5000` (so 5 seconds)                      |
+| Duration of the hit error tick disappearance animation (in milliseconds) | Number   | 3000                                 | A positive number smaller or equal `10000` (so 10 seconds)                    |
 | Width multiplier of hit windows                                          | Number   | 1                                    | A number from `0.5` to `5`                                                  |
 
 ## Roadmap to v1.0
