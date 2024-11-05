@@ -44,26 +44,26 @@
 
 ## Settings
 
-| Setting                                                                  | Type     | Default value                        | Customizability (if applicable)                                             |
+| Setting                                                                  | Type     | Default value                        | Customizability                                                             |
 | ------------------------------------------------------------------------ | -------- | ------------------------------------ | --------------------------------------------------------------------------- |
-| Hit error meter scale                                                    | number   | 1                                    | A number from `0.5` to `5`                                                  |
-| Unstable Rate display scale                                              | number   | 1                                    | A number from `0.5` to `5`                                                  |
-| Automatically hide the in-game score meter                               | checkbox | Enabled                              |                                                                             |
-| Show the hit error meter in osu!catch                                    | checkbox | Disabled                             |                                                                             |
-| Show hit windows                                                         | checkbox | Enabled                              |                                                                             |
-| Show the moving average arrow                                            | checkbox | Enabled                              |                                                                             |
-| Unstable Rate display style                                              | options  | `Show both the prefix and the value` | `Show both the prefix and the value`, `Show only the value`, `Show nothing` |
-| 320's hit window colo(u)r                                                | color    | #99ddff                              |                                                                             |
-| 300's hit window colo(u)r                                                | color    | #47b6eb                              |                                                                             |
-| 200's hit window colo(u)r                                                | color    | #99ffa0                              |                                                                             |
-| 100's hit window colo(u)r                                                | color    | #47eb54                              |                                                                             |
-| 50's hit window colo(u)r                                                 | color    | #ebc247                              |                                                                             |
-| Height of the main tick (in pixels)                                      | number   | 24                                   | A number bigger or equal `6`                                                |
-| Height of hit error ticks (in pixels)                                    | number   | 36                                   | A number bigger or equal `6`                                                |
-| Width of hit error ticks (in pixels)                                     | number   | 4                                    | A number from `1` to `8`                                                    |
-| Duration of the hit error tick appearance animation (in milliseconds)    | number   | 250                                  | A positive number smaller or equal 5000 (so 5 seconds)                      |
-| Duration of the hit error tick disappearance animation (in milliseconds) | number   | 3000                                 | A positive number smaller or equal 10000 (so 10 seconds)                    |
-| Width multiplier of hit windows                                          | number   | 1                                    | A number from `0.5` to `5`                                                  |
+| Hit error meter scale                                                    | Number   | 1                                    | A number from `0.5` to `5`                                                  |
+| Unstable Rate display scale                                              | Number   | 1                                    | A number from `0.5` to `5`                                                  |
+| Automatically hide the in-game score meter                               | Checkbox | Enabled                              | `Enabled` or `Disabled`                                                     |
+| Show the hit error meter in osu!catch                                    | Checkbox | Disabled                             | `Enabled` or `Disabled`                                                     |
+| Show hit windows                                                         | Checkbox | Enabled                              | `Enabled` or `Disabled`                                                     |
+| Show the moving average arrow                                            | Checkbox | Enabled                              | `Enabled` or `Disabled`                                                     |
+| Unstable Rate display style                                              | Options  | `Show both the prefix and the value` | `Show both the prefix and the value`, `Show only the value`, `Show nothing` |
+| 320's hit window colo(u)r                                                | Colo(u)r | #99ddff                              | Any RGB color in the full opacity                                           |
+| 300's hit window colo(u)r                                                | Colo(u)r | #47b6eb                              | Any RGB color in the full opacity                                           |
+| 200's hit window colo(u)r                                                | Colo(u)r | #99ffa0                              | Any RGB color in the full opacity                                           |
+| 100's hit window colo(u)r                                                | Colo(u)r | #47eb54                              | Any RGB color in the full opacity                                           |
+| 50's hit window colo(u)r                                                 | Colo(u)r | #ebc247                              | Any RGB color in the full opacity                                           |
+| Height of the main tick (in pixels)                                      | Number   | 24                                   | A number bigger or equal `6`                                                |
+| Height of hit error ticks (in pixels)                                    | Number   | 36                                   | A number bigger or equal `6`                                                |
+| Width of hit error ticks (in pixels)                                     | Number   | 4                                    | A number from `1` to `8`                                                    |
+| Duration of the hit error tick appearance animation (in milliseconds)    | Number   | 250                                  | A positive number smaller or equal 5000 (so 5 seconds)                      |
+| Duration of the hit error tick disappearance animation (in milliseconds) | Number   | 3000                                 | A positive number smaller or equal 10000 (so 10 seconds)                    |
+| Width multiplier of hit windows                                          | Number   | 1                                    | A number from `0.5` to `5`                                                  |
 
 ## Roadmap to v1.0
 - [X] Add support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
