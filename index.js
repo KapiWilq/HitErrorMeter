@@ -1,11 +1,11 @@
 import WebSocketManager from './js/socket.js';
 import HitErrorMeter from './js/hitErrorMeter.js';
-const socket = new WebSocketManager(`${location.origin}`);
+const socket = new WebSocketManager(`${location.host}`);
 
 let cache = {
   hideInGameScoreMeter: true,
-  showUR: true,
   showHemInCatch: false,
+  urStyle: '',
   previousState: '',
   currentState: '',
   rulesetID: 0,
@@ -23,7 +23,7 @@ let cache = {
   relativeMovingAverageArrowPosition: 0
 };
 
-const unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: '});
+let unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: '});
 
 const hemManager = new HitErrorMeter();
 
@@ -33,14 +33,21 @@ const hemManager = new HitErrorMeter();
  * A helper method to prepare the Unstable Rate display.
  * @param {string} previousGameState - The game state before the current one.
  * @param {string} currentGameState - The current game state.
- * @param {boolean} shouldBeVisible - Whether the user wants to see the Unstable Rate display at all.
+ * @param {'Show nothing' | 'Show only the value' | 'Show both the prefix and the value'} urStyle - The display style of the Unstable Rate display.
  */
-function prepareUnstableRateDisplay(previousGameState, currentGameState, shouldBeVisible) {
+function prepareUnstableRateDisplay(previousGameState, currentGameState, urStyle) {
   let urElement = document.querySelector('#unstableRate');
-  cache.showUR = shouldBeVisible;
+  cache.urStyle = urStyle;
+
+  // You cannot edit existing CountUps' properties, therefore redeclare it.
+  if (cache.urStyle === 'Show only the value') {
+    unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.'});
+  } else if (cache.urStyle === 'Show both the prefix and the value') {
+    unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: '});
+  };
 
   // Either during gameplay or when going to the results screen from gameplay.
-  urElement.style.opacity = Number((currentGameState === 'Play' || (currentGameState === 'ResultScreen' && previousGameState === 'Play')) && shouldBeVisible);
+  urElement.style.opacity = Number((currentGameState === 'Play' || (currentGameState === 'ResultScreen' && previousGameState === 'Play')) && urStyle !== 'Show nothing');
 };
 
 /**
@@ -105,7 +112,7 @@ socket.commands(({ command, message }) => {
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetID !== 2));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
       
-      prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.showUR);
+      prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.urStyle);
     };
   } catch (error) {
     console.error(error);
@@ -124,7 +131,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       cache.overallDiff = beatmap.stats.od.original;
       cache.mods = play.mods.name;
 
-      prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.showUR);
+      prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
       hemManager.prepareHitErrorMeter(cache.rulesetID, cache.overallDiff, cache.mods);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetID !== 2));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);

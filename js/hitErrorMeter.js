@@ -26,7 +26,7 @@ class HitErrorMeter {
    *          showHemInCatch: boolean,
    *          showHitWindows: boolean,
    *          showMovingAverageArrow: boolean,
-   *          showUR: boolean,
+   *          urStyle: 'Show nothing' | 'Show only the value' | 'Show both the prefix and the value',
    *          hit320Color: string,
    *          hit300Color: string,
    *          hit200Color: string,

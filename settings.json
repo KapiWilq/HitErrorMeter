@@ -48,12 +48,16 @@
       "value": true
   },
   {
-      "uniqueID": "showUR",
-      "type": "checkbox",
-      "title": "Show the Unstable Rate display",
-      "description": "Show Unstable Rate display alongside the hit error meter. Note: By enabling this option, it will also show the Unstable Rate when playing osu!catch, however it will be in the context of fruits falling onto the catcher's plate relative to the catcher's center.",
-      "options": [],
-      "value": true
+      "uniqueID": "urStyle",
+      "type": "options",
+      "title": "Unstable Rate display style",
+      "description": "Whether the Unstable Rate display should show both the prefix and the value, only the value, or disable it entirely.",
+      "options": [
+          "Show nothing",
+          "Show only the value",
+          "Show both the prefix and the value" 
+      ],
+      "value": "Show both the prefix and the value"
   },
   {
       "uniqueID": "hit320Color",
