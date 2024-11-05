@@ -145,20 +145,20 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       if (settings.scoreMeter.type.name === 'Colour') {
         // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
         // Also yes, the size at 1x scale is the same across the board.
-        document.querySelector('.inGameScoreMeterHider').style.height = `${22 * cache.scoreMeterSize / 16}rem`;
+        document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
 
         // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
-        document.querySelector('.inGameScoreMeterHider').style.width = `${639 + 2 * cache.scoreMeterSize / 16}rem`;
+        document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((639 + 2) * cache.scoreMeterSize) / 16}rem`;
       } else if (settings.scoreMeter.type.name === 'Error') {
-        document.querySelector('.inGameScoreMeterHider').style.height = `${1.6875 * cache.scoreMeterSize}rem`;
+        document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
 
         if (cache.rulesetID === 1) {
           // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
-          document.querySelector('.inGameScoreMeterHider').style.width = `${((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize / 16}rem`;
+          document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         } else if (cache.rulesetID === 2) {
-          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit300 * 1.125 * 2 + 2) * cache.scoreMeterSize / 16}rem`;
+          document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit300 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         } else {
-          document.querySelector('.inGameScoreMeterHider').style.width = `${(hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize / 16}rem`;
+          document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         };
       } else {
         document.querySelector('.inGameScoreMeterHider').style.width = '0';

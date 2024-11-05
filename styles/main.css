@@ -161,7 +161,8 @@ body {
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  /* The background will be misaligned without that 1px translation to the right. */
+  transform: translateX(calc(-50% + 0.0625rem));
   width: 120rem;
   height: 67.5rem;
   background-color: black;
