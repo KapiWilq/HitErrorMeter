@@ -38,9 +38,9 @@
 
 0. Remember to have both your game and `tosu` open! I've seen some people wondering why their stuff is not working only to find out neither was open.
 1. Click the `Download the overlay` button at the top of this **document**.
-2. Put the folder that is inside the zip into the `static` folder next to the `tosu` executable.
+2. Put the folder inside the zip archive into the `static` folder next to the `tosu` executable.
 3. Add the overlay as a browser source with the properties in the table below the download button.
-4. (Optionally) Go to the tosu dashboard (the default address is http://127.0.0.1:24050), find the overlay in the `Installed` section, and customize it to your liking. There's a few settings waiting for you!
+4. (Optionally) Customize it to your liking, there's quite a few settings waiting for you!
 
 ## Settings
 
@@ -69,8 +69,8 @@
 - [ ] Add support for mania converts (current status: waiting for a new tosu release with a new `beatmap.isConvert` field, see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
 
 # Roadmap to v1.1
-- [ ] Update `index.js` to use the new tosu v4 API
-- [ ] Stretch: Add support for StreamCompanion
+- [ ] Update `index.js` to use the new tosu v4 API (notably the `play.mods.rate` field)
+- [ ] Stretch: Add support for StreamCompanion (will think about this only after tosu v4 is released)
 
 ## Support
 
