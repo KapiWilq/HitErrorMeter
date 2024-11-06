@@ -44,6 +44,22 @@
       "value": "#ffffff"
   },
   {
+      "uniqueID": "showMovingAverageArrow",
+      "type": "checkbox",
+      "title": "Show the moving average arrow",
+      "description": "",
+      "options": [],
+      "value": true
+  },
+  {
+      "uniqueID": "movingAverageArrowSize",
+      "type": "number",
+      "title": "Moving average arrow's size",
+      "description": "Must be a positive number. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __________",
+      "options": [],
+      "value": 8
+  },
+  {
       "uniqueID": "hideInGameScoreMeter",
       "type": "checkbox",
       "title": "Automatically hide the in-game score meter",
@@ -64,14 +80,6 @@
       "type": "checkbox",
       "title": "Show hit windows",
       "description": "The equivalent of this being toggled off can be seen in some VSRGs out there.",
-      "options": [],
-      "value": true
-  },
-  {
-      "uniqueID": "showMovingAverageArrow",
-      "type": "checkbox",
-      "title": "Show the moving average arrow",
-      "description": "",
       "options": [],
       "value": true
   },

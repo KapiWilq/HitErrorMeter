@@ -27,10 +27,11 @@ class HitErrorMeter {
    *          urFontSize: number,
    *          urFontFamily: string,
    *          urFontColor: string,
+   *          showMovingAverageArrow: boolean,
+   *          movingAverageArrowSize: number,
    *          hideInGameHem: boolean,
    *          showHemInCatch: boolean,
    *          showHitWindows: boolean,
-   *          showMovingAverageArrow: boolean,
    *          hit320Color: string,
    *          hit300Color: string,
    *          hit200Color: string,
@@ -62,9 +63,6 @@ class HitErrorMeter {
     this.hemScale = this.clamp(settings.hemScale, 0.5, 5);
     hemElement.querySelector('.segments').style.transform = `scale(${this.hemScale})`;
     hemElement.querySelector('.segments').style.height = `${hemHeight * this.hemScale / 16}rem`;
-    hemElement.querySelector('.movingAverageArrow').style.height = `${8 * this.hemScale / 16}rem`;
-    hemElement.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
-    hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * this.hemScale / 16}rem black)`;
 
     unstableRate.style.transform = `scale(${Math.max(0, settings.urFontSize) / 24})`;
     if (settings.urFontFamily === 'Roboto') {
@@ -73,6 +71,10 @@ class HitErrorMeter {
       unstableRate.style.fontFamily = `"${settings.urFontFamily}", "Roboto", sans-serif`;
     };
     unstableRate.style.color = settings.urFontColor;
+    
+    hemElement.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
+    hemElement.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
+    hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
 
     hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
     rootStyles.style.setProperty('--tickHeightRem', tickHeight / 16);
