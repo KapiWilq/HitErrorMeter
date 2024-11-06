@@ -19,6 +19,7 @@ let cache = {
   backgroundDim: -1,
   scoreMeterSize: 0,
   hitErrors: [14, 34, 69, 420, 1337, 2137],
+  unstableRate: -1,
   hitErrorsPreviousAmount: -1,
   relativeMovingAverageArrowPosition: 0
 };
@@ -41,9 +42,9 @@ function prepareUnstableRateDisplay(previousGameState, currentGameState, urStyle
 
   // You cannot edit existing CountUps' properties, therefore redeclare it.
   if (cache.urStyle === 'Show only the value') {
-    unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.'});
+    unstableRate = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.'});
   } else if (cache.urStyle === 'Show both the prefix and the value') {
-    unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: '});
+    unstableRate = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, {useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: '});
   };
 
   // Either during gameplay or when going to the results screen from gameplay.
@@ -208,7 +209,8 @@ socket.api_v2_precise(({ hitErrors }) => {
       if (cache.rulesetID === 3 || cache.rulesetID === 4) {
         ur /= getRateChange(cache.mods);
       };
-      unstableRate.update(ur);
+      cache.unstableRate = ur;
+      unstableRate.update(cache.unstableRate);
       
       let hitErrorsCurrentAmount = cache.hitErrors.length;
       if (hitErrorsCurrentAmount === 0) {
