@@ -31,9 +31,9 @@ class HitErrorMeter {
    *          movingAverageArrowSize: number,
    *          mainTickHeight: number,
    *          mainTickColor: string,
-   *          hideInGameHem: boolean,
-   *          showHemInCatch: boolean,
    *          showHitWindows: boolean,
+   *          showHemInCatch: boolean,
+   *          widthMultiplier: number,
    *          hit320Color: string,
    *          hit300Color: string,
    *          hit200Color: string,
@@ -41,9 +41,9 @@ class HitErrorMeter {
    *          hit50Color: string,
    *          tickHeight: number,
    *          tickWidth: number,
-   *          widthMultiplier: number,
    *          tickAppearanceDuration: number,
-   *          tickDisappearanceDuration: number}} settings - User settings.
+   *          tickDisappearanceDuration: number,
+   *          hideInGameScoreMeter: boolean}} settings - User settings.
    */
   applyUserSettings(settings) {
     let hemElement = document.querySelector('.hitErrorMeterContainer');
@@ -79,7 +79,7 @@ class HitErrorMeter {
 
     hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
     hemElement.querySelector('.mainTick').style.color = settings.mainTickColor;
-    
+
     rootStyles.style.setProperty('--tickHeightRem', tickHeight / 16);
     rootStyles.style.setProperty('--tickWidthRem', tickWidth / 16);
 

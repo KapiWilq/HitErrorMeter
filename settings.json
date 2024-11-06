@@ -76,10 +76,10 @@
       "value": "#ffffff"
   },
   {
-      "uniqueID": "hideInGameScoreMeter",
+      "uniqueID": "showHitWindows",
       "type": "checkbox",
-      "title": "Automatically hide the in-game score meter",
-      "description": "Useful for people who want to both see the in-game score meter and use the overlay somewhere else. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMPORTANT: if this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
+      "title": "Show hit windows",
+      "description": "The equivalent of this being toggled off can be seen in some VSRGs out there.",
       "options": [],
       "value": true
   },
@@ -92,12 +92,12 @@
       "value": false
   },
   {
-      "uniqueID": "showHitWindows",
-      "type": "checkbox",
-      "title": "Show hit windows",
-      "description": "The equivalent of this being toggled off can be seen in some VSRGs out there.",
+      "uniqueID": "widthMultiplier",
+      "type": "number",
+      "title": "Width multiplier of hit windows",
+      "description": "Must be a number between `0.5` and `5`. __________",
       "options": [],
-      "value": true
+      "value": 1
   },
   {
       "uniqueID": "hit320Color",
@@ -156,14 +156,6 @@
       "value": 4
   },
   {
-      "uniqueID": "widthMultiplier",
-      "type": "number",
-      "title": "Width multiplier of hit windows",
-      "description": "Must be a number between `0.5` and `5`. __________",
-      "options": [],
-      "value": 1
-  },
-  {
       "uniqueID": "tickAppearanceDuration",
       "type": "number",
       "title": "Duration of the tick appearance animation (in milliseconds)",
@@ -178,5 +170,13 @@
       "description": "The time it takes for the hit error tick to fully disappear right after fully expanding. Must be a positive number smaller or equal `10000` (10 seconds).",
       "options": [],
       "value": 3000
+  },
+  {
+      "uniqueID": "hideInGameScoreMeter",
+      "type": "checkbox",
+      "title": "Automatically hide the in-game score meter",
+      "description": "Useful for people who want to both see the in-game score meter and use the overlay somewhere else. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMPORTANT: if this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
+      "options": [],
+      "value": true
   }
 ]
