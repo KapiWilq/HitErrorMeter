@@ -54,7 +54,7 @@
   {
       "uniqueID": "movingAverageArrowSize",
       "type": "number",
-      "title": "Moving average arrow's size",
+      "title": "Moving average arrow size",
       "description": "Must be a positive number. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __________",
       "options": [],
       "value": 8
@@ -62,7 +62,7 @@
   {
       "uniqueID": "mainTickHeight",
       "type": "number",
-      "title": "Height of the main tick (in pixels)",
+      "title": "Main tick height (in pixels)",
       "description": "Must be a number bigger or equal `6`.",
       "options": [],
       "value": 24
@@ -94,7 +94,7 @@
   {
       "uniqueID": "widthMultiplier",
       "type": "number",
-      "title": "Width multiplier of hit windows",
+      "title": "Hit windows width multiplier",
       "description": "Must be a number between `0.5` and `5`. __________",
       "options": [],
       "value": 1
@@ -142,7 +142,7 @@
   {
       "uniqueID": "tickHeight",
       "type": "number",
-      "title": "Height of hit error ticks (in pixels)",
+      "title": "Hit error ticks height (in pixels)",
       "description": "The height of hit error ticks when their animation is complete. Must be a number bigger or equal `6`.",
       "options": [],
       "value": 36
@@ -150,7 +150,7 @@
   {
       "uniqueID": "tickWidth",
       "type": "number",
-      "title": "Width of hit error ticks (in pixels)",
+      "title": "Hit error ticks width (in pixels)",
       "description": "Must be a number between `1` and `8`.",
       "options": [],
       "value": 4
@@ -158,7 +158,7 @@
   {
       "uniqueID": "tickAppearanceDuration",
       "type": "number",
-      "title": "Duration of the tick appearance animation (in milliseconds)",
+      "title": "Tick appearance animation duration (in milliseconds)",
       "description": "The time it takes for the hit error tick to fully expand. Must be a positive number smaller or equal `5000` (5 seconds).",
       "options": [],
       "value": 250
@@ -166,7 +166,7 @@
   {
       "uniqueID": "tickDisappearanceDuration",
       "type": "number",
-      "title": "Duration of the tick disppearance animation (in milliseconds)",
+      "title": "Tick disappearance animation duration (in milliseconds)",
       "description": "The time it takes for the hit error tick to fully disappear right after fully expanding. Must be a positive number smaller or equal `10000` (10 seconds).",
       "options": [],
       "value": 3000
@@ -174,7 +174,7 @@
   {
       "uniqueID": "hideInGameScoreMeter",
       "type": "checkbox",
-      "title": "Automatically hide the in-game score meter",
+      "title": "Hide the in-game score meter",
       "description": "Useful for people who want to both see the in-game score meter and use the overlay somewhere else. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMPORTANT: if this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
       "options": [],
       "value": true
