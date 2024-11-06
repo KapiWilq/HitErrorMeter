@@ -81,7 +81,7 @@ class HitErrorMeter {
     hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
 
     hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
-    hemElement.querySelector('.mainTick').style.color = settings.mainTickColor;
+    hemElement.querySelector('.mainTick').style.backgroundColor = settings.mainTickColor;
 
     this.widthMultiplier = this.clamp(settings.widthMultiplier, 0.5, 5);
 
