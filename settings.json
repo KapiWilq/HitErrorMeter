@@ -3,17 +3,45 @@
       "uniqueID": "hemScale",
       "type": "number",
       "title": "Hit error meter scale",
-      "description": "Must be a number between `0.5` and `5`.",
+      "description": "Must be a number between `0.5` and `5`. __________",
       "options": [],
       "value": 1
   },
   {
-      "uniqueID": "urScale",
+      "uniqueID": "urStyle",
+      "type": "options",
+      "title": "Unstable Rate display style",
+      "description": "",
+      "options": [
+          "Show nothing",
+          "Show only the value",
+          "Show both the prefix and the value" 
+      ],
+      "value": "Show both the prefix and the value"
+  },
+  {
+      "uniqueID": "urFontSize",
       "type": "number",
-      "title": "Unstable Rate display scale",
-      "description": "Must be a number between `0.5` and `5`. __________",
+      "title": "Unstable Rate display font size (in pixels)",
+      "description": "Must be a positive number.",
       "options": [],
-      "value": 1
+      "value": 24
+  },
+  {
+      "uniqueID": "urFontFamily",
+      "type": "text",
+      "title": "Unstable Rate display font name",
+      "description": "The font must be installed on your system (except for `Roboto` as it's the default for the overlay).",
+      "options": [],
+      "value": "Roboto"
+  },
+  {
+      "uniqueID": "urFontColor",
+      "type": "color",
+      "title": "Unstable Rate display text colo(u)r",
+      "description": "__________",
+      "options": [],
+      "value": "#ffffff"
   },
   {
       "uniqueID": "hideInGameScoreMeter",
@@ -46,18 +74,6 @@
       "description": "",
       "options": [],
       "value": true
-  },
-  {
-      "uniqueID": "urStyle",
-      "type": "options",
-      "title": "Unstable Rate display style",
-      "description": "__________",
-      "options": [
-          "Show nothing",
-          "Show only the value",
-          "Show both the prefix and the value" 
-      ],
-      "value": "Show both the prefix and the value"
   },
   {
       "uniqueID": "hit320Color",

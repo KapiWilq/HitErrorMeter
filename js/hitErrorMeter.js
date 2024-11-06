@@ -23,12 +23,14 @@ class HitErrorMeter {
   /**
    * A helper method to apply user's settings.
    * @param {{hemScale: number,
-   *          urScale: number,
+   *          urStyle: 'Show nothing' | 'Show only the value' | 'Show both the prefix and the value',
+   *          urFontSize: number,
+   *          urFontFamily: string,
+   *          urFontColor: string,
    *          hideInGameHem: boolean,
    *          showHemInCatch: boolean,
    *          showHitWindows: boolean,
    *          showMovingAverageArrow: boolean,
-   *          urStyle: 'Show nothing' | 'Show only the value' | 'Show both the prefix and the value',
    *          hit320Color: string,
    *          hit300Color: string,
    *          hit200Color: string,
@@ -43,6 +45,7 @@ class HitErrorMeter {
    */
   applyUserSettings(settings) {
     let hemElement = document.querySelector('.hitErrorMeterContainer');
+    let unstableRate = document.querySelector('#unstableRate');
     let rootStyles = document.querySelector(':root');
 
     let hemHeight = 36, mainTickHeight = 24, tickHeight = 36, tickWidth = 4;
@@ -63,11 +66,18 @@ class HitErrorMeter {
     hemElement.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
     hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * this.hemScale / 16}rem black)`;
 
+    unstableRate.style.transform = `scale(${Math.max(0, settings.urFontSize) / 24})`;
+    if (settings.urFontFamily === 'Roboto') {
+      unstableRate.style.fontFamily = '"Roboto", sans-serif';
+    } else {
+      unstableRate.style.fontFamily = `"${settings.urFontFamily}", "Roboto", sans-serif`;
+    };
+    unstableRate.style.color = settings.urFontColor;
+
     hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
     rootStyles.style.setProperty('--tickHeightRem', tickHeight / 16);
     rootStyles.style.setProperty('--tickWidthRem', tickWidth / 16);
 
-    document.querySelector('#unstableRate').style.transform = `scale(${this.clamp(settings.urScale, 0.5, 5)})`;
     hemElement.querySelector('.movingAverageArrow').style.opacity = Number(settings.showMovingAverageArrow);
 
     this.applyColorToRootProperty('--hit320BG', settings.hit320Color, settings.showHitWindows);
@@ -76,10 +86,10 @@ class HitErrorMeter {
     this.applyColorToRootProperty('--hit100BG', settings.hit100Color, settings.showHitWindows);
     this.applyColorToRootProperty('--hit50BG', settings.hit50Color, settings.showHitWindows);
 
+    this.widthMultiplier = this.clamp(settings.widthMultiplier, 0.5, 5);
+
     this.tickAppearanceDuration = this.clamp(settings.tickAppearanceDuration, 0, 5000)
     this.tickDisappearanceDuration = this.clamp(settings.tickDisappearanceDuration, 0, 10000);
-
-    this.widthMultiplier = this.clamp(settings.widthMultiplier, 0.5, 5);
 
     this.prepareHitErrorMeter();
   };
