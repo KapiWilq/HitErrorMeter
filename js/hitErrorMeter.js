@@ -37,9 +37,9 @@ class HitErrorMeter {
    *          mainTickHeight: number,
    *          tickHeight: number,
    *          tickWidth: number,
+   *          widthMultiplier: number,
    *          tickAppearanceDuration: number,
-   *          tickDisappearanceDuration: number,
-   *          widthMultiplier: number}} settings - User settings.
+   *          tickDisappearanceDuration: number}} settings - User settings.
    */
   applyUserSettings(settings) {
     let hemElement = document.querySelector('.hitErrorMeterContainer');
