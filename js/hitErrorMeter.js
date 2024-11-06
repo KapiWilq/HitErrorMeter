@@ -29,6 +29,8 @@ class HitErrorMeter {
    *          urFontColor: string,
    *          showMovingAverageArrow: boolean,
    *          movingAverageArrowSize: number,
+   *          mainTickHeight: number,
+   *          mainTickColor: string,
    *          hideInGameHem: boolean,
    *          showHemInCatch: boolean,
    *          showHitWindows: boolean,
@@ -37,7 +39,6 @@ class HitErrorMeter {
    *          hit200Color: string,
    *          hit100Color: string,
    *          hit50Color: string,
-   *          mainTickHeight: number,
    *          tickHeight: number,
    *          tickWidth: number,
    *          widthMultiplier: number,
@@ -77,6 +78,8 @@ class HitErrorMeter {
     hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
 
     hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
+    hemElement.querySelector('.mainTick').style.color = settings.mainTickColor;
+    
     rootStyles.style.setProperty('--tickHeightRem', tickHeight / 16);
     rootStyles.style.setProperty('--tickWidthRem', tickWidth / 16);
 

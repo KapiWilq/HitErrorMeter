@@ -60,6 +60,22 @@
       "value": 8
   },
   {
+      "uniqueID": "mainTickHeight",
+      "type": "number",
+      "title": "Height of the main tick (in pixels)",
+      "description": "Must be a number bigger or equal `6`.",
+      "options": [],
+      "value": 24
+  },
+  {
+      "uniqueID": "mainTickColor",
+      "type": "color",
+      "title": "Main tick colo(u)r",
+      "description": "__________",
+      "options": [],
+      "value": "#ffffff"
+  },
+  {
       "uniqueID": "hideInGameScoreMeter",
       "type": "checkbox",
       "title": "Automatically hide the in-game score meter",
@@ -122,14 +138,6 @@
       "description": "__________",
       "options": [],
       "value": "#ebc247"
-  },
-  {
-      "uniqueID": "mainTickHeight",
-      "type": "number",
-      "title": "Height of the main tick (in pixels)",
-      "description": "Must be a number bigger or equal `6`.",
-      "options": [],
-      "value": 24
   },
   {
       "uniqueID": "tickHeight",
