@@ -3,7 +3,7 @@
       "uniqueID": "hemScale",
       "type": "number",
       "title": "Hit error meter scale",
-      "description": "Must be a number between `0.5` and `5`. __________",
+      "description": "Must be a number between `0.5` and `5`. ____________________________________________",
       "options": [],
       "value": 1
   },
@@ -39,7 +39,7 @@
       "uniqueID": "urFontColor",
       "type": "color",
       "title": "Unstable Rate display text colo(u)r",
-      "description": "__________",
+      "description": "____________________________________________",
       "options": [],
       "value": "#ffffff"
   },
@@ -55,7 +55,7 @@
       "uniqueID": "movingAverageArrowSize",
       "type": "number",
       "title": "Moving average arrow size",
-      "description": "Must be a positive number. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __________",
+      "description": "Must be a positive number. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ____________________________________________",
       "options": [],
       "value": 8
   },
@@ -71,7 +71,7 @@
       "uniqueID": "mainTickColor",
       "type": "color",
       "title": "Main tick colo(u)r",
-      "description": "__________",
+      "description": "____________________________________________",
       "options": [],
       "value": "#ffffff"
   },
@@ -95,7 +95,7 @@
       "uniqueID": "widthMultiplier",
       "type": "number",
       "title": "Hit windows width multiplier",
-      "description": "Must be a number between `0.5` and `5`. __________",
+      "description": "Must be a number between `0.5` and `5`. ____________________________________________",
       "options": [],
       "value": 1
   },
@@ -135,7 +135,7 @@
       "uniqueID": "hit50Color",
       "type": "color",
       "title": "50's hit window colo(u)r",
-      "description": "__________",
+      "description": "____________________________________________",
       "options": [],
       "value": "#ebc247"
   },
@@ -167,7 +167,7 @@
       "uniqueID": "tickDisappearanceDuration",
       "type": "number",
       "title": "Tick disappearance animation duration (in milliseconds)",
-      "description": "The time it takes for the hit error tick to fully disappear right after fully expanding. Must be a positive number smaller or equal `10000` (10 seconds).",
+      "description": "The time it takes for the hit error tick to fully disappear right after fully expanding. Must be a positive number smaller or equal `10000` (10 seconds). ____________________________________________",
       "options": [],
       "value": 3000
   },
