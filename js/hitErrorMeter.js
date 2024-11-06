@@ -65,7 +65,9 @@ class HitErrorMeter {
     hemElement.querySelector('.segments').style.transform = `scale(${this.hemScale})`;
     hemElement.querySelector('.segments').style.height = `${hemHeight * this.hemScale / 16}rem`;
 
-    unstableRate.style.transform = `scale(${Math.max(0, settings.urFontSize) / 24})`;
+    if (settings.urFontSize >= 0) {
+      unstableRate.style.transform = `scale(${Math.max(0, settings.urFontSize) / 24})`;
+    };
     if (settings.urFontFamily === 'Roboto') {
       unstableRate.style.fontFamily = '"Roboto", sans-serif';
     } else {
