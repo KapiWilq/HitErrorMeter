@@ -10,6 +10,7 @@ let cache = {
   currentState: '',
   rulesetID: 0,
   overallDiff: 0,
+  circleSize: 0,
   mods: 'asdf',
   isFullscreen: true,
   gameWindowedHeight: -1,
@@ -124,16 +125,17 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
   try {
     // Normally, all of these checks would be separate `if` statements (especially the state check),
     // however this approach wouldn't work in a way that I want this overlay to work.
-    if (cache.currentState !== state.name || cache.rulesetID !== settings.mode.number || cache.overallDiff !== beatmap.stats.od.original || cache.mods !== play.mods.name) {
+    if (cache.currentState !== state.name || cache.rulesetID !== settings.mode.number || cache.overallDiff !== beatmap.stats.od.original || cache.circleSize !== beatmap.stats.cs.original || cache.mods !== play.mods.name) {
       cache.previousState = cache.currentState;
       cache.currentState = state.name;
 
       cache.rulesetID = settings.mode.number;
       cache.overallDiff = beatmap.stats.od.original;
+      cache.circleSize = beatmap.stats.cs.original;
       cache.mods = play.mods.name;
 
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
-      hemManager.prepareHitErrorMeter(cache.rulesetID, cache.overallDiff, cache.mods);
+      hemManager.prepareHitErrorMeter(cache.rulesetID, cache.overallDiff, cache.circleSize, cache.mods);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetID !== 2));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
 

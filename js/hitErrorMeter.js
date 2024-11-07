@@ -6,6 +6,7 @@ class HitErrorMeter {
     // Default settings.
     this.rulesetID = 0;
     this.overallDiff = 0;
+    this.circleSize = 0;
     this.mods = '';
     this.hitWindows = {
       hit320: 0,
@@ -106,8 +107,8 @@ class HitErrorMeter {
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
-  prepareHitErrorMeter(rulesetID = this.rulesetID, overallDiff = this.overallDiff, mods = this.mods) {
-    this.applyBaseSettings(rulesetID, overallDiff, mods);
+  prepareHitErrorMeter(rulesetID = this.rulesetID, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods) {
+    this.applyBaseSettings(rulesetID, overallDiff, circleSize, mods);
 
     this.recalculateHitWindows();
     const WIDTH_CONSTANT = 1.125;
@@ -170,25 +171,29 @@ class HitErrorMeter {
    * A helper method to apply base play settings for use by other methods.
    * @param {0 | 1 | 2 | 3 | 4} rulesetID - The ID of the currently played ruleset. NOTE: The ruleset ID of `4` is the equivalent of playing an osu! map converted to osu!mania (aka mania convert).
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
+   * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
-  applyBaseSettings(rulesetID, overallDiff, mods) {
+  applyBaseSettings(rulesetID, overallDiff, circleSize, mods) {
     this.rulesetID = rulesetID;
 
     do {
       this.mods = mods;
-      if (mods.includes('EZ')) {
+      if (this.mods.includes('EZ')) {
         this.overallDiff = overallDiff / 2;
-      } else if (mods.includes('HR')) {
+        this.circleSize = circleSize / 2;
+      } else if (this.mods.includes('HR')) {
         this.overallDiff = Math.min(overallDiff * 1.4, 10);
+        this.circleSize = Math.min(circleSize * 1.3, 10);
       } else {
         this.overallDiff = overallDiff;
+        this.circleSize = circleSize;
       };
     } while (this.mods == undefined);
   };
 
   /**
-   * A helper method to recalculate hit windows for given overall difficulty.
+   * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch, since it uses the Circle Size to calculate its "hit windows").
    */
   recalculateHitWindows() {
     switch (this.rulesetID) {
@@ -216,7 +221,7 @@ class HitErrorMeter {
       case 2:
         this.hitWindows = {
           hit320: 0,
-          hit300: 72,
+          hit300: Math.round(72 - 6 * this.circleSize),
           hit200: 0,
           hit100: 0,
           hit50: 0
@@ -246,7 +251,7 @@ class HitErrorMeter {
         break;
 
       default: 
-        console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetID}\nOverall Difficulty: ${this.overallDiff}\n300's hit window: ${this.hitWindows.hit300}`);
+        console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetID}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\n300's hit window: ${this.hitWindows.hit300}`);
         break;
     };
   };
@@ -319,42 +324,39 @@ class HitErrorMeter {
         if (absHitError < this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
-
         if (absHitError < this.hitWindows.hit100) {
           return document.getElementById(`hit100${whichSegment}`);
         };
-
         return document.getElementById(`hit50${whichSegment}`);
 
       case 1:
         if (absHitError < this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
-
         return document.getElementById(`hit100${whichSegment}`);
+
+      case 2:
+        return document.getElementById(`hit300${whichSegment}`);
 
       case 3:
       case 4:
         if (absHitError <= this.hitWindows.hit320) {
           return document.getElementById(`hit320${whichSegment}`);
         };
-
         if (absHitError <= this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
-
         if (absHitError <= this.hitWindows.hit200) {
           return document.getElementById(`hit200${whichSegment}`);
         };
-
         if (absHitError <= this.hitWindows.hit100) {
           return document.getElementById(`hit100${whichSegment}`);
         };
-
         return document.getElementById(`hit50${whichSegment}`);
 
       default:
-        return document.getElementById(`hit300${whichSegment}`);
+        console.error(`Couldn't determine the hit window segment.\nRuleset ID: ${this.rulesetID}\nAbsolute hit error: ${absHitError}\n300's hit window: ${this.hitWindows.hit300}`);
+        break;
     };
   };
 
@@ -371,42 +373,39 @@ class HitErrorMeter {
         if (absHitError < this.hitWindows.hit300) {
           return absHitError / this.hitWindows.hit300;
         };
-
         if (absHitError < this.hitWindows.hit100) {
           return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
         };
-
         return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
 
       case 1:
         if (absHitError < this.hitWindows.hit300) {
           return absHitError / this.hitWindows.hit300;
         };
-
         return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
+
+      case 2:
+        return absHitError / this.hitWindows.hit300;
 
       case 3:
       case 4:
         if (absHitError <= this.hitWindows.hit320) {
           return absHitError / this.hitWindows.hit320;
         };
-
         if (absHitError <= this.hitWindows.hit300) {
           return (absHitError - this.hitWindows.hit320) / (this.hitWindows.hit300 - this.hitWindows.hit320);
         };
-
         if (absHitError <= this.hitWindows.hit200) {
           return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit200 - this.hitWindows.hit300);
         };
-
         if (absHitError <= this.hitWindows.hit100) {
           return (absHitError - this.hitWindows.hit200) / (this.hitWindows.hit100 - this.hitWindows.hit200);
         };
-
         return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
 
       default:
-        return absHitError / this.hitWindows.hit300;
+        console.error(`Couldn't determine the tick's position percentage.\nRuleset ID: ${this.rulesetID}\nAbsolute hit error: ${absHitError}\n300's hit window: ${this.hitWindows.hit300}`);
+        break;
     };
   };
 
