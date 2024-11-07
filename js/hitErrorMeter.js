@@ -488,9 +488,13 @@ class HitErrorMeter {
         return this.hitWindows.hit100;
       };
 
-      default: {
+      case 2: {
         return this.hitWindows.hit300;
       };
+
+      default:
+        console.error(`Couldn't get the max hit window.\nRuleset ID: ${this.rulesetID}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        break;
     };
   };
 };
