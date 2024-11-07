@@ -13,6 +13,7 @@ let cache = {
   overallDiff: 0,
   circleSize: 0,
   mods: 'asdf',
+  rate: -1,
   isFullscreen: true,
   gameWindowedHeight: -1,
   gameFullscreenHeight: -1,
@@ -84,23 +85,6 @@ function calculateStandardDeviation(values) {
   return standardDeviation;
 };
 
-/**
- * A helper method to get the rate change based on given mods list.
- * @param {string} [mods] - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
- * @returns {0.75 | 1 | 1.5} Rate change.
- */
-function getRateChange(mods = '') {
-  if (mods.includes('DT') || mods.includes('NC')) {
-    return 1.5;
-  };
-
-  if (mods.includes('HT')) {
-    return 0.75;
-  };
-
-  return 1;
-};
-
 
 
 socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
@@ -137,7 +121,12 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
   try {
     // Normally, all of these checks would be separate `if` statements (especially the state check),
     // however this approach wouldn't work in a way that I want this overlay to work.
-    if (cache.currentState !== state.name || cache.rulesetName !== settings.mode.name || cache.overallDiff !== beatmap.stats.od.original || cache.circleSize !== beatmap.stats.cs.original || cache.mods !== play.mods.name) {
+    if (cache.currentState !== state.name
+     || cache.rulesetName !== settings.mode.name
+     || cache.overallDiff !== beatmap.stats.od.original
+     || cache.circleSize !== beatmap.stats.cs.original
+     || cache.mods !== play.mods.name
+     || cache.rate !== play.mods.rate) {
       cache.previousState = cache.currentState;
       cache.currentState = state.name;
 
@@ -145,9 +134,10 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       cache.overallDiff = beatmap.stats.od.original;
       cache.circleSize = beatmap.stats.cs.original;
       cache.mods = play.mods.name;
+      cache.rate = play.mods.rate;
 
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
-      hemManager.prepareHitErrorMeter(cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods);
+      hemManager.prepareHitErrorMeter(cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetName !== 2));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
 
@@ -223,7 +213,7 @@ socket.api_v2_precise(({ hitErrors }) => {
 
       let ur = calculateStandardDeviation(cache.hitErrors) * 10;
       if (cache.rulesetName === 'mania' || cache.rulesetName === 'maniaConvert') {
-        ur /= getRateChange(cache.mods);
+        ur /= cache.rate;
       };
       cache.unstableRate = ur;
       unstableRate.update(cache.unstableRate);

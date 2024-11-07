@@ -8,6 +8,7 @@ class HitErrorMeter {
     this.overallDiff = 0;
     this.circleSize = 0;
     this.mods = '';
+    this.rate = 1;
     this.hitWindows = {
       hit320: 0,
       hit300: 80,
@@ -113,8 +114,8 @@ class HitErrorMeter {
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
-  prepareHitErrorMeter(rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods) {
-    this.applyBaseSettings(rulesetName, overallDiff, circleSize, mods);
+  prepareHitErrorMeter(rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
+    this.applyBaseSettings(rulesetName, overallDiff, circleSize, mods, rate);
 
     this.recalculateHitWindows();
     const WIDTH_CONSTANT = 1.125;
@@ -179,8 +180,9 @@ class HitErrorMeter {
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
+   * @param {number} rate - The speed of the map that is being currently played.
    */
-  applyBaseSettings(rulesetName, overallDiff, circleSize, mods) {
+  applyBaseSettings(rulesetName, overallDiff, circleSize, mods, rate) {
     this.rulesetName = rulesetName;
 
     do {
@@ -196,6 +198,8 @@ class HitErrorMeter {
         this.circleSize = circleSize;
       };
     } while (this.mods == undefined);
+
+    this.rate = rate;
   };
 
   /**
@@ -236,11 +240,11 @@ class HitErrorMeter {
 
       case 'mania':
         this.hitWindows = {
-          hit320: Math.round(16 * this.getRateChange()),
-          hit300: Math.round((64 - 3 * this.overallDiff) * this.getRateChange()),
-          hit200: Math.round((97 - 3 * this.overallDiff) * this.getRateChange()),
-          hit100: Math.round((127 - 3 * this.overallDiff) * this.getRateChange()),
-          hit50: Math.round((151 - 3 * this.overallDiff) * this.getRateChange())
+          hit320: Math.round(16 * this.rate),
+          hit300: Math.round((64 - 3 * this.overallDiff) * this.rate),
+          hit200: Math.round((97 - 3 * this.overallDiff) * this.rate),
+          hit100: Math.round((127 - 3 * this.overallDiff) * this.rate),
+          hit50: Math.round((151 - 3 * this.overallDiff) * this.rate)
         };
         break;
 
@@ -248,11 +252,11 @@ class HitErrorMeter {
       // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
       case 'maniaConvert':
         this.hitWindows = {
-          hit320: Math.round(16 * this.getRateChange()),
-          hit300: Math.round((this.overallDiff > 4 ? 34 : 47) * this.getRateChange()),
-          hit200: Math.round((this.overallDiff > 4 ? 67 : 77) * this.getRateChange()),
-          hit100: Math.round(97 * this.getRateChange()),
-          hit50: Math.round(121 * this.getRateChange())
+          hit320: Math.round(16 * this.rate),
+          hit300: Math.round((this.overallDiff > 4 ? 34 : 47) * this.rate),
+          hit200: Math.round((this.overallDiff > 4 ? 67 : 77) * this.rate),
+          hit100: Math.round(97 * this.rate),
+          hit50: Math.round(121 * this.rate)
         };
         break;
 
@@ -265,22 +269,6 @@ class HitErrorMeter {
   getHitWindows() {
     return this.hitWindows;
   }
-
-  /**
-   * A helper method to get the rate change based on given mods list. This implementation uses mods saved locally inside the class.
-   * @returns {0.75 | 1 | 1.5} Rate change.
-   */
-  getRateChange() {
-    if (this.mods.includes('DT') || this.mods.includes('NC')) {
-      return 1.5;
-    };
-
-    if (this.mods.includes('HT')) {
-      return 0.75;
-    };
-
-    return 1;
-  };
 
   /**
    * A helper method to set a property value in the root pseudo-class.
