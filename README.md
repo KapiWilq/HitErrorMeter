@@ -47,6 +47,7 @@
 | Setting                                                 | Type     | Default value                        | Customizability                                                                                     |
 | ------------------------------------------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
 | Hit error meter scale                                   | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
+| Automatically scale the overlay with resolution         | Checkbox | `Enabled`                            | `Enabled` or `Disabled`                                                                             |
 | Unstable Rate display style                             | Options  | `Show both the prefix and the value` | `"Show nothing"`, `"Show only the value"`, `"Show both the prefix and the value"`                   |
 | Unstable Rate display font size (in pixels)             | Number   | `24`                                 | A positive number                                                                                   |
 | Unstable Rate display font name                         | Textbox  | `Roboto`                             | The font must be installed on your system (except for `Roboto` as it's the default for the overlay) |

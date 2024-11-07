@@ -3,9 +3,17 @@
       "uniqueID": "hemScale",
       "type": "number",
       "title": "Hit error meter scale",
-      "description": "Must be a number between `0.5` and `5`. ____________________________________________",
+      "description": "Must be a number between `0.5` and `5`.",
       "options": [],
       "value": 1
+  },
+  {
+      "uniqueID": "hemScaleWithResolution",
+      "type": "checkbox",
+      "title": "Automatically scale the overlay with resolution",
+      "description": "The in-game score meter's size varies between resolutions. This options allows you to resize the overlay automatically to always have the correct size regardless of the game resolution. If disabled, it will always have the same size (as if you're running at 1080p). ____________________________________________",
+      "options": [],
+      "value": true
   },
   {
       "uniqueID": "urStyle",

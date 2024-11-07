@@ -3,8 +3,9 @@ import HitErrorMeter from './js/hitErrorMeter.js';
 const socket = new WebSocketManager(`${location.host}`);
 
 let cache = {
-  hideInGameScoreMeter: true,
   showHemInCatch: false,
+  hemScaleWithResolution: true,
+  hideInGameScoreMeter: true,
   urStyle: '',
   previousState: '',
   currentState: '',
@@ -107,8 +108,19 @@ socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
 socket.commands(({ command, message }) => {
   try {
     if (command === 'getSettings') {
-      cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
       cache.showHemInCatch = message.showHemInCatch;
+      cache.hemScaleWithResolution = message.hemScaleWithResolution;
+      cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
+
+      if (cache.hemScaleWithResolution) {
+        if (cache.isFullscreen) {
+          document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
+        } else {
+          document.querySelector('.main').style.transform = `scale(${cache.gameWindowedHeight / 1080})`;
+        };
+      } else {
+        document.querySelector('.main').style.transform = `scale(1)`;
+      };
 
       hemManager.applyUserSettings(message);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetName !== 'Fruits'));
@@ -172,10 +184,14 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       cache.gameWindowedHeight = settings.resolution.height;
       cache.gameFullscreenHeight = settings.resolution.heightFullscreen;
 
-      if (cache.isFullscreen) {
-        document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
+      if (cache.hemScaleWithResolution) {
+        if (cache.isFullscreen) {
+          document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
+        } else {
+          document.querySelector('.main').style.transform = `scale(${cache.gameWindowedHeight / 1080})`;
+        };
       } else {
-        document.querySelector('.main').style.transform = `scale(${cache.gameWindowedHeight / 1080})`;
+        document.querySelector('.main').style.transform = `scale(1)`;
       };
     };
 
