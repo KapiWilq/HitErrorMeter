@@ -77,9 +77,11 @@ class HitErrorMeter {
     unstableRate.style.color = settings.urFontColor;
     
     hemElement.querySelector('.movingAverageArrow').style.opacity = Number(settings.showMovingAverageArrow);
-    hemElement.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
+    if (settings.movingAverageArrowSize >= 0) {
+      hemElement.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
+      hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
+    };
     hemElement.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
-    hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
 
     hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
     hemElement.querySelector('.mainTick').style.backgroundColor = settings.mainTickColor;
@@ -95,8 +97,12 @@ class HitErrorMeter {
     rootStyles.style.setProperty('--tickHeightRem', tickHeight / 16);
     rootStyles.style.setProperty('--tickWidthRem', tickWidth / 16);
 
-    this.tickAppearanceDuration = this.clamp(settings.tickAppearanceDuration, 0, 5000)
-    this.tickDisappearanceDuration = this.clamp(settings.tickDisappearanceDuration, 0, 10000);
+    if (settings.tickAppearanceDuration >= 0) {
+      this.tickAppearanceDuration = Math.max(settings.tickAppearanceDuration, 5000);
+    };
+    if (settings.tickDisappearanceDuration >= 0) {
+      this.tickDisappearanceDuration = Math.max(settings.tickDisappearanceDuration, 10000);
+    };
 
     this.prepareHitErrorMeter();
   };
