@@ -123,7 +123,7 @@ socket.commands(({ command, message }) => {
       };
 
       hemManager.applyUserSettings(message);
-      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetName !== 'Fruits'));
+      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
       
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.urStyle);
@@ -157,14 +157,14 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
         cache.scoreMeterSize = settings.scoreMeter.size;
       };
 
-      if (cache.rulesetName === 'Fruits' || settings.scoreMeter.type.name === 'Colour') {
+      if (cache.rulesetName === 'fruits' || settings.scoreMeter.type.name === 'colour') {
         // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
         // Also yes, the size at 1x scale is the same across the board.
         document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
 
         // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
         document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((639 + 2) * cache.scoreMeterSize) / 16}rem`;
-      } else if (settings.scoreMeter.type.name === 'Error') {
+      } else if (settings.scoreMeter.type.name === 'error') {
         document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
 
         if (cache.rulesetName === 1) {
@@ -222,7 +222,7 @@ socket.api_v2_precise(({ hitErrors }) => {
       cache.hitErrors = hitErrors;
 
       let ur = calculateStandardDeviation(cache.hitErrors) * 10;
-      if (cache.rulesetName === 'Mania' || cache.rulesetName === 'ManiaConvert') {
+      if (cache.rulesetName === 'mania' || cache.rulesetName === 'maniaConvert') {
         ur /= getRateChange(cache.mods);
       };
       cache.unstableRate = ur;
@@ -245,7 +245,7 @@ socket.api_v2_precise(({ hitErrors }) => {
           // This is pretty much a slight modification of osu!(lazer)'s implementation (except for the if).
           // See more details by looking at the `getRelativeHitErrorPosition`'s JSDoc.
           // Also, osu!catch stores fruits landing on the right side of the catcher as ""early hits"" - flip the hit error to correct it.
-          if (cache.rulesetName !== 'Fruits') {
+          if (cache.rulesetName !== 'fruits') {
             document.querySelector('.movingAverageArrow').style.left = `${hemManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 + cache.hitErrors[i] * 0.1) * 100}%`;
           } else {
             document.querySelector('.movingAverageArrow').style.left = `${hemManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 - cache.hitErrors[i] * 0.1) * 100}%`;

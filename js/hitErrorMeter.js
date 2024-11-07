@@ -109,7 +109,7 @@ class HitErrorMeter {
 
   /**
    * Prepares hit error meter: sets appropriate hit windows widths, and rounds corners at the edge.
-   * @param {'Osu' | 'Taiko' | 'Fruits' | 'Mania' | 'ManiaConvert'} rulesetName - The currently played ruleset.
+   * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
@@ -122,16 +122,16 @@ class HitErrorMeter {
     let hit320Size = 0, hit300Size = 0, hit200Size = 0, hit100Size = 0, hit50Size = 0;
 
     switch (this.rulesetName) {
-      case 'Osu':
+      case 'osu':
         hit300Size = Math.floor(this.hitWindows.hit300 * WIDTH_CONSTANT * this.widthMultiplier);
         hit100Size = Math.floor((this.hitWindows.hit100 - this.hitWindows.hit300) * WIDTH_CONSTANT * this.widthMultiplier);
         hit50Size = Math.floor((this.hitWindows.hit50 - this.hitWindows.hit100) * WIDTH_CONSTANT * this.widthMultiplier);
         break;
-      case 'Taiko':
+      case 'taiko':
         hit300Size = Math.floor(this.hitWindows.hit300 * WIDTH_CONSTANT * this.widthMultiplier);
         hit100Size = Math.floor((this.hitWindows.hit100 - this.hitWindows.hit300) * WIDTH_CONSTANT * this.widthMultiplier);
         break;
-      case 'Fruits':
+      case 'fruits':
         hit300Size = Math.floor(this.hitWindows.hit300 * WIDTH_CONSTANT * this.widthMultiplier);
         break;
       default:
@@ -155,11 +155,11 @@ class HitErrorMeter {
 
     let edgeSegments = null;
 
-    if (this.rulesetName === 'Osu' || this.rulesetName === 'Mania' || this.rulesetName === 'ManiaConvert') {
+    if (this.rulesetName === 'osu' || this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert') {
       edgeSegments = document.querySelectorAll('.hit50');
       document.querySelectorAll('.hit100').forEach(segment => segment.style.borderRadius = '0');
       document.querySelectorAll('.hit300').forEach(segment => segment.style.borderRadius = '0');
-    } else if (this.rulesetName === 'Taiko') {
+    } else if (this.rulesetName === 'taiko') {
       edgeSegments = document.querySelectorAll('.hit100');
       document.querySelectorAll('.hit300').forEach(segment => segment.style.borderRadius = '0');
       document.querySelectorAll('.hit50').forEach(segment => segment.style.borderRadius = '0');
@@ -175,7 +175,7 @@ class HitErrorMeter {
 
   /**
    * A helper method to apply base play settings for use by other methods.
-   * @param {'Osu' | 'Taiko' | 'Fruits' | 'Mania' | 'ManiaConvert'} rulesetName - The currently played ruleset.
+   * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
@@ -203,7 +203,7 @@ class HitErrorMeter {
    */
   recalculateHitWindows() {
     switch (this.rulesetName) {
-      case 'Osu':
+      case 'osu':
         this.hitWindows = {
           hit320: 0,
           hit300: Math.round(80 - 6 * this.overallDiff),
@@ -213,7 +213,7 @@ class HitErrorMeter {
         };
         break;
 
-      case 'Taiko':
+      case 'taiko':
         this.hitWindows = {
           hit320: 0,
           hit300: Math.round(50 - 3 * this.overallDiff),
@@ -224,7 +224,7 @@ class HitErrorMeter {
         break;
 
       // osu!catch shows where the fruit landed relative to the catcher's center.
-      case 'Fruits':
+      case 'fruits':
         this.hitWindows = {
           hit320: 0,
           hit300: Math.round(72 - 6 * this.circleSize),
@@ -234,7 +234,7 @@ class HitErrorMeter {
         };
         break;
 
-      case 'Mania':
+      case 'mania':
         this.hitWindows = {
           hit320: Math.round(16 * this.getRateChange()),
           hit300: Math.round((64 - 3 * this.overallDiff) * this.getRateChange()),
@@ -246,7 +246,7 @@ class HitErrorMeter {
 
       // Mania converts have different hit windows.
       // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
-      case 'ManiaConvert':
+      case 'maniaConvert':
         this.hitWindows = {
           hit320: Math.round(16 * this.getRateChange()),
           hit300: Math.round((this.overallDiff > 4 ? 34 : 47) * this.getRateChange()),
@@ -326,7 +326,7 @@ class HitErrorMeter {
     this.recalculateHitWindows();
 
     switch (this.rulesetName) {
-      case 'Osu':
+      case 'osu':
         if (absHitError < this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
@@ -335,17 +335,17 @@ class HitErrorMeter {
         };
         return document.getElementById(`hit50${whichSegment}`);
 
-      case 'Taiko':
+      case 'taiko':
         if (absHitError < this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
         return document.getElementById(`hit100${whichSegment}`);
 
-      case 'Fruits':
+      case 'fruits':
         return document.getElementById(`hit300${whichSegment}`);
 
-      case 'Mania':
-      case 'ManiaConvert':
+      case 'mania':
+      case 'maniaConvert':
         if (absHitError <= this.hitWindows.hit320) {
           return document.getElementById(`hit320${whichSegment}`);
         };
@@ -375,7 +375,7 @@ class HitErrorMeter {
     this.recalculateHitWindows();
 
     switch (this.rulesetName) {
-      case 'Osu':
+      case 'osu':
         if (absHitError < this.hitWindows.hit300) {
           return absHitError / this.hitWindows.hit300;
         };
@@ -384,17 +384,17 @@ class HitErrorMeter {
         };
         return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
 
-      case 'Taiko':
+      case 'taiko':
         if (absHitError < this.hitWindows.hit300) {
           return absHitError / this.hitWindows.hit300;
         };
         return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
 
-      case 'Fruits':
+      case 'fruits':
         return absHitError / this.hitWindows.hit300;
 
-      case 'Mania':
-      case 'ManiaConvert':
+      case 'mania':
+      case 'maniaConvert':
         if (absHitError <= this.hitWindows.hit320) {
           return absHitError / this.hitWindows.hit320;
         };
@@ -425,7 +425,7 @@ class HitErrorMeter {
     const ANIMATION_DELAY = 17;
 
     // osu!catch stores fruits landing on the right side of the catcher as ""early hits"" - flip the hit error to correct it.
-    if (this.rulesetName === 'Fruits') {
+    if (this.rulesetName === 'fruits') {
       hitError = -hitError;
     };
     if (hitError <= 0) {
@@ -484,17 +484,17 @@ class HitErrorMeter {
     this.recalculateHitWindows();
 
     switch (this.rulesetName) {
-      case 'Osu':
-      case 'Mania':
-      case 'ManiaConvert': {
+      case 'osu':
+      case 'mania':
+      case 'maniaConvert': {
         return this.hitWindows.hit50;
       };
 
-      case 'Taiko': {
+      case 'taiko': {
         return this.hitWindows.hit100;
       };
 
-      case 'Fruits': {
+      case 'fruits': {
         return this.hitWindows.hit300;
       };
 
