@@ -8,7 +8,7 @@ let cache = {
   urStyle: '',
   previousState: '',
   currentState: '',
-  rulesetID: 0,
+  rulesetName: '',
   overallDiff: 0,
   circleSize: 0,
   mods: 'asdf',
@@ -111,7 +111,7 @@ socket.commands(({ command, message }) => {
       cache.showHemInCatch = message.showHemInCatch;
 
       hemManager.applyUserSettings(message);
-      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetID !== 2));
+      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetName !== 'Fruits'));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
       
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.urStyle);
@@ -125,18 +125,18 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
   try {
     // Normally, all of these checks would be separate `if` statements (especially the state check),
     // however this approach wouldn't work in a way that I want this overlay to work.
-    if (cache.currentState !== state.name || cache.rulesetID !== settings.mode.number || cache.overallDiff !== beatmap.stats.od.original || cache.circleSize !== beatmap.stats.cs.original || cache.mods !== play.mods.name) {
+    if (cache.currentState !== state.name || cache.rulesetName !== settings.mode.name || cache.overallDiff !== beatmap.stats.od.original || cache.circleSize !== beatmap.stats.cs.original || cache.mods !== play.mods.name) {
       cache.previousState = cache.currentState;
       cache.currentState = state.name;
 
-      cache.rulesetID = settings.mode.number;
+      cache.rulesetName = settings.mode.name;
       cache.overallDiff = beatmap.stats.od.original;
       cache.circleSize = beatmap.stats.cs.original;
       cache.mods = play.mods.name;
 
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
-      hemManager.prepareHitErrorMeter(cache.rulesetID, cache.overallDiff, cache.circleSize, cache.mods);
-      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetID !== 2));
+      hemManager.prepareHitErrorMeter(cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods);
+      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetName !== 2));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
 
       let hitWindows = hemManager.getHitWindows();
@@ -145,7 +145,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
         cache.scoreMeterSize = settings.scoreMeter.size;
       };
 
-      if (cache.rulesetID === 2 || settings.scoreMeter.type.name === 'Colour') {
+      if (cache.rulesetName === 'Fruits' || settings.scoreMeter.type.name === 'Colour') {
         // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
         // Also yes, the size at 1x scale is the same across the board.
         document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
@@ -155,7 +155,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       } else if (settings.scoreMeter.type.name === 'Error') {
         document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
 
-        if (cache.rulesetID === 1) {
+        if (cache.rulesetName === 1) {
           // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
           document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         } else {
@@ -206,7 +206,7 @@ socket.api_v2_precise(({ hitErrors }) => {
       cache.hitErrors = hitErrors;
 
       let ur = calculateStandardDeviation(cache.hitErrors) * 10;
-      if (cache.rulesetID === 3 || cache.rulesetID === 4) {
+      if (cache.rulesetName === 'Mania' || cache.rulesetName === 'ManiaConvert') {
         ur /= getRateChange(cache.mods);
       };
       cache.unstableRate = ur;
@@ -229,7 +229,7 @@ socket.api_v2_precise(({ hitErrors }) => {
           // This is pretty much a slight modification of osu!(lazer)'s implementation (except for the if).
           // See more details by looking at the `getRelativeHitErrorPosition`'s JSDoc.
           // Also, osu!catch stores fruits landing on the right side of the catcher as ""early hits"" - flip the hit error to correct it.
-          if (cache.rulesetID !== 2) {
+          if (cache.rulesetName !== 'Fruits') {
             document.querySelector('.movingAverageArrow').style.left = `${hemManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 + cache.hitErrors[i] * 0.1) * 100}%`;
           } else {
             document.querySelector('.movingAverageArrow').style.left = `${hemManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 - cache.hitErrors[i] * 0.1) * 100}%`;

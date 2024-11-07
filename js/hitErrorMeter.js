@@ -4,7 +4,7 @@
 class HitErrorMeter {
   constructor() {
     // Default settings.
-    this.rulesetID = 0;
+    this.rulesetName = 0;
     this.overallDiff = 0;
     this.circleSize = 0;
     this.mods = '';
@@ -103,29 +103,29 @@ class HitErrorMeter {
 
   /**
    * Prepares hit error meter: sets appropriate hit windows widths, and rounds corners at the edge.
-   * @param {0 | 1 | 2 | 3 | 4} rulesetID - The ID of the currently played ruleset. NOTE: The ruleset ID of `4` is the equivalent of playing an osu! map converted to osu!mania (aka mania convert).
+   * @param {'Osu' | 'Taiko' | 'Fruits' | 'Mania' | 'ManiaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
-  prepareHitErrorMeter(rulesetID = this.rulesetID, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods) {
-    this.applyBaseSettings(rulesetID, overallDiff, circleSize, mods);
+  prepareHitErrorMeter(rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods) {
+    this.applyBaseSettings(rulesetName, overallDiff, circleSize, mods);
 
     this.recalculateHitWindows();
     const WIDTH_CONSTANT = 1.125;
 
     let hit320Size = 0, hit300Size = 0, hit200Size = 0, hit100Size = 0, hit50Size = 0;
 
-    switch (this.rulesetID) {
-      case 0:
+    switch (this.rulesetName) {
+      case 'Osu':
         hit300Size = Math.floor(this.hitWindows.hit300 * WIDTH_CONSTANT * this.widthMultiplier);
         hit100Size = Math.floor((this.hitWindows.hit100 - this.hitWindows.hit300) * WIDTH_CONSTANT * this.widthMultiplier);
         hit50Size = Math.floor((this.hitWindows.hit50 - this.hitWindows.hit100) * WIDTH_CONSTANT * this.widthMultiplier);
         break;
-      case 1:
+      case 'Taiko':
         hit300Size = Math.floor(this.hitWindows.hit300 * WIDTH_CONSTANT * this.widthMultiplier);
         hit100Size = Math.floor((this.hitWindows.hit100 - this.hitWindows.hit300) * WIDTH_CONSTANT * this.widthMultiplier);
         break;
-      case 2:
+      case 'Fruits':
         hit300Size = Math.floor(this.hitWindows.hit300 * WIDTH_CONSTANT * this.widthMultiplier);
         break;
       default:
@@ -149,11 +149,11 @@ class HitErrorMeter {
 
     let edgeSegments = null;
 
-    if (this.rulesetID === 0 || this.rulesetID === 3 || this.rulesetID === 4) {
+    if (this.rulesetName === 'Osu' || this.rulesetName === 'Mania' || this.rulesetName === 'ManiaConvert') {
       edgeSegments = document.querySelectorAll('.hit50');
       document.querySelectorAll('.hit100').forEach(segment => segment.style.borderRadius = '0');
       document.querySelectorAll('.hit300').forEach(segment => segment.style.borderRadius = '0');
-    } else if (this.rulesetID === 1) {
+    } else if (this.rulesetName === 'Taiko') {
       edgeSegments = document.querySelectorAll('.hit100');
       document.querySelectorAll('.hit300').forEach(segment => segment.style.borderRadius = '0');
       document.querySelectorAll('.hit50').forEach(segment => segment.style.borderRadius = '0');
@@ -169,13 +169,13 @@ class HitErrorMeter {
 
   /**
    * A helper method to apply base play settings for use by other methods.
-   * @param {0 | 1 | 2 | 3 | 4} rulesetID - The ID of the currently played ruleset. NOTE: The ruleset ID of `4` is the equivalent of playing an osu! map converted to osu!mania (aka mania convert).
+   * @param {'Osu' | 'Taiko' | 'Fruits' | 'Mania' | 'ManiaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
-  applyBaseSettings(rulesetID, overallDiff, circleSize, mods) {
-    this.rulesetID = rulesetID;
+  applyBaseSettings(rulesetName, overallDiff, circleSize, mods) {
+    this.rulesetName = rulesetName;
 
     do {
       this.mods = mods;
@@ -196,8 +196,8 @@ class HitErrorMeter {
    * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch, since it uses the Circle Size to calculate its "hit windows").
    */
   recalculateHitWindows() {
-    switch (this.rulesetID) {
-      case 0:
+    switch (this.rulesetName) {
+      case 'Osu':
         this.hitWindows = {
           hit320: 0,
           hit300: Math.round(80 - 6 * this.overallDiff),
@@ -207,7 +207,7 @@ class HitErrorMeter {
         };
         break;
 
-      case 1:
+      case 'Taiko':
         this.hitWindows = {
           hit320: 0,
           hit300: Math.round(50 - 3 * this.overallDiff),
@@ -218,7 +218,7 @@ class HitErrorMeter {
         break;
 
       // osu!catch shows where the fruit landed relative to the catcher's center.
-      case 2:
+      case 'Fruits':
         this.hitWindows = {
           hit320: 0,
           hit300: Math.round(72 - 6 * this.circleSize),
@@ -228,7 +228,7 @@ class HitErrorMeter {
         };
         break;
 
-      case 3:
+      case 'Mania':
         this.hitWindows = {
           hit320: Math.round(16 * this.getRateChange()),
           hit300: Math.round((64 - 3 * this.overallDiff) * this.getRateChange()),
@@ -240,7 +240,7 @@ class HitErrorMeter {
 
       // Mania converts have different hit windows.
       // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
-      case 4:
+      case 'ManiaConvert':
         this.hitWindows = {
           hit320: Math.round(16 * this.getRateChange()),
           hit300: Math.round((this.overallDiff > 4 ? 34 : 47) * this.getRateChange()),
@@ -251,7 +251,7 @@ class HitErrorMeter {
         break;
 
       default: 
-        console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetID}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
         break;
     };
   };
@@ -319,8 +319,8 @@ class HitErrorMeter {
   getHitWindowSegment(absHitError, whichSegment) {
     this.recalculateHitWindows();
 
-    switch (this.rulesetID) {
-      case 0:
+    switch (this.rulesetName) {
+      case 'Osu':
         if (absHitError < this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
@@ -329,17 +329,17 @@ class HitErrorMeter {
         };
         return document.getElementById(`hit50${whichSegment}`);
 
-      case 1:
+      case 'Taiko':
         if (absHitError < this.hitWindows.hit300) {
           return document.getElementById(`hit300${whichSegment}`);
         };
         return document.getElementById(`hit100${whichSegment}`);
 
-      case 2:
+      case 'Fruits':
         return document.getElementById(`hit300${whichSegment}`);
 
-      case 3:
-      case 4:
+      case 'Mania':
+      case 'ManiaConvert':
         if (absHitError <= this.hitWindows.hit320) {
           return document.getElementById(`hit320${whichSegment}`);
         };
@@ -355,7 +355,7 @@ class HitErrorMeter {
         return document.getElementById(`hit50${whichSegment}`);
 
       default:
-        console.error(`Couldn't determine the hit window segment.\nRuleset ID: ${this.rulesetID}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't determine the hit window segment.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
         break;
     };
   };
@@ -368,8 +368,8 @@ class HitErrorMeter {
   getTickPositionPercentage(absHitError) {
     this.recalculateHitWindows();
 
-    switch (this.rulesetID) {
-      case 0:
+    switch (this.rulesetName) {
+      case 'Osu':
         if (absHitError < this.hitWindows.hit300) {
           return absHitError / this.hitWindows.hit300;
         };
@@ -378,17 +378,17 @@ class HitErrorMeter {
         };
         return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
 
-      case 1:
+      case 'Taiko':
         if (absHitError < this.hitWindows.hit300) {
           return absHitError / this.hitWindows.hit300;
         };
         return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
 
-      case 2:
+      case 'Fruits':
         return absHitError / this.hitWindows.hit300;
 
-      case 3:
-      case 4:
+      case 'Mania':
+      case 'ManiaConvert':
         if (absHitError <= this.hitWindows.hit320) {
           return absHitError / this.hitWindows.hit320;
         };
@@ -404,7 +404,7 @@ class HitErrorMeter {
         return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
 
       default:
-        console.error(`Couldn't determine the tick's position percentage.\nRuleset ID: ${this.rulesetID}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't determine the tick's position percentage.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
         break;
     };
   };
@@ -419,7 +419,7 @@ class HitErrorMeter {
     const ANIMATION_DELAY = 17;
 
     // osu!catch stores fruits landing on the right side of the catcher as ""early hits"" - flip the hit error to correct it.
-    if (this.rulesetID === 2) {
+    if (this.rulesetName === 'Fruits') {
       hitError = -hitError;
     };
     if (hitError <= 0) {
@@ -477,23 +477,23 @@ class HitErrorMeter {
   getMaxHitWindow() {
     this.recalculateHitWindows();
 
-    switch (this.rulesetID) {
-      case 0:
-      case 3:
-      case 4: {
+    switch (this.rulesetName) {
+      case 'Osu':
+      case 'Mania':
+      case 'ManiaConvert': {
         return this.hitWindows.hit50;
       };
 
-      case 1: {
+      case 'Taiko': {
         return this.hitWindows.hit100;
       };
 
-      case 2: {
+      case 'Fruits': {
         return this.hitWindows.hit300;
       };
 
       default:
-        console.error(`Couldn't get the max hit window.\nRuleset ID: ${this.rulesetID}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't get the max hit window.\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
         break;
     };
   };
