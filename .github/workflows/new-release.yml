@@ -24,7 +24,7 @@ jobs:
           tag_name: v${{ env.OVERLAY_VERSION }}
           token: ${{ secrets.GITHUBPAT }}
           body: |
-            Thanks for wanting to try out my replay!
+            Thanks for wanting to try out my overlay!
 
             ## Changelog
             - To be done (if it's not here within 24 hours after the release then yell at me)
