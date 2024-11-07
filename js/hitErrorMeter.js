@@ -257,7 +257,7 @@ class HitErrorMeter {
         break;
 
       default: 
-        console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
         break;
     };
   };
@@ -361,7 +361,7 @@ class HitErrorMeter {
         return document.getElementById(`hit50${whichSegment}`);
 
       default:
-        console.error(`Couldn't determine the hit window segment.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't determine the hit window segment.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
         break;
     };
   };
@@ -410,7 +410,7 @@ class HitErrorMeter {
         return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
 
       default:
-        console.error(`Couldn't determine the tick's position percentage.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+        console.error(`Couldn't determine the tick's position percentage.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
         break;
     };
   };
