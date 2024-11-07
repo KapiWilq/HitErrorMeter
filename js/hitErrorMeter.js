@@ -230,7 +230,7 @@ class HitErrorMeter {
 
       case 3:
         this.hitWindows = {
-          hit320: 16 * this.getRateChange(),
+          hit320: Math.round(16 * this.getRateChange()),
           hit300: Math.round((64 - 3 * this.overallDiff) * this.getRateChange()),
           hit200: Math.round((97 - 3 * this.overallDiff) * this.getRateChange()),
           hit100: Math.round((127 - 3 * this.overallDiff) * this.getRateChange()),
@@ -242,11 +242,11 @@ class HitErrorMeter {
       // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
       case 4:
         this.hitWindows = {
-          hit320: 16 * this.getRateChange(),
+          hit320: Math.round(16 * this.getRateChange()),
           hit300: Math.round((this.overallDiff > 4 ? 34 : 47) * this.getRateChange()),
           hit200: Math.round((this.overallDiff > 4 ? 67 : 77) * this.getRateChange()),
-          hit100: 97 * this.getRateChange(),
-          hit50: 121 * this.getRateChange()
+          hit100: Math.round(97 * this.getRateChange()),
+          hit50: Math.round(121 * this.getRateChange())
         };
         break;
 
