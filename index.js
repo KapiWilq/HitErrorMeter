@@ -145,7 +145,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
         cache.scoreMeterSize = settings.scoreMeter.size;
       };
 
-      if (settings.scoreMeter.type.name === 'Colour') {
+      if (cache.rulesetID === 2 || settings.scoreMeter.type.name === 'Colour') {
         // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
         // Also yes, the size at 1x scale is the same across the board.
         document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
@@ -158,8 +158,6 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
         if (cache.rulesetID === 1) {
           // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
           document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
-        } else if (cache.rulesetID === 2) {
-          document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit300 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         } else {
           document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         };
