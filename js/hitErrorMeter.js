@@ -98,10 +98,10 @@ class HitErrorMeter {
     rootStyles.style.setProperty('--tickWidthRem', tickWidth / 16);
 
     if (settings.tickAppearanceDuration >= 0) {
-      this.tickAppearanceDuration = Math.max(settings.tickAppearanceDuration, 5000);
+      this.tickAppearanceDuration = Math.min(settings.tickAppearanceDuration, 5000);
     };
     if (settings.tickDisappearanceDuration >= 0) {
-      this.tickDisappearanceDuration = Math.max(settings.tickDisappearanceDuration, 10000);
+      this.tickDisappearanceDuration = Math.min(settings.tickDisappearanceDuration, 10000);
     };
 
     this.prepareHitErrorMeter();
