@@ -109,7 +109,9 @@ socket.commands(({ command, message }) => {
 
       hemManager.applyUserSettings(message);
       document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
-      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter);
+      // Taiko applies a vertical offset to the map background only in some maps (can't determine why yet).
+      // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
+      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
       
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.urStyle);
     };
