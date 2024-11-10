@@ -123,6 +123,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
     // however this approach wouldn't work in a way that I want this overlay to work.
     if (cache.currentState !== state.name
      || cache.rulesetName !== settings.mode.name
+     || cache.isConvert !== beatmap.isConvert
      || cache.overallDiff !== beatmap.stats.od.original
      || cache.circleSize !== beatmap.stats.cs.original
      || cache.mods !== play.mods.name
@@ -131,10 +132,16 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       cache.currentState = state.name;
 
       cache.rulesetName = settings.mode.name;
+      cache.isConvert = beatmap.isConvert;
       cache.overallDiff = beatmap.stats.od.original;
       cache.circleSize = beatmap.stats.cs.original;
       cache.mods = play.mods.name;
       cache.rate = play.mods.rate;
+
+      // osu!mania has different hit windows on converts.
+      if (cache.rulesetName === 'mania' && cache.isConvert) {
+        cache.rulesetName = 'maniaConvert';
+      };
 
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
       hemManager.prepareHitErrorMeter(cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
