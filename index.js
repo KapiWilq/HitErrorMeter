@@ -220,7 +220,7 @@ socket.api_v2_precise(({ hitErrors }) => {
       cache.hitErrors = hitErrors;
 
       let ur = calculateStandardDeviation(cache.hitErrors) * 10;
-      if (cache.rulesetName === 'mania' || cache.rulesetName === 'maniaConvert') {
+      if (cache.rulesetName !== 'mania' || cache.rulesetName !== 'maniaConvert') {
         ur /= cache.rate;
       };
       cache.unstableRate = ur;
