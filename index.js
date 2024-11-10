@@ -9,6 +9,7 @@ let cache = {
   urStyle: '',
   previousState: '',
   currentState: '',
+  isConvert: false,
   rulesetName: '',
   overallDiff: 0,
   circleSize: 0,
