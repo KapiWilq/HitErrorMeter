@@ -52,7 +52,7 @@ function prepareUnstableRateDisplay(previousGameState, currentGameState, urStyle
   };
 
   // Either during gameplay or when going to the results screen from gameplay.
-  urElement.style.opacity = Number((currentGameState === 'Play' || (currentGameState === 'ResultScreen' && previousGameState === 'Play')) && urStyle !== 'Show nothing');
+  urElement.style.opacity = Number((currentGameState === 'play' || (currentGameState === 'resultScreen' && previousGameState === 'play')) && urStyle !== 'Show nothing');
 };
 
 /**
@@ -108,8 +108,8 @@ socket.commands(({ command, message }) => {
       };
 
       hemManager.applyUserSettings(message);
-      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
-      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
+      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
+      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter);
       
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.urStyle);
     };
@@ -146,8 +146,8 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
 
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
       hemManager.prepareHitErrorMeter(cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
-      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'Play' && (cache.showHemInCatch || cache.rulesetName !== 2));
-      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'Play' && cache.hideInGameScoreMeter);
+      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 2));
+      document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter);
 
       let hitWindows = hemManager.getHitWindows();
 
@@ -165,7 +165,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
       } else if (settings.scoreMeter.type.name === 'error') {
         document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
 
-        if (cache.rulesetName === 1) {
+        if (cache.rulesetName === 'taiko') {
           // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
           document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
         } else {
