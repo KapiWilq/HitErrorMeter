@@ -146,7 +146,7 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
 
       prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
       hemManager.prepareHitErrorMeter(cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
-      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 2));
+      document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits'));
       document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter);
 
       let hitWindows = hemManager.getHitWindows();
