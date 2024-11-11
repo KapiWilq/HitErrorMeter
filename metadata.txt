@@ -3,6 +3,6 @@ Name: HitErrorMeter
 Version: 0.9.7
 Author: KapiWilq
 CompatibleWith: tosu
-Resolution: 500 x 100
+Resolution: 650 x 100
 authorLinks: https://github.com/KapiWilq
-Notes: Supports all rulesets! (except mania converts, support for those is coming soon™) | The resolution above is for the default settings (both the overlay and in-game score meter) at OD0 in the osu! ruleset.
+Notes: Supports all rulesets! | The resolution above is for the default settings (both the overlay and the in-game score meter) in the osu!catch ruleset.
