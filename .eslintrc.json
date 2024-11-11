@@ -5,7 +5,10 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "indent": ["warn", 4],
+        "indent": [
+            "warn",
+            4
+        ],
         "no-undef": "off",
         "no-extra-semi": "off",
         "semi": [
@@ -16,6 +19,6 @@
         "no-useless-escape": "off"
     },
     "parserOptions": {
-      "sourceType": "module"
+        "sourceType": "module"
     }
 }
