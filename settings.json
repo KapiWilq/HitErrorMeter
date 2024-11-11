@@ -10,7 +10,7 @@
   {
       "uniqueID": "hemScaleWithResolution",
       "type": "checkbox",
-      "title": "Automatically scale the overlay with resolution",
+      "title": "Automatically scale the overlay with resolution (stable-only)",
       "description": "The in-game score meter's size varies between resolutions. This options allows you to resize the overlay automatically to always have the correct size regardless of the game resolution. If disabled, it will always have the same size (as if you're running at 1080p). ____________________________________________",
       "options": [],
       "value": true
@@ -182,8 +182,8 @@
   {
       "uniqueID": "hideInGameScoreMeter",
       "type": "checkbox",
-      "title": "Hide the in-game score meter",
-      "description": "Useful for people who want to both see the in-game score meter and use the overlay somewhere else. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMPORTANT: if this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
+      "title": "Hide the in-game score meter (stable-only)",
+      "description": "Useful for people who want to both see the in-game score meter and use the overlay somewhere else. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; !!! IMPORTANT !!! If this is enabled, the overlay MUST BE at the exact bottom center of the screen.",
       "options": [],
       "value": true
   }

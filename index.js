@@ -7,6 +7,7 @@ let cache = {
     hemScaleWithResolution: true,
     hideInGameScoreMeter: true,
     urStyle: '',
+    client: '',
     previousState: '',
     currentState: '',
     isConvert: false,
@@ -97,7 +98,8 @@ socket.commands(({ command, message }) => {
             cache.hemScaleWithResolution = message.hemScaleWithResolution;
             cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
 
-            if (cache.hemScaleWithResolution) {
+            // tosu's osu!(lazer) implementation doesn't have this yet.
+            if (cache.hemScaleWithResolution && cache.client !== 'lazer') {
                 if (cache.isFullscreen) {
                     document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
                 } else {
@@ -120,8 +122,12 @@ socket.commands(({ command, message }) => {
     };
 });
 
-socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
+socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
     try {
+        if (cache.client !== client) {
+            cache.client = client;
+        };
+
         // Normally, all of these checks would be separate `if` statements (especially the state check),
         // however this approach wouldn't work in a way that I want this overlay to work.
         if (cache.currentState !== state.name
@@ -155,7 +161,8 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
 
             let hitWindows = hemManager.getHitWindows();
 
-            if (cache.scoreMeterSize !== settings.scoreMeter.size) {
+            // tosu's osu!(lazer) implementation doesn't have this yet.
+            if (cache.scoreMeterSize !== settings.scoreMeter.size && cache.client !== 'lazer') {
                 cache.scoreMeterSize = settings.scoreMeter.size;
             };
 
@@ -186,7 +193,8 @@ socket.api_v2(({ state, settings, beatmap, play, folders, files }) => {
             cache.gameWindowedHeight = settings.resolution.height;
             cache.gameFullscreenHeight = settings.resolution.heightFullscreen;
 
-            if (cache.hemScaleWithResolution) {
+            // tosu's osu!(lazer) implementation doesn't have this yet.
+            if (cache.hemScaleWithResolution && cache.client !== 'lazer') {
                 if (cache.isFullscreen) {
                     document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
                 } else {
