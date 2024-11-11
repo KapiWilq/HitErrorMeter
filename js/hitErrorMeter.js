@@ -4,6 +4,7 @@
 class HitErrorMeter {
     constructor() {
         // Default settings.
+        this.client = 'stable';
         this.rulesetName = 0;
         this.overallDiff = 0;
         this.circleSize = 0;
@@ -114,8 +115,8 @@ class HitErrorMeter {
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    */
-    prepareHitErrorMeter(rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
-        this.applyBaseSettings(rulesetName, overallDiff, circleSize, mods, rate);
+    prepareHitErrorMeter(client = this.client, rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
+        this.applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate);
 
         this.recalculateHitWindows();
         const WIDTH_CONSTANT = 1.125;
@@ -176,13 +177,15 @@ class HitErrorMeter {
 
     /**
    * A helper method to apply base play settings for use by other methods.
+   * @param {'stable' | 'lazer'} client - The client version that the game is currently being played.
    * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    * @param {number} rate - The speed of the map that is being currently played.
    */
-    applyBaseSettings(rulesetName, overallDiff, circleSize, mods, rate) {
+    applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate) {
+        this.client = client;
         this.rulesetName = rulesetName;
 
         do {
@@ -239,16 +242,29 @@ class HitErrorMeter {
             break;
 
         case 'mania':
-            this.hitWindows = {
-                hit320: Math.round(16 * this.rate),
-                hit300: Math.round((64 - 3 * this.overallDiff) * this.rate),
-                hit200: Math.round((97 - 3 * this.overallDiff) * this.rate),
-                hit100: Math.round((127 - 3 * this.overallDiff) * this.rate),
-                hit50: Math.round((151 - 3 * this.overallDiff) * this.rate)
+            // Hit320 now scale in osu!(lazer) for some reason.
+            // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
+            // See also https://github.com/ppy/osu/blob/master/osu.Game/Rulesets/Scoring/HitWindows.cs#L20
+            if (this.client === 'lazer') {
+                this.hitWindows = {
+                    hit320: Math.round((this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff) * this.rate),
+                    hit300: Math.round((64 - 3 * this.overallDiff) * this.rate),
+                    hit200: Math.round((97 - 3 * this.overallDiff) * this.rate),
+                    hit100: Math.round((127 - 3 * this.overallDiff) * this.rate),
+                    hit50: Math.round((151 - 3 * this.overallDiff) * this.rate)
+                };
+            } else {
+                this.hitWindows = {
+                    hit320: Math.round(16 * this.rate),
+                    hit300: Math.round((64 - 3 * this.overallDiff) * this.rate),
+                    hit200: Math.round((97 - 3 * this.overallDiff) * this.rate),
+                    hit100: Math.round((127 - 3 * this.overallDiff) * this.rate),
+                    hit50: Math.round((151 - 3 * this.overallDiff) * this.rate)
+                };
             };
             break;
 
-            // Mania converts have different hit windows.
+            // Mania converts have different hit windows only in osu!(stable).
             // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
         case 'maniaConvert':
             this.hitWindows = {
@@ -261,7 +277,7 @@ class HitErrorMeter {
             break;
 
         default:
-            console.error(`Couldn't calculate hit windows.\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+            console.error(`Couldn't calculate hit windows.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
             break;
         };
     };
@@ -313,45 +329,89 @@ class HitErrorMeter {
     getHitWindowSegment(absHitError, whichSegment) {
         this.recalculateHitWindows();
 
-        switch (this.rulesetName) {
-        case 'osu':
-            if (absHitError < this.hitWindows.hit300) {
-                return document.getElementById(`hit300${whichSegment}`);
-            };
-            if (absHitError < this.hitWindows.hit100) {
+        // osu!(lazer) does these comparisons differently than stable.
+        // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#hit-window-edge-calculations-do-not-match-stable
+        if (this.client === 'stable') {
+            switch (this.rulesetName) {
+            case 'osu':
+                if (absHitError < this.hitWindows.hit300) {
+                    return document.getElementById(`hit300${whichSegment}`);
+                };
+                if (absHitError < this.hitWindows.hit100) {
+                    return document.getElementById(`hit100${whichSegment}`);
+                };
+                return document.getElementById(`hit50${whichSegment}`);
+        
+            case 'taiko':
+                if (absHitError < this.hitWindows.hit300) {
+                    return document.getElementById(`hit300${whichSegment}`);
+                };
                 return document.getElementById(`hit100${whichSegment}`);
-            };
-            return document.getElementById(`hit50${whichSegment}`);
-
-        case 'taiko':
-            if (absHitError < this.hitWindows.hit300) {
+        
+            case 'fruits':
                 return document.getElementById(`hit300${whichSegment}`);
+        
+            case 'mania':
+            case 'maniaConvert':
+                if (absHitError <= this.hitWindows.hit320) {
+                    return document.getElementById(`hit320${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit300) {
+                    return document.getElementById(`hit300${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit200) {
+                    return document.getElementById(`hit200${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit100) {
+                    return document.getElementById(`hit100${whichSegment}`);
+                };
+                return document.getElementById(`hit50${whichSegment}`);
+        
+            default:
+                console.error(`Couldn't determine the hit window segment.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                break;
             };
-            return document.getElementById(`hit100${whichSegment}`);
-
-        case 'fruits':
-            return document.getElementById(`hit300${whichSegment}`);
-
-        case 'mania':
-        case 'maniaConvert':
-            if (absHitError <= this.hitWindows.hit320) {
-                return document.getElementById(`hit320${whichSegment}`);
-            };
-            if (absHitError <= this.hitWindows.hit300) {
-                return document.getElementById(`hit300${whichSegment}`);
-            };
-            if (absHitError <= this.hitWindows.hit200) {
-                return document.getElementById(`hit200${whichSegment}`);
-            };
-            if (absHitError <= this.hitWindows.hit100) {
+        } else {
+            switch (this.rulesetName) {
+            case 'osu':
+                if (absHitError <= this.hitWindows.hit300) {
+                    return document.getElementById(`hit300${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit100) {
+                    return document.getElementById(`hit100${whichSegment}`);
+                };
+                return document.getElementById(`hit50${whichSegment}`);
+        
+            case 'taiko':
+                if (absHitError <= this.hitWindows.hit300) {
+                    return document.getElementById(`hit300${whichSegment}`);
+                };
                 return document.getElementById(`hit100${whichSegment}`);
+        
+            case 'fruits':
+                return document.getElementById(`hit300${whichSegment}`);
+        
+            case 'mania':
+            case 'maniaConvert':
+                if (absHitError <= this.hitWindows.hit320) {
+                    return document.getElementById(`hit320${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit300) {
+                    return document.getElementById(`hit300${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit200) {
+                    return document.getElementById(`hit200${whichSegment}`);
+                };
+                if (absHitError <= this.hitWindows.hit100) {
+                    return document.getElementById(`hit100${whichSegment}`);
+                };
+                return document.getElementById(`hit50${whichSegment}`);
+        
+            default:
+                console.error(`Couldn't determine the hit window segment.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                break;
             };
-            return document.getElementById(`hit50${whichSegment}`);
-
-        default:
-            console.error(`Couldn't determine the hit window segment.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
-            break;
-        };
+        }
     };
 
     /**
@@ -362,45 +422,87 @@ class HitErrorMeter {
     getTickPositionPercentage(absHitError) {
         this.recalculateHitWindows();
 
-        switch (this.rulesetName) {
-        case 'osu':
-            if (absHitError < this.hitWindows.hit300) {
-                return absHitError / this.hitWindows.hit300;
-            };
-            if (absHitError < this.hitWindows.hit100) {
+        if (this.client === 'stable') {
+            switch (this.rulesetName) {
+            case 'osu':
+                if (absHitError < this.hitWindows.hit300) {
+                    return absHitError / this.hitWindows.hit300;
+                };
+                if (absHitError < this.hitWindows.hit100) {
+                    return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
+                };
+                return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
+        
+            case 'taiko':
+                if (absHitError < this.hitWindows.hit300) {
+                    return absHitError / this.hitWindows.hit300;
+                };
                 return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
-            };
-            return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
-
-        case 'taiko':
-            if (absHitError < this.hitWindows.hit300) {
+        
+            case 'fruits':
                 return absHitError / this.hitWindows.hit300;
+        
+            case 'mania':
+            case 'maniaConvert':
+                if (absHitError <= this.hitWindows.hit320) {
+                    return absHitError / this.hitWindows.hit320;
+                };
+                if (absHitError <= this.hitWindows.hit300) {
+                    return (absHitError - this.hitWindows.hit320) / (this.hitWindows.hit300 - this.hitWindows.hit320);
+                };
+                if (absHitError <= this.hitWindows.hit200) {
+                    return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit200 - this.hitWindows.hit300);
+                };
+                if (absHitError <= this.hitWindows.hit100) {
+                    return (absHitError - this.hitWindows.hit200) / (this.hitWindows.hit100 - this.hitWindows.hit200);
+                };
+                return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
+        
+            default:
+                console.error(`Couldn't determine the tick's position percentage.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                break;
             };
-            return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
-
-        case 'fruits':
-            return absHitError / this.hitWindows.hit300;
-
-        case 'mania':
-        case 'maniaConvert':
-            if (absHitError <= this.hitWindows.hit320) {
-                return absHitError / this.hitWindows.hit320;
+        } else {
+            switch (this.rulesetName) {
+            case 'osu':
+                if (absHitError <= this.hitWindows.hit300) {
+                    return absHitError / this.hitWindows.hit300;
+                };
+                if (absHitError <= this.hitWindows.hit100) {
+                    return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
+                };
+                return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
+        
+            case 'taiko':
+                if (absHitError <= this.hitWindows.hit300) {
+                    return absHitError / this.hitWindows.hit300;
+                };
+                return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit100 - this.hitWindows.hit300);
+        
+            case 'fruits':
+                return absHitError / this.hitWindows.hit300;
+        
+            case 'mania':
+            case 'maniaConvert':
+                if (absHitError <= this.hitWindows.hit320) {
+                    return absHitError / this.hitWindows.hit320;
+                };
+                if (absHitError <= this.hitWindows.hit300) {
+                    return (absHitError - this.hitWindows.hit320) / (this.hitWindows.hit300 - this.hitWindows.hit320);
+                };
+                if (absHitError <= this.hitWindows.hit200) {
+                    return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit200 - this.hitWindows.hit300);
+                };
+                if (absHitError <= this.hitWindows.hit100) {
+                    return (absHitError - this.hitWindows.hit200) / (this.hitWindows.hit100 - this.hitWindows.hit200);
+                };
+                return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
+        
+            default:
+                console.error(`Couldn't determine the tick's position percentage.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                break;
             };
-            if (absHitError <= this.hitWindows.hit300) {
-                return (absHitError - this.hitWindows.hit320) / (this.hitWindows.hit300 - this.hitWindows.hit320);
-            };
-            if (absHitError <= this.hitWindows.hit200) {
-                return (absHitError - this.hitWindows.hit300) / (this.hitWindows.hit200 - this.hitWindows.hit300);
-            };
-            if (absHitError <= this.hitWindows.hit100) {
-                return (absHitError - this.hitWindows.hit200) / (this.hitWindows.hit100 - this.hitWindows.hit200);
-            };
-            return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
-
-        default:
-            console.error(`Couldn't determine the tick's position percentage.\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
-            break;
-        };
+        }
     };
 
     /**
@@ -487,7 +589,7 @@ class HitErrorMeter {
         };
 
         default:
-            console.error(`Couldn't get the max hit window.\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+            console.error(`Couldn't get the max hit window.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
             break;
         };
     };
