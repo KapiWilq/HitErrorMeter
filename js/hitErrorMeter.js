@@ -5,7 +5,7 @@ class HitErrorMeter {
     constructor() {
         // Default settings.
         this.client = 'stable';
-        this.rulesetName = 0;
+        this.rulesetName = 'osu';
         this.overallDiff = 0;
         this.circleSize = 0;
         this.mods = '';

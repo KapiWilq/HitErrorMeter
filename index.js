@@ -156,7 +156,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
             hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
             // osu!catch in osu!(lazer) doesn't return any hit errors (yet).
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits') && this.client !== 'lazer');
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits') && cache.client !== 'lazer');
             // Taiko applies a vertical offset to the map background only in some maps (can't determine why yet).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
