@@ -5,6 +5,10 @@
     },
     "extends": "eslint:recommended",
     "rules": {
+        "arrow-body-style": [
+            "error",
+            "always"
+        ],
         "indent": [
             "warn",
             4

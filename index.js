@@ -111,7 +111,8 @@ socket.commands(({ command, message }) => {
 
             hemManager.applyUserSettings(message);
             document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
-            // Taiko applies a vertical offset to the map background only in some maps (can't determine why yet).
+            // Taiko applies a vertical offset to the map background only in some maps
+            // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
 
@@ -129,7 +130,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
         };
 
         // Normally, all of these checks would be separate `if` statements (especially the state check),
-        // however this approach wouldn't work in a way that I want this overlay to work.
+        // however this approach avoids code duplication due to the way the overlay is supposed to work.
         if (cache.currentState !== state.name
             || cache.rulesetName !== settings.mode.name
             || cache.isConvert !== beatmap.isConvert
@@ -155,11 +156,12 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
             hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
             document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits'));
-            // Taiko applies a vertical offset to the map background only in some maps (can't determine why yet).
+            // Taiko applies a vertical offset to the map background only in some maps
+            // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
 
-            let hitWindows = hemManager.getHitWindows();
+            let hitWindows = hemManager.hitWindows;
 
             // tosu's osu!(lazer) implementation doesn't have this yet.
             if (cache.scoreMeterSize !== settings.scoreMeter.size && cache.client === 'stable') {
@@ -168,11 +170,11 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
 
             if (cache.rulesetName === 'fruits' || settings.scoreMeter.type.name === 'colour') {
                 // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
-                // Also yes, the size at 1x scale is the same across the board.
                 document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
 
                 // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
                 document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((639 + 2) * cache.scoreMeterSize) / 16}rem`;
+
             } else if (settings.scoreMeter.type.name === 'error') {
                 document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
 
@@ -182,6 +184,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
                 } else {
                     document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
                 };
+
             } else {
                 document.querySelector('.inGameScoreMeterHider').style.width = '0';
                 document.querySelector('.inGameScoreMeterHider').style.height = '0';
@@ -232,7 +235,8 @@ socket.api_v2_precise(({ hitErrors }) => {
             cache.hitErrors = hitErrors;
 
             let ur = calculateStandardDeviation(cache.hitErrors) * 10;
-            if (cache.rulesetName !== 'mania' || cache.rulesetName !== 'maniaConvert') {
+            // The size of the hit error meter depends on the rate only in osu!(stable) and therefore - the Unstable Rate.
+            if (cache.client === 'stable' && (cache.rulesetName !== 'mania' || cache.rulesetName !== 'maniaConvert')) {
                 ur /= cache.rate;
             };
             cache.unstableRate = ur;

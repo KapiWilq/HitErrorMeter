@@ -49,10 +49,6 @@ class HitErrorMeter {
    *          hideInGameScoreMeter: boolean}} settings - User settings.
    */
     applyUserSettings(settings) {
-        let hemElement = document.querySelector('.hitErrorMeterContainer');
-        let unstableRate = document.querySelector('#unstableRate');
-        let rootStyles = document.querySelector(':root');
-
         let hemHeight = 36, mainTickHeight = 24, tickHeight = 36, tickWidth = 4;
 
         mainTickHeight = Math.max(6, settings.mainTickHeight);
@@ -65,33 +61,29 @@ class HitErrorMeter {
         };
 
         this.hemScale = this.clamp(settings.hemScale, 0.5, 5);
-        hemElement.querySelector('.segments').style.transform = `scale(${this.hemScale})`;
-        hemElement.querySelector('.segments').style.height = `${hemHeight * this.hemScale / 16}rem`;
+        document.querySelector('.segments').style.transform = `scale(${this.hemScale})`;
+        document.querySelector('.segments').style.height = `${hemHeight * this.hemScale / 16}rem`;
 
         if (settings.urFontSize >= 0) {
-            unstableRate.style.transform = `scale(${Math.max(0, settings.urFontSize) / 24})`;
+            document.querySelector('#unstableRate').style.transform = `scale(${Math.max(0, settings.urFontSize) / 24})`;
         };
-        if (settings.urFontFamily === 'Roboto') {
-            unstableRate.style.fontFamily = '"Roboto", sans-serif';
-        } else {
-            unstableRate.style.fontFamily = `"${settings.urFontFamily}", "Roboto", sans-serif`;
-        };
-        unstableRate.style.color = settings.urFontColor;
+        document.querySelector('#unstableRate').style.fontFamily = `"${settings.urFontFamily}", "Roboto", sans-serif`;
+        document.querySelector('#unstableRate').style.color = settings.urFontColor;
 
-        hemElement.querySelector('.movingAverageArrow').style.opacity = Number(settings.showMovingAverageArrow);
+        document.querySelector('.movingAverageArrow').style.opacity = Number(settings.showMovingAverageArrow);
         if (settings.showMovingAverageArrow) {
             if (settings.movingAverageArrowSize >= 0) {
-                hemElement.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
-                hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
+                document.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
+                document.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
             };
         } else {
-            hemElement.querySelector('.movingAverageArrow').style.height = 0;
-            hemElement.querySelector('.movingAverageArrow').style.filter = 'drop-shadow(0 0 0 black)';
+            document.querySelector('.movingAverageArrow').style.height = 0;
+            document.querySelector('.movingAverageArrow').style.filter = 'drop-shadow(0 0 0 black)';
         };
-        hemElement.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
+        document.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
 
-        hemElement.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
-        hemElement.querySelector('.mainTick').style.backgroundColor = settings.mainTickColor;
+        document.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
+        document.querySelector('.mainTick').style.backgroundColor = settings.mainTickColor;
 
         this.widthMultiplier = this.clamp(settings.widthMultiplier, 0.5, 5);
 
@@ -101,8 +93,8 @@ class HitErrorMeter {
         this.applyColorToRootProperty('--hit100BG', settings.hit100Color, settings.showHitWindows);
         this.applyColorToRootProperty('--hit50BG', settings.hit50Color, settings.showHitWindows);
 
-        rootStyles.style.setProperty('--tickHeightRem', tickHeight / 16);
-        rootStyles.style.setProperty('--tickWidthRem', tickWidth / 16);
+        document.querySelector(':root').style.setProperty('--tickHeightRem', tickHeight / 16);
+        document.querySelector(':root').style.setProperty('--tickWidthRem', tickWidth / 16);
 
         if (settings.tickAppearanceDuration >= 0) {
             this.tickAppearanceDuration = Math.min(settings.tickAppearanceDuration, 5000);
@@ -115,10 +107,13 @@ class HitErrorMeter {
     };
 
     /**
-   * Prepares hit error meter: sets appropriate hit windows widths, and rounds corners at the edge.
+   * Prepares the hit error meter: sets correct hit windows widths, and rounds corners at the edges.
+   * @param {'stable' | 'lazer'} client - The currently played client.
    * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
+   * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
+   * @param {number} rate - The speed of the currently played beatmap.
    */
     prepareHitErrorMeter(client = this.client, rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
         this.applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate);
@@ -150,34 +145,48 @@ class HitErrorMeter {
             break;
         };
 
-        document.querySelectorAll('.hit320').forEach(segment => segment.style.width = `${hit320Size / 16}rem`);
-        document.querySelectorAll('.hit300').forEach(segment => segment.style.width = `${hit300Size / 16}rem`);
-        document.querySelectorAll('.hit200').forEach(segment => segment.style.width = `${hit200Size / 16}rem`);
-        document.querySelectorAll('.hit100').forEach(segment => segment.style.width = `${hit100Size / 16}rem`);
-        document.querySelectorAll('.hit50').forEach(segment => segment.style.width = `${hit50Size / 16}rem`);
+        document.querySelectorAll('.hit320').forEach(segment => {
+            segment.style.width = `${hit320Size / 16}rem`;
+        });
+        document.querySelectorAll('.hit300').forEach(segment => {
+            segment.style.width = `${hit300Size / 16}rem`;
+        });
+        document.querySelectorAll('.hit200').forEach(segment => {
+            segment.style.width = `${hit200Size / 16}rem`;
+        });
+        document.querySelectorAll('.hit100').forEach(segment => {
+            segment.style.width = `${hit100Size / 16}rem`;
+        });
+        document.querySelectorAll('.hit50').forEach(segment => {
+            segment.style.width = `${hit50Size / 16}rem`;
+        });
 
         // Applying CSS scaling only affects it visually - everything has the "1x scale" sizing under the hood.
-        // Since the average chevron relies on the hit error meter's width, not segments' width, resize the parent container.
+        // Since the average chevron relies on the hit error meter's width, the not segments' width, resize the parent container.
         document.querySelector('.hitErrorMeterContainer').style.width = `${(hit320Size + hit300Size + hit200Size + hit100Size + hit50Size) * 2 * this.hemScale / 16}rem`;
 
         let edgeSegments = null;
 
         if (this.rulesetName === 'osu' || this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert') {
             edgeSegments = document.querySelectorAll('.hit50');
-            document.querySelectorAll('.hit100').forEach(segment => segment.style.borderRadius = '0');
-            document.querySelectorAll('.hit300').forEach(segment => segment.style.borderRadius = '0');
+            document.querySelectorAll('.hit100').forEach(segment => {return segment.style.borderRadius = '0';});
+            document.querySelectorAll('.hit300').forEach(segment => {return segment.style.borderRadius = '0';});
         } else if (this.rulesetName === 'taiko') {
             edgeSegments = document.querySelectorAll('.hit100');
-            document.querySelectorAll('.hit300').forEach(segment => segment.style.borderRadius = '0');
-            document.querySelectorAll('.hit50').forEach(segment => segment.style.borderRadius = '0');
+            document.querySelectorAll('.hit300').forEach(segment => {return segment.style.borderRadius = '0';});
+            document.querySelectorAll('.hit50').forEach(segment => {return segment.style.borderRadius = '0';});
         } else {
             edgeSegments = document.querySelectorAll('.hit300');
-            document.querySelectorAll('.hit100').forEach(segment => segment.style.borderRadius = '0');
-            document.querySelectorAll('.hit50').forEach(segment => segment.style.borderRadius = '0');
+            document.querySelectorAll('.hit100').forEach(segment => {return segment.style.borderRadius = '0';});
+            document.querySelectorAll('.hit50').forEach(segment => {return segment.style.borderRadius = '0';});
         };
 
         let edgeSegmentsHeight = parseFloat(getComputedStyle(edgeSegments[0]).getPropertyValue('height').replace('px', '')) / 16;
-        setTimeout(() => edgeSegments.forEach(segment => segment.style.borderRadius = `0 ${edgeSegmentsHeight / 2}rem ${edgeSegmentsHeight / 2}rem 0`), 500);
+        setTimeout(() => {
+            edgeSegments.forEach(segment => {
+                segment.style.borderRadius = `0 ${edgeSegmentsHeight / 2}rem ${edgeSegmentsHeight / 2}rem 0`;
+            });
+        }, 500);
     };
 
     /**
@@ -192,6 +201,7 @@ class HitErrorMeter {
     applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate) {
         this.client = client;
         this.rulesetName = rulesetName;
+        this.rate = rate;
 
         do {
             this.mods = mods;
@@ -214,12 +224,10 @@ class HitErrorMeter {
                 };
             };
         } while (this.mods == undefined);
-
-        this.rate = rate;
     };
 
     /**
-   * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch, since it uses the Circle Size to calculate its "hit windows").
+   * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch).
    */
     recalculateHitWindows() {
         switch (this.rulesetName) {
@@ -243,7 +251,7 @@ class HitErrorMeter {
             };
             break;
 
-            // osu!catch shows where the fruit landed relative to the catcher's center.
+        // osu!catch shows where the fruit landed relative to the catcher's center.
         case 'fruits':
             this.hitWindows = {
                 hit320: 0,
@@ -255,8 +263,8 @@ class HitErrorMeter {
             break;
 
         case 'mania':
-            // 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2) for some reason.
-            // Also, hit windows in osu!(lazer) are not affected by the rate anymore.
+            // Hit windows in osu!(lazer) are not affected by the rate anymore.
+            // Also, 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2).
             // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
             //     https://github.com/ppy/osu/blob/master/osu.Game/Rulesets/Scoring/HitWindows.cs#L20
             //     https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#scorev2
@@ -287,11 +295,11 @@ class HitErrorMeter {
             };
 
             // I've Been Tricked, I've Been Backstabbed and I've Been, Quite Possibly, Bamboozled.
-            // For some reason, osu!mania not only uses the original OD value, it also scales every hit window by a factor of 1.4 one way or the other,
-            // depending on the mod selected.
+            // For some reason, osu!mania not only uses the original OD value when playing with EZ or HR,
+            // it also scales every hit window by a factor of 1.4 one way or the other, depending on the mod selected.
 
-            // See it for yourself by selecting a mania map, and switch between EZ, HR, and NoMod, and compare the hit windows' sizes by hovering on the map stats.
-            // This is literally the only reason why the hit windows are being rounded here, and not in the actual calculation.
+            // See it for yourself by selecting a mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
+            // This is the only reason why the hit windows are being rounded here and not in the actual calculation.
             if (this.client === 'stable') {
                 for (let hitWindow in this.hitWindows) {
                     if (this.mods.includes('HR')) {
@@ -305,8 +313,8 @@ class HitErrorMeter {
             };
             break;
 
-            // Mania converts have different hit windows only in osu!(stable).
-            // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
+        // Mania converts have different hit windows only in osu!(stable).
+        // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
         case 'maniaConvert':
             this.hitWindows = {
                 hit320: Math.round(16 * this.rate),
@@ -317,11 +325,11 @@ class HitErrorMeter {
             };
 
             // I've Been Tricked, I've Been Backstabbed and I've Been, Quite Possibly, Bamboozled.
-            // For some reason, osu!mania not only uses the original OD value, it also scales every hit window by a factor of 1.4 one way or the other,
-            // depending on the mod selected.
+            // For some reason, osu!mania not only uses the original OD value when playing with EZ or HR,
+            // it also scales every hit window by a factor of 1.4 one way or the other, depending on the mod selected.
 
-            // See it for yourself by selecting a mania map, and switch between EZ, HR, and NoMod, and compare the hit windows' sizes by hovering on the map stats.
-            // This is literally the only reason why the hit windows are being rounded here, and not in the actual calculation.
+            // See it for yourself by selecting a mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
+            // This is the only reason why the hit windows are being rounded here and not in the actual calculation.
             for (let hitWindow in this.hitWindows) {
                 if (this.mods.includes('HR')) {
                     this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
@@ -339,10 +347,6 @@ class HitErrorMeter {
         };
     };
 
-    getHitWindows() {
-        return this.hitWindows;
-    }
-
     /**
    * A helper method to set a property value in the root pseudo-class.
    * @param {string} property - A property to be changed.
@@ -350,8 +354,6 @@ class HitErrorMeter {
    * @param {boolean} shouldBeVisible - Whether the color should be opaque or transparent.
    */
     applyColorToRootProperty(property, color, shouldBeVisible) {
-        let rootStyles = document.querySelector(':root');
-
         if (color === 9) {
             color = color.slice(0, -2);
         };
@@ -359,11 +361,11 @@ class HitErrorMeter {
         if (shouldBeVisible) {
             color += 'FF';
         } else {
-            // Dirty hack to make computed style not return transparent black for hit error ticks.
+            // Dirty hack to make the computed style not return transparent black for hit error ticks.
             color += '01';
         };
 
-        rootStyles.style.setProperty(property, color);
+        document.querySelector(':root').style.setProperty(property, color);
     };
 
     /**
