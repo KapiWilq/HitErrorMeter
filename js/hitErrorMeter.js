@@ -198,7 +198,7 @@ class HitErrorMeter {
 
             // This mess exists purely because osu!(mania) calculates hit windows differently.
             // See the mania section in the `recalculateHitWindows()` method.
-            if (this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert') {
+            if (this.client === 'stable' && (this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert')) {
                 this.overallDiff = overallDiff;
                 this.circleSize = circleSize;
             } else {
@@ -256,10 +256,19 @@ class HitErrorMeter {
 
         case 'mania':
             // 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2) for some reason.
+            // Also, hit windows in osu!(lazer) are not affected by the rate anymore.
             // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
             //     https://github.com/ppy/osu/blob/master/osu.Game/Rulesets/Scoring/HitWindows.cs#L20
             //     https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#scorev2
-            if (this.client === 'lazer' || (this.client === 'stable' && this.mods.includes('v2'))) {
+            if (this.client === 'lazer') {
+                this.hitWindows = {
+                    hit320: (this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff),
+                    hit300: (64 - 3 * this.overallDiff),
+                    hit200: (97 - 3 * this.overallDiff),
+                    hit100: (127 - 3 * this.overallDiff),
+                    hit50: (151 - 3 * this.overallDiff)
+                };
+            } else if (this.client === 'stable' && this.mods.includes('v2')) {
                 this.hitWindows = {
                     hit320: (this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff) * this.rate,
                     hit300: (64 - 3 * this.overallDiff) * this.rate,
@@ -283,13 +292,15 @@ class HitErrorMeter {
 
             // See it for yourself by selecting a mania map, and switch between EZ, HR, and NoMod, and compare the hit windows' sizes by hovering on the map stats.
             // This is literally the only reason why the hit windows are being rounded here, and not in the actual calculation.
-            for (let hitWindow in this.hitWindows) {
-                if (this.mods.includes('HR')) {
-                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
-                } else if (this.mods.includes('EZ')) {
-                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] * 1.4);
-                } else {
-                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow]);
+            if (this.client === 'stable') {
+                for (let hitWindow in this.hitWindows) {
+                    if (this.mods.includes('HR')) {
+                        this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
+                    } else if (this.mods.includes('EZ')) {
+                        this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] * 1.4);
+                    } else {
+                        this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow]);
+                    };
                 };
             };
             break;
@@ -320,7 +331,6 @@ class HitErrorMeter {
                     this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow]);
                 };
             };
-
             break;
 
         default:
