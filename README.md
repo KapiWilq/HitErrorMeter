@@ -1,6 +1,6 @@
 # HitErrorMeter by KapiWilq
 
-<a href="https://github.com/KapiWilq/HitErrorMeter/releases/latest/download/HitErrorMeter.by.KapiWilq.zip" target="_blank"><img height="35" src="https://img.shields.io/badge/Download_the_overlay-67A564?style=for-the-badge" /></a>
+<a href="https://github.com/KapiWilq/HitErrorMeter/releases/latest/download/hiterrormeter by kapiwilq.zip" target="_blank"><img height="35" src="https://img.shields.io/badge/Download_the_overlay-67A564?style=for-the-badge" /></a>  <a href="https://github.com/KapiWilq/HitErrorMeter/releases/latest/download/hiterrormeter by kapiwilq (debug).zip" target="_blank"><img height="35" src="https://img.shields.io/badge/Download_the_overlay_(debug_ver.)-67A564?style=for-the-badge" /></a>
 
 |                 |                     |
 | --------------- | ------------------- |
@@ -8,7 +8,7 @@
 | Compatible with | tosu                |
 | Size            | 500 x 100           |
 
-> Supports all rulesets! (except mania converts, support for those is coming soon™) | The resolution above is for default settings at OD0 in the osu! ruleset.
+> Supports all rulesets! | The resolution above is for the default settings (both the overlay and the in-game score meter) in the osu!mania ruleset with EZDT at OD0.
 
 ## Gameplay preview
 
@@ -74,11 +74,12 @@
 - [X] Add support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
 - [X] Allow for slightly more customization of the Unstable Rate display
 - [X] Add support for adjusting hit error tick appear and disappear duration
-- [ ] Add support for mania converts (current status: waiting for a new tosu release with a new `beatmap.isConvert` field, see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
+- [X] Add support for mania converts (current status: waiting for a new tosu release with a new `beatmap.isConvert` field, see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
+- [X] Update `index.js` to use the new tosu v4 API (notably the `play.mods.rate` field)
+- [ ] Add support for adjusting the moving average arrow animation duration
 
 # Roadmap to v1.1
-- [ ] Update `index.js` to use the new tosu v4 API (notably the `play.mods.rate` field)
-- [ ] Stretch: Add support for StreamCompanion (will think about this only after tosu v4 is released)
+- [ ] Add support for StreamCompanion
 
 ## Support
 
