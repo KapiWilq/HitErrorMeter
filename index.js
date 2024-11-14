@@ -99,7 +99,7 @@ socket.commands(({ command, message }) => {
             cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
 
             // tosu's osu!(lazer) implementation doesn't have this yet.
-            if (cache.hemScaleWithResolution && cache.client !== 'lazer') {
+            if (cache.hemScaleWithResolution && cache.client === 'stable') {
                 if (cache.isFullscreen) {
                     document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
                 } else {
@@ -110,8 +110,7 @@ socket.commands(({ command, message }) => {
             };
 
             hemManager.applyUserSettings(message);
-            // osu!catch in osu!(lazer) doesn't return any hit errors (yet).
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (message.showHemInCatch || cache.rulesetName !== 'fruits') && cache.client !== 'lazer');
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
             // Taiko applies a vertical offset to the map background only in some maps (can't determine why yet).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
@@ -155,8 +154,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
 
             prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
             hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
-            // osu!catch in osu!(lazer) doesn't return any hit errors (yet).
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits') && cache.client !== 'lazer');
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits'));
             // Taiko applies a vertical offset to the map background only in some maps (can't determine why yet).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
@@ -164,7 +162,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             let hitWindows = hemManager.getHitWindows();
 
             // tosu's osu!(lazer) implementation doesn't have this yet.
-            if (cache.scoreMeterSize !== settings.scoreMeter.size && cache.client !== 'lazer') {
+            if (cache.scoreMeterSize !== settings.scoreMeter.size && cache.client === 'stable') {
                 cache.scoreMeterSize = settings.scoreMeter.size;
             };
 
@@ -196,7 +194,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             cache.gameFullscreenHeight = settings.resolution.heightFullscreen;
 
             // tosu's osu!(lazer) implementation doesn't have this yet.
-            if (cache.hemScaleWithResolution && cache.client !== 'lazer') {
+            if (cache.hemScaleWithResolution && cache.client === 'stable') {
                 if (cache.isFullscreen) {
                     document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
                 } else {

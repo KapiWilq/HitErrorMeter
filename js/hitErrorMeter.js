@@ -18,7 +18,7 @@ class HitErrorMeter {
             hit50: 200
         };
         this.hemScale = 1;
-        this.tickAppearanceDuration = 500;
+        this.tickAppearanceDuration = 250;
         this.tickDisappearanceDuration = 3000;
         this.widthMultiplier = 1;
     };
@@ -79,9 +79,14 @@ class HitErrorMeter {
         unstableRate.style.color = settings.urFontColor;
 
         hemElement.querySelector('.movingAverageArrow').style.opacity = Number(settings.showMovingAverageArrow);
-        if (settings.movingAverageArrowSize >= 0) {
-            hemElement.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
-            hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
+        if (settings.showMovingAverageArrow) {
+            if (settings.movingAverageArrowSize >= 0) {
+                hemElement.querySelector('.movingAverageArrow').style.height = `${settings.movingAverageArrowSize * this.hemScale / 16}rem`;
+                hemElement.querySelector('.movingAverageArrow').style.filter = `drop-shadow(0 0 ${2 * (settings.movingAverageArrowSize / 8) * this.hemScale / 16}rem black)`;
+            };
+        } else {
+            hemElement.querySelector('.movingAverageArrow').style.height = 0;
+            hemElement.querySelector('.movingAverageArrow').style.filter = 'drop-shadow(0 0 0 black)';
         };
         hemElement.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hemScale / 16}rem`;
 
@@ -190,15 +195,23 @@ class HitErrorMeter {
 
         do {
             this.mods = mods;
-            if (this.mods.includes('EZ')) {
-                this.overallDiff = overallDiff / 2;
-                this.circleSize = circleSize / 2;
-            } else if (this.mods.includes('HR')) {
-                this.overallDiff = Math.min(overallDiff * 1.4, 10);
-                this.circleSize = Math.min(circleSize * 1.3, 10);
-            } else {
+
+            // This mess exists purely because osu!(mania) calculates hit windows differently.
+            // See the mania section in the `recalculateHitWindows()` method.
+            if (this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert') {
                 this.overallDiff = overallDiff;
                 this.circleSize = circleSize;
+            } else {
+                if (this.mods.includes('EZ')) {
+                    this.overallDiff = overallDiff / 2;
+                    this.circleSize = circleSize / 2;
+                } else if (this.mods.includes('HR')) {
+                    this.overallDiff = Math.min(overallDiff * 1.4, 10);
+                    this.circleSize = Math.min(circleSize * 1.3, 10);
+                } else {
+                    this.overallDiff = overallDiff;
+                    this.circleSize = circleSize;
+                };
             };
         } while (this.mods == undefined);
 
@@ -242,24 +255,41 @@ class HitErrorMeter {
             break;
 
         case 'mania':
-            // Hit320 now scale in osu!(lazer) for some reason.
+            // 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2) for some reason.
             // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
-            // See also https://github.com/ppy/osu/blob/master/osu.Game/Rulesets/Scoring/HitWindows.cs#L20
-            if (this.client === 'lazer') {
+            //     https://github.com/ppy/osu/blob/master/osu.Game/Rulesets/Scoring/HitWindows.cs#L20
+            //     https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#scorev2
+            if (this.client === 'lazer' || (this.client === 'stable' && this.mods.includes('v2'))) {
                 this.hitWindows = {
-                    hit320: Math.round((this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff) * this.rate),
-                    hit300: Math.round((64 - 3 * this.overallDiff) * this.rate),
-                    hit200: Math.round((97 - 3 * this.overallDiff) * this.rate),
-                    hit100: Math.round((127 - 3 * this.overallDiff) * this.rate),
-                    hit50: Math.round((151 - 3 * this.overallDiff) * this.rate)
+                    hit320: (this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff) * this.rate,
+                    hit300: (64 - 3 * this.overallDiff) * this.rate,
+                    hit200: (97 - 3 * this.overallDiff) * this.rate,
+                    hit100: (127 - 3 * this.overallDiff) * this.rate,
+                    hit50: (151 - 3 * this.overallDiff) * this.rate
                 };
             } else {
                 this.hitWindows = {
-                    hit320: Math.round(16 * this.rate),
-                    hit300: Math.round((64 - 3 * this.overallDiff) * this.rate),
-                    hit200: Math.round((97 - 3 * this.overallDiff) * this.rate),
-                    hit100: Math.round((127 - 3 * this.overallDiff) * this.rate),
-                    hit50: Math.round((151 - 3 * this.overallDiff) * this.rate)
+                    hit320: 16 * this.rate,
+                    hit300: (64 - 3 * this.overallDiff) * this.rate,
+                    hit200: (97 - 3 * this.overallDiff) * this.rate,
+                    hit100: (127 - 3 * this.overallDiff) * this.rate,
+                    hit50: (151 - 3 * this.overallDiff) * this.rate
+                };
+            };
+
+            // I've Been Tricked, I've Been Backstabbed and I've Been, Quite Possibly, Bamboozled.
+            // For some reason, osu!mania not only uses the original OD value, it also scales every hit window by a factor of 1.4 one way or the other,
+            // depending on the mod selected.
+
+            // See it for yourself by selecting a mania map, and switch between EZ, HR, and NoMod, and compare the hit windows' sizes by hovering on the map stats.
+            // This is literally the only reason why the hit windows are being rounded here, and not in the actual calculation.
+            for (let hitWindow in this.hitWindows) {
+                if (this.mods.includes('HR')) {
+                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
+                } else if (this.mods.includes('EZ')) {
+                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] * 1.4);
+                } else {
+                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow]);
                 };
             };
             break;
@@ -274,6 +304,23 @@ class HitErrorMeter {
                 hit100: Math.round(97 * this.rate),
                 hit50: Math.round(121 * this.rate)
             };
+
+            // I've Been Tricked, I've Been Backstabbed and I've Been, Quite Possibly, Bamboozled.
+            // For some reason, osu!mania not only uses the original OD value, it also scales every hit window by a factor of 1.4 one way or the other,
+            // depending on the mod selected.
+
+            // See it for yourself by selecting a mania map, and switch between EZ, HR, and NoMod, and compare the hit windows' sizes by hovering on the map stats.
+            // This is literally the only reason why the hit windows are being rounded here, and not in the actual calculation.
+            for (let hitWindow in this.hitWindows) {
+                if (this.mods.includes('HR')) {
+                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
+                } else if (this.mods.includes('EZ')) {
+                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] * 1.4);
+                } else {
+                    this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow]);
+                };
+            };
+
             break;
 
         default:
