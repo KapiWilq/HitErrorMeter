@@ -30,7 +30,7 @@
 
 <img src=".github/images/taiko_ruleset.png">  <img src=".github/gifs/taiko_ruleset.gif">
 
-### osu!catch (disabled by default; any CS)
+### osu!catch (disabled by default; CS4.3 in this example)
 
 <img src=".github/images/catch_ruleset.png">  <img src=".github/gifs/catch_ruleset.gif">
 
@@ -76,9 +76,9 @@
 - [X] Add support for adjusting hit error tick appear and disappear duration
 - [X] Add support for osu!mania converts
 - [X] Update `index.js` to properly support tosu v4
-- [ ] Add support for adjusting the moving average arrow animation duration
+- [ ] ~~Add support for adjusting the moving average arrow animation duration~~ Scrapped, requires more work to make the resizing animation fast while preserving the moving animation duration (both resizing and moving use the same CSS `transition` property)
 
-# Roadmap to v1.1
+## Roadmap to v1.1
 - [ ] ~~Add support for StreamCompanion~~ Postponing this for now
 
 ## Support
