@@ -6,7 +6,7 @@
 | --------------- | ------------------- |
 | For             | ingame, obs-overlay |
 | Compatible with | tosu                |
-| Size            | 500 x 100           |
+| Size            | 720 x 100           |
 
 > Supports all rulesets! | The resolution above is for the default settings (both the overlay and the in-game score meter) in the osu!mania ruleset with EZDT at OD0.
 
@@ -44,31 +44,31 @@
 
 ## Settings
 
-| Setting                                                 | Type     | Default value                        | Customizability                                                                                     |
-| ------------------------------------------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Hit error meter scale                                   | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
-| Automatically scale the overlay with resolution         | Checkbox | `Enabled`                            | `Enabled` or `Disabled`                                                                             |
-| Unstable Rate display style                             | Options  | `Show both the prefix and the value` | `"Show nothing"`, `"Show only the value"`, `"Show both the prefix and the value"`                   |
-| Unstable Rate display font size (in pixels)             | Number   | `24`                                 | A positive number                                                                                   |
-| Unstable Rate display font name                         | Textbox  | `Roboto`                             | The font must be installed on your system (except for `Roboto` as it's the default for the overlay) |
-| Unstable Rate display text colo(u)r                     | Colo(u)r | `#ffffff`                            | Any RGB colo(u)r in the full opacity                                                                |
-| Show the moving average arrow                           | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
-| Moving average arrow size                               | Number   | `8`                                  | A positive number                                                                                   |
-| Main tick height (in pixels)                            | Number   | `24`                                 | A number bigger or equal `6`                                                                        |
-| Main tick colo(u)r                                      | Colo(u)r | `#ffffff`                            | Any RGB colo(u)r in the full opacity                                                                |
-| Show hit windows                                        | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
-| Show the hit error meter in osu!catch                   | Checkbox | `false`                              | `Enabled` or `Disabled`                                                                             |
-| Hit windows width multiplier                            | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
-| 320's hit window colo(u)r                               | Colo(u)r | `#99ddff`                            | Any RGB colo(u)r in the full opacity                                                                |
-| 300's hit window colo(u)r                               | Colo(u)r | `#47b6eb`                            | Any RGB colo(u)r in the full opacity                                                                |
-| 200's hit window colo(u)r                               | Colo(u)r | `#99ffa0`                            | Any RGB colo(u)r in the full opacity                                                                |
-| 100's hit window colo(u)r                               | Colo(u)r | `#47eb54`                            | Any RGB colo(u)r in the full opacity                                                                |
-| 50's hit window colo(u)r                                | Colo(u)r | `#ebc247`                            | Any RGB colo(u)r in the full opacity                                                                |
-| Hit error ticks height (in pixels)                      | Number   | `36`                                 | A number bigger or equal `6`                                                                        |
-| Hit error ticks width (in pixels)                       | Number   | `4`                                  | A number between `1` and `8`                                                                        |
-| Tick appearance animation duration (in milliseconds)    | Number   | `250`                                | A positive number smaller or equal `5000` (5 seconds)                                               |
-| Tick disappearance animation duration (in milliseconds) | Number   | `3000`                               | A positive number smaller or equal `10000` (10 seconds)                                             |
-| Hide the in-game score meter                            | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
+| Setting                                                             | Type     | Default value                        | Customizability                                                                                     |
+| ------------------------------------------------------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Hit error meter scale                                               | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
+| Automatically scale the overlay with resolution (osu!(stable) only) | Checkbox | `Enabled`                            | `Enabled` or `Disabled`                                                                             |
+| Unstable Rate display style                                         | Options  | `Show both the prefix and the value` | `"Show nothing"`, `"Show only the value"`, `"Show both the prefix and the value"`                   |
+| Unstable Rate display font size (in pixels)                         | Number   | `24`                                 | A positive number                                                                                   |
+| Unstable Rate display font name                                     | Textbox  | `Roboto`                             | The font must be installed on your system (except for `Roboto` as it's the default for the overlay) |
+| Unstable Rate display text colo(u)r                                 | Colo(u)r | `#ffffff`                            | Any RGB colo(u)r in the full opacity                                                                |
+| Show the moving average arrow                                       | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
+| Moving average arrow size                                           | Number   | `8`                                  | A positive number                                                                                   |
+| Main tick height (in pixels)                                        | Number   | `24`                                 | A number bigger or equal `6`                                                                        |
+| Main tick colo(u)r                                                  | Colo(u)r | `#ffffff`                            | Any RGB colo(u)r in the full opacity                                                                |
+| Show hit windows                                                    | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
+| Show the hit error meter in osu!catch                               | Checkbox | `false`                              | `Enabled` or `Disabled`                                                                             |
+| Hit windows width multiplier                                        | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
+| 320's hit window colo(u)r                                           | Colo(u)r | `#99ddff`                            | Any RGB colo(u)r in the full opacity                                                                |
+| 300's hit window colo(u)r                                           | Colo(u)r | `#47b6eb`                            | Any RGB colo(u)r in the full opacity                                                                |
+| 200's hit window colo(u)r                                           | Colo(u)r | `#99ffa0`                            | Any RGB colo(u)r in the full opacity                                                                |
+| 100's hit window colo(u)r                                           | Colo(u)r | `#47eb54`                            | Any RGB colo(u)r in the full opacity                                                                |
+| 50's hit window colo(u)r                                            | Colo(u)r | `#ebc247`                            | Any RGB colo(u)r in the full opacity                                                                |
+| Hit error ticks height (in pixels)                                  | Number   | `36`                                 | A number bigger or equal `6`                                                                        |
+| Hit error ticks width (in pixels)                                   | Number   | `4`                                  | A number between `1` and `8`                                                                        |
+| Tick appearance animation duration (in milliseconds)                | Number   | `250`                                | A positive number smaller or equal `5000` (5 seconds)                                               |
+| Tick disappearance animation duration (in milliseconds)             | Number   | `3000`                               | A positive number smaller or equal `10000` (10 seconds)                                             |
+| Hide the in-game score meter (osu!(stable) only)                    | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
 
 ## Roadmap to v1.0
 - [X] Add support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
