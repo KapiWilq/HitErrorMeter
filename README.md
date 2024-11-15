@@ -1,6 +1,6 @@
 # HitErrorMeter by KapiWilq
 
-<a href="https://github.com/KapiWilq/HitErrorMeter/releases/latest/download/hiterrormeter by kapiwilq.zip" target="_blank"><img height="35" src="https://img.shields.io/badge/Download_the_overlay-67A564?style=for-the-badge" /></a>  <a href="https://github.com/KapiWilq/HitErrorMeter/releases/latest/download/hiterrormeter by kapiwilq (debug).zip" target="_blank"><img height="35" src="https://img.shields.io/badge/Download_the_overlay_(debug_ver.)-67A564?style=for-the-badge" /></a>
+<a href="https://github.com/KapiWilq/HitErrorMeter/releases/latest/download/HitErrorMeter.by.KapiWilq.zip" target="_blank"><img height="35" src="https://img.shields.io/badge/Download_the_overlay-67A564?style=for-the-badge" /></a>
 
 |                 |                     |
 | --------------- | ------------------- |

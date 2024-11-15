@@ -1,34 +1,61 @@
 name: Create a new release of the overlay
 on: workflow_dispatch
 jobs:
-  prepare-release:
-    name: Prepare the release
+  get-overlay-version:
+    name: Get the overlay version
     runs-on: ubuntu-latest
+    outputs:
+      overlay-version: ${{ steps.get-overlay-version.outputs.OVERLAY_VERSION }}
     steps:
       - name: Download the repo
         uses: actions/checkout@v4
       - name: Get the overlay version
+        id: get-overlay-version
         run: |
-            echo "OVERLAY_VERSION=$(cat metadata.txt | grep "Version: " | cut -c 10-)" >> $GITHUB_ENV
+            echo "OVERLAY_VERSION=$(cat metadata.txt | grep "Version: " | cut -c 10-)" >> $GITHUB_OUTPUT
+
+  prepare-release:
+    name: Prepare the release
+    runs-on: ubuntu-latest
+    needs: get-overlay-version
+    steps:
+      - name: Download the repo
+        uses: actions/checkout@v4
       - name: Put the repo into the ZIP archive
         run: |
           rm -rf HitErrorMeter.by.KapiWilq.zip
           cd ../
           cp -r HitErrorMeter HitErrorMeter\ by\ KapiWilq
-          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter\ by\ KapiWilq -x "HitErrorMeter\ by\ KapiWilq/.git/*" "HitErrorMeter\ by\ KapiWilq/.github/*" "HitErrorMeter\ by\ KapiWilq/README.md"
+          zip -r HitErrorMeter.by.KapiWilq.zip HitErrorMeter\ by\ KapiWilq -x "HitErrorMeter\ by\ KapiWilq/.git/*" "HitErrorMeter\ by\ KapiWilq/.github/*" "HitErrorMeter\ by\ KapiWilq/.eslintrc.json" "HitErrorMeter\ by\ KapiWilq/README.md"
           mv HitErrorMeter.by.KapiWilq.zip HitErrorMeter/
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HitErrorMeter.by.KapiWilq.zip
+          path: HitErrorMeter.by.KapiWilq.zip
+
+  publish:
+    name: Publish the release
+    runs-on: ubuntu-latest
+    needs: [get-overlay-version, prepare-release]
+    steps:
+      - name: Download the artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
       - name: Publish a new release
         uses: softprops/action-gh-release@v2
         with:
-          name: v${{ env.OVERLAY_VERSION }}
-          tag_name: v${{ env.OVERLAY_VERSION }}
+          name: v${{ needs.get-overlay-version.outputs.overlay-version }}
+          tag_name: v${{ needs.get-overlay-version.outputs.overlay-version }}
           token: ${{ secrets.GITHUBPAT }}
           body: |
-            Thanks for wanting to try out my overlay!
+              Thanks for wanting to try out my overlay!
 
-            ## Changelog
-            - To be done (if it's not here within 24 hours after the release then yell at me)
+              ## Changelog
+              - To be done (if it's not here within 24 hours after the release then yell at me)
           fail_on_unmatched_files: true
-          files: HitErrorMeter.by.KapiWilq.zip
+          files: |
+            HitErrorMeter.by.KapiWilq.zip
           make_latest: true
 
