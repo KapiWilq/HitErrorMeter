@@ -48,12 +48,12 @@
 | ------------------------------------------------------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
 | Hit error meter scale                                               | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
 | Automatically scale the overlay with resolution (osu!(stable) only) | Checkbox | `Enabled`                            | `Enabled` or `Disabled`                                                                             |
-| Unstable Rate display style                                         | Options  | `Show both the prefix and the value` | `"Show nothing"`, `"Show only the value"`, `"Show both the prefix and the value"`                   |
+| Unstable Rate display style                                         | Options  | `Show both the prefix and the value` | `Show nothing`, `Show only the value`, `Show both the prefix and the value`                         |
 | Unstable Rate display font size (in pixels)                         | Number   | `24`                                 | A positive number                                                                                   |
 | Unstable Rate display font name                                     | Textbox  | `Roboto`                             | The font must be installed on your system (except for `Roboto` as it's the default for the overlay) |
 | Unstable Rate display text colo(u)r                                 | Colo(u)r | `#ffffff`                            | Any RGB colo(u)r in the full opacity                                                                |
 | Show the moving average arrow                                       | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
-| Moving average arrow size                                           | Number   | `8`                                  | A positive number                                                                                   |
+| Moving average arrow size (in pixels)                               | Number   | `8`                                  | A positive number                                                                                   |
 | Main tick height (in pixels)                                        | Number   | `24`                                 | A number bigger or equal `6`                                                                        |
 | Main tick colo(u)r                                                  | Colo(u)r | `#ffffff`                            | Any RGB colo(u)r in the full opacity                                                                |
 | Show hit windows                                                    | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
@@ -71,15 +71,15 @@
 | Hide the in-game score meter (osu!(stable) only)                    | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
 
 ## Roadmap to v1.0
-- [X] Add support for hiding the in-game score meter (using the [Files API](https://github.com/tosuapp/tosu/wiki#files-api) and the `settings.background.dim` property)
+- [X] Add support for hiding the in-game score meter
 - [X] Allow for slightly more customization of the Unstable Rate display
 - [X] Add support for adjusting hit error tick appear and disappear duration
-- [X] Add support for mania converts (current status: waiting for a new tosu release with a new `beatmap.isConvert` field, see [the conversation in the tosu support server](https://discord.com/channels/1056534107330445362/1185957776665628764/1302703274125824102))
-- [X] Update `index.js` to use the new tosu v4 API (notably the `play.mods.rate` field)
+- [X] Add support for osu!mania converts
+- [X] Update `index.js` to properly support tosu v4
 - [ ] Add support for adjusting the moving average arrow animation duration
 
 # Roadmap to v1.1
-- [ ] Add support for StreamCompanion
+- [ ] ~~Add support for StreamCompanion~~ Postponing this for now
 
 ## Support
 

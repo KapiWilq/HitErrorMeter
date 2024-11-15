@@ -10,7 +10,7 @@
   {
       "uniqueID": "hemScaleWithResolution",
       "type": "checkbox",
-      "title": "Automatically scale the overlay with resolution (stable-only)",
+      "title": "Automatically scale the overlay with resolution (osu!(stable) only)",
       "description": "The in-game score meter's size varies between resolutions. This options allows you to resize the overlay automatically to always have the correct size regardless of the game resolution. If disabled, it will always have the same size (as if you're running at 1080p). ____________________________________________",
       "options": [],
       "value": true
@@ -62,7 +62,7 @@
   {
       "uniqueID": "movingAverageArrowSize",
       "type": "number",
-      "title": "Moving average arrow size",
+      "title": "Moving average arrow size (in pixels)",
       "description": "Must be a positive number. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ____________________________________________",
       "options": [],
       "value": 8

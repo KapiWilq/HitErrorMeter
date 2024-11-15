@@ -107,20 +107,19 @@ class HitErrorMeter {
     };
 
     /**
-   * Prepares the hit error meter: sets correct hit windows widths, and rounds corners at the edges.
+   * Prepares the hit error meter.
    * @param {'stable' | 'lazer'} client - The currently played client.
    * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
-   * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
+   * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    * @param {number} rate - The speed of the currently played beatmap.
    */
     prepareHitErrorMeter(client = this.client, rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
         this.applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate);
-
         this.recalculateHitWindows();
-        const WIDTH_CONSTANT = 1.125;
 
+        const WIDTH_CONSTANT = 1.125;
         let hit320Size = 0, hit300Size = 0, hit200Size = 0, hit100Size = 0, hit50Size = 0;
 
         switch (this.rulesetName) {
@@ -145,21 +144,11 @@ class HitErrorMeter {
             break;
         };
 
-        document.querySelectorAll('.hit320').forEach(segment => {
-            segment.style.width = `${hit320Size / 16}rem`;
-        });
-        document.querySelectorAll('.hit300').forEach(segment => {
-            segment.style.width = `${hit300Size / 16}rem`;
-        });
-        document.querySelectorAll('.hit200').forEach(segment => {
-            segment.style.width = `${hit200Size / 16}rem`;
-        });
-        document.querySelectorAll('.hit100').forEach(segment => {
-            segment.style.width = `${hit100Size / 16}rem`;
-        });
-        document.querySelectorAll('.hit50').forEach(segment => {
-            segment.style.width = `${hit50Size / 16}rem`;
-        });
+        document.querySelectorAll('.hit320').forEach(segment => { segment.style.width = `${hit320Size / 16}rem`; });
+        document.querySelectorAll('.hit300').forEach(segment => { segment.style.width = `${hit300Size / 16}rem`; });
+        document.querySelectorAll('.hit200').forEach(segment => { segment.style.width = `${hit200Size / 16}rem`; });
+        document.querySelectorAll('.hit100').forEach(segment => { segment.style.width = `${hit100Size / 16}rem`; });
+        document.querySelectorAll('.hit50').forEach(segment => { segment.style.width = `${hit50Size / 16}rem`; });
 
         // Applying CSS scaling only affects it visually - everything has the "1x scale" sizing under the hood.
         // Since the average chevron relies on the hit error meter's width, the not segments' width, resize the parent container.
@@ -169,16 +158,16 @@ class HitErrorMeter {
 
         if (this.rulesetName === 'osu' || this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert') {
             edgeSegments = document.querySelectorAll('.hit50');
-            document.querySelectorAll('.hit100').forEach(segment => {return segment.style.borderRadius = '0';});
-            document.querySelectorAll('.hit300').forEach(segment => {return segment.style.borderRadius = '0';});
+            document.querySelectorAll('.hit100').forEach(segment => { segment.style.borderRadius = '0'; });
+            document.querySelectorAll('.hit300').forEach(segment => { segment.style.borderRadius = '0'; });
         } else if (this.rulesetName === 'taiko') {
             edgeSegments = document.querySelectorAll('.hit100');
-            document.querySelectorAll('.hit300').forEach(segment => {return segment.style.borderRadius = '0';});
-            document.querySelectorAll('.hit50').forEach(segment => {return segment.style.borderRadius = '0';});
+            document.querySelectorAll('.hit300').forEach(segment => { segment.style.borderRadius = '0'; });
+            document.querySelectorAll('.hit50').forEach(segment => { segment.style.borderRadius = '0'; });
         } else {
             edgeSegments = document.querySelectorAll('.hit300');
-            document.querySelectorAll('.hit100').forEach(segment => {return segment.style.borderRadius = '0';});
-            document.querySelectorAll('.hit50').forEach(segment => {return segment.style.borderRadius = '0';});
+            document.querySelectorAll('.hit100').forEach(segment => { segment.style.borderRadius = '0'; });
+            document.querySelectorAll('.hit50').forEach(segment => { segment.style.borderRadius = '0'; });
         };
 
         let edgeSegmentsHeight = parseFloat(getComputedStyle(edgeSegments[0]).getPropertyValue('height').replace('px', '')) / 16;
@@ -190,63 +179,60 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to apply base play settings for use by other methods.
+   * A helper method to apply base play settings for use everywhere else.
    * @param {'stable' | 'lazer'} client - The client version that the game is currently being played.
    * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
-   * @param {string} mods - The list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
+   * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    * @param {number} rate - The speed of the map that is being currently played.
    */
     applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate) {
         this.client = client;
         this.rulesetName = rulesetName;
         this.rate = rate;
+        this.mods = mods;
 
-        do {
-            this.mods = mods;
-
-            // This mess exists purely because osu!(mania) calculates hit windows differently.
-            // See the mania section in the `recalculateHitWindows()` method.
-            if (this.client === 'stable' && (this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert')) {
+        // This mess exists purely because osu!mania calculates hit windows differently.
+        // See the osu!mania section in the `recalculateHitWindows()` method.
+        if (this.client === 'stable' && (this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert')) {
+            this.overallDiff = overallDiff;
+            this.circleSize = circleSize;
+        } else {
+            if (this.mods.includes('EZ')) {
+                this.overallDiff = overallDiff / 2;
+                this.circleSize = circleSize / 2;
+            } else if (this.mods.includes('HR')) {
+                this.overallDiff = Math.min(overallDiff * 1.4, 10);
+                this.circleSize = Math.min(circleSize * 1.3, 10);
+            } else {
                 this.overallDiff = overallDiff;
                 this.circleSize = circleSize;
-            } else {
-                if (this.mods.includes('EZ')) {
-                    this.overallDiff = overallDiff / 2;
-                    this.circleSize = circleSize / 2;
-                } else if (this.mods.includes('HR')) {
-                    this.overallDiff = Math.min(overallDiff * 1.4, 10);
-                    this.circleSize = Math.min(circleSize * 1.3, 10);
-                } else {
-                    this.overallDiff = overallDiff;
-                    this.circleSize = circleSize;
-                };
             };
-        } while (this.mods == undefined);
+        };
     };
 
     /**
-   * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch).
+   * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch, it uses Circle Size).
    */
     recalculateHitWindows() {
         switch (this.rulesetName) {
         case 'osu':
             this.hitWindows = {
                 hit320: 0,
-                hit300: Math.round(80 - 6 * this.overallDiff),
+                hit300: Math.floor(80 - 6 * this.overallDiff),
                 hit200: 0,
-                hit100: Math.round(140 - 8 * this.overallDiff),
-                hit50: Math.round(200 - 10 * this.overallDiff)
+                hit100: Math.floor(140 - 8 * this.overallDiff),
+                hit50: Math.floor(200 - 10 * this.overallDiff)
             };
             break;
 
         case 'taiko':
             this.hitWindows = {
                 hit320: 0,
-                hit300: Math.round(50 - 3 * this.overallDiff),
+                hit300: Math.floor(50 - 3 * this.overallDiff),
                 hit200: 0,
-                hit100: Math.round(this.overallDiff <= 5 ? 120 - 8 * this.overallDiff : 110 - 6 * this.overallDiff),
+                hit100: Math.floor(this.overallDiff <= 5 ? 120 - 8 * this.overallDiff : 110 - 6 * this.overallDiff),
                 hit50: 0
             };
             break;
@@ -255,7 +241,7 @@ class HitErrorMeter {
         case 'fruits':
             this.hitWindows = {
                 hit320: 0,
-                hit300: Math.round(72 - 6 * this.circleSize),
+                hit300: Math.floor(72 - 6 * this.circleSize),
                 hit200: 0,
                 hit100: 0,
                 hit50: 0
@@ -263,20 +249,11 @@ class HitErrorMeter {
             break;
 
         case 'mania':
-            // Hit windows in osu!(lazer) are not affected by the rate anymore.
-            // Also, 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2).
-            // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
-            //     https://github.com/ppy/osu/blob/master/osu.Game/Rulesets/Scoring/HitWindows.cs#L20
+            // 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2).
+            // Note that in osu!(lazer) the scaling is done "internally" - the visual size of the hit error meter stays the same.
+            //     https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
             //     https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#scorev2
-            if (this.client === 'lazer') {
-                this.hitWindows = {
-                    hit320: (this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff),
-                    hit300: (64 - 3 * this.overallDiff),
-                    hit200: (97 - 3 * this.overallDiff),
-                    hit100: (127 - 3 * this.overallDiff),
-                    hit50: (151 - 3 * this.overallDiff)
-                };
-            } else if (this.client === 'stable' && this.mods.includes('v2')) {
+            if (this.client === 'lazer' || (this.client === 'stable' && this.mods.includes('v2'))) {
                 this.hitWindows = {
                     hit320: (this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff) * this.rate,
                     hit300: (64 - 3 * this.overallDiff) * this.rate,
@@ -298,7 +275,7 @@ class HitErrorMeter {
             // For some reason, osu!mania not only uses the original OD value when playing with EZ or HR,
             // it also scales every hit window by a factor of 1.4 one way or the other, depending on the mod selected.
 
-            // See it for yourself by selecting a mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
+            // See it for yourself by selecting an osu!mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
             // This is the only reason why the hit windows are being rounded here and not in the actual calculation.
             if (this.client === 'stable') {
                 for (let hitWindow in this.hitWindows) {
@@ -313,23 +290,23 @@ class HitErrorMeter {
             };
             break;
 
-        // Mania converts have different hit windows only in osu!(stable).
+        // osu!mania converts have different hit windows only in osu!(stable).
         // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
         case 'maniaConvert':
             this.hitWindows = {
-                hit320: Math.round(16 * this.rate),
-                hit300: Math.round((this.overallDiff > 4 ? 34 : 47) * this.rate),
-                hit200: Math.round((this.overallDiff > 4 ? 67 : 77) * this.rate),
-                hit100: Math.round(97 * this.rate),
-                hit50: Math.round(121 * this.rate)
+                hit320: Math.floor(16 * this.rate),
+                hit300: Math.floor((this.overallDiff > 4 ? 34 : 47) * this.rate),
+                hit200: Math.floor((this.overallDiff > 4 ? 67 : 77) * this.rate),
+                hit100: Math.floor(97 * this.rate),
+                hit50: Math.floor(121 * this.rate)
             };
 
             // I've Been Tricked, I've Been Backstabbed and I've Been, Quite Possibly, Bamboozled.
             // For some reason, osu!mania not only uses the original OD value when playing with EZ or HR,
             // it also scales every hit window by a factor of 1.4 one way or the other, depending on the mod selected.
 
-            // See it for yourself by selecting a mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
-            // This is the only reason why the hit windows are being rounded here and not in the actual calculation.
+            // See it for yourself by selecting an osu!mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
+            // This is the only reason why the hit windows are being floored here and not in the actual calculation.
             for (let hitWindow in this.hitWindows) {
                 if (this.mods.includes('HR')) {
                     this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
@@ -342,7 +319,7 @@ class HitErrorMeter {
             break;
 
         default:
-            console.error(`Couldn't calculate hit windows.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+            console.error(`Couldn't calculate hit windows.\nClient: ${this.client}\nRuleset: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
             break;
         };
     };
@@ -354,14 +331,14 @@ class HitErrorMeter {
    * @param {boolean} shouldBeVisible - Whether the color should be opaque or transparent.
    */
     applyColorToRootProperty(property, color, shouldBeVisible) {
-        if (color === 9) {
+        if (color.length === 9) {
             color = color.slice(0, -2);
         };
 
         if (shouldBeVisible) {
             color += 'FF';
         } else {
-            // Dirty hack to make the computed style not return transparent black for hit error ticks.
+            // Dirty hack to make the computed style not return black for hit error ticks.
             color += '01';
         };
 
@@ -427,7 +404,7 @@ class HitErrorMeter {
                 return document.getElementById(`hit50${whichSegment}`);
         
             default:
-                console.error(`Couldn't determine the hit window segment.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                console.error(`Couldn't determine the hit window segment.\nClient: ${this.client}\nRuleset: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
                 break;
             };
         } else {
@@ -451,7 +428,6 @@ class HitErrorMeter {
                 return document.getElementById(`hit300${whichSegment}`);
         
             case 'mania':
-            case 'maniaConvert':
                 if (absHitError <= this.hitWindows.hit320) {
                     return document.getElementById(`hit320${whichSegment}`);
                 };
@@ -467,7 +443,7 @@ class HitErrorMeter {
                 return document.getElementById(`hit50${whichSegment}`);
         
             default:
-                console.error(`Couldn't determine the hit window segment.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                console.error(`Couldn't determine the hit window segment.\nClient: ${this.client}\nRuleset: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
                 break;
             };
         }
@@ -518,7 +494,7 @@ class HitErrorMeter {
                 return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
         
             default:
-                console.error(`Couldn't determine the tick's position percentage.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                console.error(`Couldn't determine the tick's position percentage.\nClient: ${this.client}\nRuleset: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
                 break;
             };
         } else {
@@ -542,7 +518,6 @@ class HitErrorMeter {
                 return absHitError / this.hitWindows.hit300;
         
             case 'mania':
-            case 'maniaConvert':
                 if (absHitError <= this.hitWindows.hit320) {
                     return absHitError / this.hitWindows.hit320;
                 };
@@ -558,7 +533,7 @@ class HitErrorMeter {
                 return (absHitError - this.hitWindows.hit100) / (this.hitWindows.hit50 - this.hitWindows.hit100);
         
             default:
-                console.error(`Couldn't determine the tick's position percentage.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
+                console.error(`Couldn't determine the tick's position percentage.\nClient: ${this.client}\nRuleset: ${this.rulesetName}\nAbsolute hit error: ${absHitError}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${JSON.stringify(this.hitWindows)}`);
                 break;
             };
         }
@@ -648,7 +623,7 @@ class HitErrorMeter {
         };
 
         default:
-            console.error(`Couldn't get the max hit window.\nClient: ${this.client}\nRuleset ID: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
+            console.error(`Couldn't get the max hit window.\nClient: ${this.client}\nRuleset: ${this.rulesetName}\nOverall Difficulty: ${this.overallDiff}\nCircle Size: ${this.circleSize}\nHit windows: ${this.hitWindows}`);
             break;
         };
     };

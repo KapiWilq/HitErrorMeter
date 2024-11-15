@@ -87,6 +87,14 @@ function calculateStandardDeviation(values) {
     return standardDeviation;
 };
 
+/**
+ * A helper function to determine whether the hit error meter should be visible.
+ * @returns {boolean} Whether the hit error meter should be visible.
+ */
+function shouldHemBeVisible() {
+    return cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits');
+};
+
 
 
 socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
@@ -98,7 +106,6 @@ socket.commands(({ command, message }) => {
             cache.hemScaleWithResolution = message.hemScaleWithResolution;
             cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
 
-            // tosu's osu!(lazer) implementation doesn't have this yet.
             if (cache.hemScaleWithResolution && cache.client === 'stable') {
                 if (cache.isFullscreen) {
                     document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
@@ -110,8 +117,8 @@ socket.commands(({ command, message }) => {
             };
 
             hemManager.applyUserSettings(message);
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (message.showHemInCatch || cache.rulesetName !== 'fruits'));
-            // Taiko applies a vertical offset to the map background only in some maps
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHemBeVisible());
+            // osu!taiko applies a vertical offset to the map background only in some maps
             // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
@@ -155,31 +162,28 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
 
             prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
             hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits'));
-            // Taiko applies a vertical offset to the map background only in some maps
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHemBeVisible());
+            // osu!taiko applies a vertical offset to the map background only in some maps
             // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
 
             let hitWindows = hemManager.hitWindows;
 
-            // tosu's osu!(lazer) implementation doesn't have this yet.
-            if (cache.scoreMeterSize !== settings.scoreMeter.size && cache.client === 'stable') {
+            if (cache.scoreMeterSize !== settings.scoreMeter.size) {
                 cache.scoreMeterSize = settings.scoreMeter.size;
             };
 
             if (cache.rulesetName === 'fruits' || settings.scoreMeter.type.name === 'colour') {
                 // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
                 document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
-
                 // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
                 document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((639 + 2) * cache.scoreMeterSize) / 16}rem`;
 
             } else if (settings.scoreMeter.type.name === 'error') {
                 document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
-
                 if (cache.rulesetName === 'taiko') {
-                    // The additional 19px is for 50's hit window that doesn't actually do anything in taiko.
+                    // The additional 19px is for the 50's hit window that doesn't actually do anything in osu!taiko in osu!(stable).
                     document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
                 } else {
                     document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
@@ -196,7 +200,9 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             cache.gameWindowedHeight = settings.resolution.height;
             cache.gameFullscreenHeight = settings.resolution.heightFullscreen;
 
-            // tosu's osu!(lazer) implementation doesn't have this yet.
+            // Here is a thing - osu!(lazer) already has way more flexibility when it comes to resizing (and moving, and scaling, and everything in between).
+            // It wouldn't make sense to scale it in osu!lazer since not only you can have multiple hit error meters, you can scale them however you want.
+            // Therefore, limit this to osu!(stable) only.
             if (cache.hemScaleWithResolution && cache.client === 'stable') {
                 if (cache.isFullscreen) {
                     document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
@@ -235,7 +241,7 @@ socket.api_v2_precise(({ hitErrors }) => {
             cache.hitErrors = hitErrors;
 
             let ur = calculateStandardDeviation(cache.hitErrors) * 10;
-            // The size of the hit error meter depends on the rate only in osu!(stable) and therefore - the Unstable Rate.
+            // The size of the hit error meter depends on the rate only in osu!(stable), therefore the Unstable Rate must be adjusted accordingly.
             if (cache.client === 'stable' && (cache.rulesetName !== 'mania' || cache.rulesetName !== 'maniaConvert')) {
                 ur /= cache.rate;
             };
@@ -248,12 +254,15 @@ socket.api_v2_precise(({ hitErrors }) => {
                 document.querySelector('.movingAverageArrow').style.left = '0%';
             };
 
+            // This is only activated on the initial overlay load to not add every single hit error tick to the overlay.
+            // Note that this will not protect against osu!catch.
             if (hitErrorsCurrentAmount > 0 && cache.hitErrorsPreviousAmount === -1) {
                 cache.hitErrorsPreviousAmount = hitErrorsCurrentAmount - 50;
             };
 
             for (let i = cache.hitErrorsPreviousAmount; i < hitErrorsCurrentAmount; i++) {
-                if (cache.hitErrors[i] !== undefined && !isNaN(cache.hitErrors[i]) && cache.hitErrors[i] !== null) {
+                // Don't add new ticks when the hit error meter is invisible (or if the hit error value is stupid).
+                if (cache.hitErrors[i] != undefined && !isNaN(cache.hitErrors[i]) && cache.hitErrors[i] != null && shouldHemBeVisible()) {
                     hemManager.addTick(cache.hitErrors[i]);
 
                     // This is pretty much a slight modification of osu!(lazer)'s implementation (except for the if).
