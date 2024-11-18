@@ -1,6 +1,6 @@
 Usecase: ingame, obs-overlay
 Name: HitErrorMeter
-Version: 0.9.10
+Version: 1.0
 Author: KapiWilq
 CompatibleWith: tosu
 Resolution: 720 x 100
