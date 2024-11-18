@@ -4,6 +4,13 @@
         "es2018": true
     },
     "extends": "eslint:recommended",
+    "ignorePatterns": [
+        "js/socket.js",
+        "js/countUp.js"
+    ],
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "rules": {
         "arrow-body-style": [
             "error",
@@ -21,8 +28,5 @@
         ],
         "no-constant-condition": "off",
         "no-useless-escape": "off"
-    },
-    "parserOptions": {
-        "sourceType": "module"
     }
 }

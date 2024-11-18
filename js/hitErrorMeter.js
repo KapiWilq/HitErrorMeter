@@ -6,6 +6,7 @@ class HitErrorMeter {
         // Default settings.
         this.client = 'stable';
         this.rulesetName = 'osu';
+        this.isConvert = false;
         this.overallDiff = 0;
         this.circleSize = 0;
         this.mods = '';
@@ -18,6 +19,7 @@ class HitErrorMeter {
             hit50: 200
         };
         this.hemScale = 1;
+        this.tickAppearanceStyle = 'Expand from the center';
         this.tickAppearanceDuration = 250;
         this.tickDisappearanceDuration = 3000;
         this.widthMultiplier = 1;
@@ -44,6 +46,7 @@ class HitErrorMeter {
    *          hit50Color: string,
    *          tickHeight: number,
    *          tickWidth: number,
+   *          tickAppearanceStyle: 'Expand from the center' | 'Fade in fully expanded',
    *          tickAppearanceDuration: number,
    *          tickDisappearanceDuration: number,
    *          hideInGameScoreMeter: boolean}} settings - User settings.
@@ -96,6 +99,7 @@ class HitErrorMeter {
         document.querySelector(':root').style.setProperty('--tickHeightRem', tickHeight / 16);
         document.querySelector(':root').style.setProperty('--tickWidthRem', tickWidth / 16);
 
+        this.tickAppearanceStyle = settings.tickAppearanceStyle;
         if (settings.tickAppearanceDuration >= 0) {
             this.tickAppearanceDuration = Math.min(settings.tickAppearanceDuration, 5000);
         };
@@ -109,14 +113,15 @@ class HitErrorMeter {
     /**
    * Prepares the hit error meter.
    * @param {'stable' | 'lazer'} client - The currently played client.
-   * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
+   * @param {'osu' | 'taiko' | 'fruits' | 'mania'} rulesetName - The currently played ruleset.
+   * @param {boolean} isConvert - Whether the currently played map is a converted one. 
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    * @param {number} rate - The speed of the currently played beatmap.
    */
-    prepareHitErrorMeter(client = this.client, rulesetName = this.rulesetName, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
-        this.applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate);
+    prepareHitErrorMeter(client = this.client, rulesetName = this.rulesetName, isConvert = this.isConvert, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
+        this.applyBaseSettings(client, rulesetName, isConvert, overallDiff, circleSize, mods, rate);
         this.recalculateHitWindows();
 
         const WIDTH_CONSTANT = 1.125;
@@ -156,7 +161,7 @@ class HitErrorMeter {
 
         let edgeSegments = null;
 
-        if (this.rulesetName === 'osu' || this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert') {
+        if (this.rulesetName === 'osu' || this.rulesetName === 'mania') {
             edgeSegments = document.querySelectorAll('.hit50');
             document.querySelectorAll('.hit100').forEach(segment => { segment.style.borderRadius = '0'; });
             document.querySelectorAll('.hit300').forEach(segment => { segment.style.borderRadius = '0'; });
@@ -181,21 +186,23 @@ class HitErrorMeter {
     /**
    * A helper method to apply base play settings for use everywhere else.
    * @param {'stable' | 'lazer'} client - The client version that the game is currently being played.
-   * @param {'osu' | 'taiko' | 'fruits' | 'mania' | 'maniaConvert'} rulesetName - The currently played ruleset.
+   * @param {'osu' | 'taiko' | 'fruits' | 'mania'} rulesetName - The currently played ruleset.
+   * @param {boolean} isConvert - Whether the currently played map is a converted one. 
    * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
    * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
    * @param {number} rate - The speed of the map that is being currently played.
    */
-    applyBaseSettings(client, rulesetName, overallDiff, circleSize, mods, rate) {
+    applyBaseSettings(client, rulesetName, isConvert, overallDiff, circleSize, mods, rate) {
         this.client = client;
         this.rulesetName = rulesetName;
+        this.isConvert = isConvert;
         this.rate = rate;
         this.mods = mods;
 
         // This mess exists purely because osu!mania calculates hit windows differently.
         // See the osu!mania section in the `recalculateHitWindows()` method.
-        if (this.client === 'stable' && (this.rulesetName === 'mania' || this.rulesetName === 'maniaConvert')) {
+        if (this.rulesetName === 'mania') {
             this.overallDiff = overallDiff;
             this.circleSize = circleSize;
         } else {
@@ -251,8 +258,9 @@ class HitErrorMeter {
         case 'mania':
             // 320's hit windows now scale in osu!(lazer) (and in osu!(stable) with ScoreV2).
             // Note that in osu!(lazer) the scaling is done "internally" - the visual size of the hit error meter stays the same.
-            //     https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
+            // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#the-perfect-judgement-hit-window-scales-with-od
             //     https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#scorev2
+            //     https://github.com/ppy/osu/pull/25415
             if (this.client === 'lazer' || (this.client === 'stable' && this.mods.includes('v2'))) {
                 this.hitWindows = {
                     hit320: (this.overallDiff <= 5 ? 22.4 - 0.6 * this.overallDiff : 24.9 - 1.1 * this.overallDiff) * this.rate,
@@ -260,6 +268,17 @@ class HitErrorMeter {
                     hit200: (97 - 3 * this.overallDiff) * this.rate,
                     hit100: (127 - 3 * this.overallDiff) * this.rate,
                     hit50: (151 - 3 * this.overallDiff) * this.rate
+                };
+            } else if (this.client === 'mania' && this.isConvert) {
+                // osu!mania converts have different hit windows only in osu!(stable).
+                // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
+                //     https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#converts-no-longer-have-different-hit-windows
+                this.hitWindows = {
+                    hit320: 16 * this.rate,
+                    hit300: (this.overallDiff > 4 ? 34 : 47) * this.rate,
+                    hit200: (this.overallDiff > 4 ? 67 : 77) * this.rate,
+                    hit100: 97 * this.rate,
+                    hit50: 121 * this.rate
                 };
             } else {
                 this.hitWindows = {
@@ -275,37 +294,7 @@ class HitErrorMeter {
             // For some reason, osu!mania not only uses the original OD value when playing with EZ or HR,
             // it also scales every hit window by a factor of 1.4 one way or the other, depending on the mod selected.
 
-            // See it for yourself by selecting an osu!mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
-            // This is the only reason why the hit windows are being rounded here and not in the actual calculation.
-            if (this.client === 'stable') {
-                for (let hitWindow in this.hitWindows) {
-                    if (this.mods.includes('HR')) {
-                        this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] / 1.4);
-                    } else if (this.mods.includes('EZ')) {
-                        this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow] * 1.4);
-                    } else {
-                        this.hitWindows[hitWindow] = Math.floor(this.hitWindows[hitWindow]);
-                    };
-                };
-            };
-            break;
-
-        // osu!mania converts have different hit windows only in osu!(stable).
-        // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
-        case 'maniaConvert':
-            this.hitWindows = {
-                hit320: Math.floor(16 * this.rate),
-                hit300: Math.floor((this.overallDiff > 4 ? 34 : 47) * this.rate),
-                hit200: Math.floor((this.overallDiff > 4 ? 67 : 77) * this.rate),
-                hit100: Math.floor(97 * this.rate),
-                hit50: Math.floor(121 * this.rate)
-            };
-
-            // I've Been Tricked, I've Been Backstabbed and I've Been, Quite Possibly, Bamboozled.
-            // For some reason, osu!mania not only uses the original OD value when playing with EZ or HR,
-            // it also scales every hit window by a factor of 1.4 one way or the other, depending on the mod selected.
-
-            // See it for yourself by selecting an osu!mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats.
+            // See it for yourself by selecting an osu!mania map and switch between EZ, HR, and NoMod and compare the hit windows' sizes by hovering on the map stats (at least in osu!(stable)).
             // This is the only reason why the hit windows are being floored here and not in the actual calculation.
             for (let hitWindow in this.hitWindows) {
                 if (this.mods.includes('HR')) {
@@ -363,8 +352,6 @@ class HitErrorMeter {
    * @returns {HTMLElement} HTML element that will store the hit error tick inside of it.
    */
     getHitWindowSegment(absHitError, whichSegment) {
-        this.recalculateHitWindows();
-
         // osu!(lazer) does these comparisons differently than stable.
         // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#hit-window-edge-calculations-do-not-match-stable
         if (this.client === 'stable') {
@@ -388,7 +375,6 @@ class HitErrorMeter {
                 return document.getElementById(`hit300${whichSegment}`);
         
             case 'mania':
-            case 'maniaConvert':
                 if (absHitError <= this.hitWindows.hit320) {
                     return document.getElementById(`hit320${whichSegment}`);
                 };
@@ -455,8 +441,6 @@ class HitErrorMeter {
    * @returns {number} Relative position of the hit error tick.
    */
     getTickPositionPercentage(absHitError) {
-        this.recalculateHitWindows();
-
         if (this.client === 'stable') {
             switch (this.rulesetName) {
             case 'osu':
@@ -478,7 +462,6 @@ class HitErrorMeter {
                 return absHitError / this.hitWindows.hit300;
         
             case 'mania':
-            case 'maniaConvert':
                 if (absHitError <= this.hitWindows.hit320) {
                     return absHitError / this.hitWindows.hit320;
                 };
@@ -557,7 +540,6 @@ class HitErrorMeter {
         } else {
             segmentForTheTick = this.getHitWindowSegment(hitError, 'Late');
         };
-
         let tickPositionPercentage = this.getTickPositionPercentage(Math.abs(hitError));
 
         let tick = document.createElement('div');
@@ -568,16 +550,23 @@ class HitErrorMeter {
         const RGBA_REGEXP = /rgba?\((?<r>[.\d]+)[, ]+(?<g>[.\d]+)[, ]+(?<b>[.\d]+)(?:\s?[,\/]\s?(?<a>[.\d]+%?))?\)/;
         let tickColor = getComputedStyle(segmentForTheTick).getPropertyValue('background-color').match(RGBA_REGEXP).groups;
         tick.style.backgroundColor = `rgba(${tickColor.r}, ${tickColor.g}, ${tickColor.b}, 1)`;
-        tick.style.left = `${tickPositionPercentage * 100}%`;
 
+        tick.style.left = `${tickPositionPercentage * 100}%`;
         tick.style.transition = `cubic-bezier(0, 1, 0.33, 1) ${this.tickAppearanceDuration}ms`;
 
-        segmentForTheTick.appendChild(tick);
-
-        setTimeout(() => {
+        if (this.tickAppearanceStyle === 'Fade in fully expanded') {
             tick.style.height = 'calc(var(--tickHeightRem) * 1rem)';
-        }, ANIMATION_DELAY);
+            tick.style.opacity = 0;
+        }
 
+        segmentForTheTick.appendChild(tick);
+        setTimeout(() => {
+            if (this.tickAppearanceStyle === 'Fade in fully expanded') {
+                tick.style.opacity = 1;
+            } else {
+                tick.style.height = 'calc(var(--tickHeightRem) * 1rem)';
+            };
+        }, ANIMATION_DELAY);
         setTimeout(() => {
             tick.style.transition = `linear ${this.tickDisappearanceDuration}ms`;
             tick.style.opacity = 0;
@@ -605,12 +594,9 @@ class HitErrorMeter {
    * @returns {number} Max hit window for given ruleset.
    */
     getMaxHitWindow() {
-        this.recalculateHitWindows();
-
         switch (this.rulesetName) {
         case 'osu':
-        case 'mania':
-        case 'maniaConvert': {
+        case 'mania': {
             return this.hitWindows.hit50;
         };
 

@@ -39,13 +39,13 @@
     </div>
 
     <script>
-        // In-game debugging; taken and from cyperdark's key overlay and modified for this overlay specifically.
+        // In-game debugging; taken and from cyperdark's key overlay and slightly modified for this overlay specifically.
         // See https://github.com/tosuapp/counters/blob/master/counters/KeyOverlay%20by%20cyperdark/index.html#L86-L110
-        window.onerror = function (message, source, lineno, colno) {
-            const d = document.createElement('div');
+        window.onerror = function (error, file, lineNumber, columnNumber) {
+            let errorElement = document.createElement('div');
 
-            d.innerText = `${message} in ${source} line ${lineno} col ${colno}`;
-            document.querySelector('.main').appendChild(d);
+            errorElement.innerText = `${error} in ${file}, line ${lineNumber} col ${columnNumber}`;
+            document.querySelector('.main').appendChild(errorElement);
         };
     </script>
     <script src="js/countUp.js"></script>

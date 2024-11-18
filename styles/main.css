@@ -31,6 +31,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
+    margin-bottom: 0.5rem;
 }
 
 /* ---------- UNSTABLE RATE ---------- */
@@ -47,6 +48,18 @@ body {
     text-shadow: 0 0 0.3125rem black;
 }
 
+/* ---------- MOVING AVERAGE ARROW ---------- */
+
+.movingAverageArrow {
+    transform-origin: bottom;
+    filter: drop-shadow(0 0 0.125rem black);
+    position: relative;
+    height: 0.5rem;
+    margin-bottom: 0.25rem;
+    /* easeOutQuint */
+    transition: cubic-bezier(0.22, 1, 0.36, 1) 800ms;
+}
+
 /* ---------- HIT ERROR METER ---------- */
 
 .hitErrorMeterContainer {
@@ -57,15 +70,6 @@ body {
     position: relative;
     opacity: 0;
     width: fit-content;
-    transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
-}
-
-.movingAverageArrow {
-    transform-origin: bottom;
-    filter: drop-shadow(0 0 0.125rem black);
-    position: relative;
-    height: 0.5rem;
-    margin-bottom: 0.25rem;
     transition: cubic-bezier(0, 1, 0.33, 1) 500ms;
 }
 
@@ -148,7 +152,7 @@ body {
     transform-origin: bottom;
     position: absolute;
     z-index: -1;
-    bottom: 0;
+    bottom: -0.5rem;
     opacity: 0;
     overflow: hidden;
     width: 0;

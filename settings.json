@@ -46,7 +46,7 @@
   {
       "uniqueID": "urFontColor",
       "type": "color",
-      "title": "Unstable Rate display text colo(u)r",
+      "title": "Unstable Rate display text color",
       "description": "____________________________________________",
       "options": [],
       "value": "#ffffff"
@@ -78,7 +78,7 @@
   {
       "uniqueID": "mainTickColor",
       "type": "color",
-      "title": "Main tick colo(u)r",
+      "title": "Main tick color",
       "description": "____________________________________________",
       "options": [],
       "value": "#ffffff"
@@ -110,7 +110,7 @@
   {
       "uniqueID": "hit320Color",
       "type": "color",
-      "title": "320's hit window colo(u)r",
+      "title": "320's hit window color",
       "description": "This only affects osu!mania.",
       "options": [],
       "value": "#99ddff"
@@ -118,7 +118,7 @@
   {
       "uniqueID": "hit300Color",
       "type": "color",
-      "title": "300's hit window colo(u)r",
+      "title": "300's hit window color",
       "description": "",
       "options": [],
       "value": "#47b6eb"
@@ -126,7 +126,7 @@
   {
       "uniqueID": "hit200Color",
       "type": "color",
-      "title": "200's hit window colo(u)r",
+      "title": "200's hit window color",
       "description": "This only affects osu!mania.",
       "options": [],
       "value": "#99ffa0"
@@ -134,7 +134,7 @@
   {
       "uniqueID": "hit100Color",
       "type": "color",
-      "title": "100's hit window colo(u)r",
+      "title": "100's hit window color",
       "description": "",
       "options": [],
       "value": "#47eb54"
@@ -142,7 +142,7 @@
   {
       "uniqueID": "hit50Color",
       "type": "color",
-      "title": "50's hit window colo(u)r",
+      "title": "50's hit window color",
       "description": "____________________________________________",
       "options": [],
       "value": "#ebc247"
@@ -164,9 +164,20 @@
       "value": 4
   },
   {
+      "uniqueID": "tickAppearanceStyle",
+      "type": "options",
+      "title": "Hit error ticks appearance style",
+      "description": "",
+      "options": [
+          "Expand from the center",
+          "Fade in fully expanded" 
+      ],
+      "value": "Expand from the center"
+  },
+  {
       "uniqueID": "tickAppearanceDuration",
       "type": "number",
-      "title": "Tick appearance animation duration (in milliseconds)",
+      "title": "Hit error ticks appearance animation duration (in milliseconds)",
       "description": "The time it takes for the hit error tick to fully expand. Must be a positive number smaller or equal `5000` (5 seconds).",
       "options": [],
       "value": 250
@@ -174,7 +185,7 @@
   {
       "uniqueID": "tickDisappearanceDuration",
       "type": "number",
-      "title": "Tick disappearance animation duration (in milliseconds)",
+      "title": "Hit error ticks disappearance animation duration (in milliseconds)",
       "description": "The time it takes for the hit error tick to fully disappear right after fully expanding. Must be a positive number smaller or equal `10000` (10 seconds). ____________________________________________",
       "options": [],
       "value": 3000

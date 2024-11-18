@@ -29,7 +29,7 @@ let cache = {
     relativeMovingAverageArrowPosition: 0
 };
 
-let unstableRate = new CountUp('unstableRate', 0, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
+let unstableRateCountUp = new CountUp('unstableRate', 0, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
 
 const hemManager = new HitErrorMeter();
 
@@ -42,49 +42,17 @@ const hemManager = new HitErrorMeter();
  * @param {'Show nothing' | 'Show only the value' | 'Show both the prefix and the value'} urStyle - The display style of the Unstable Rate display.
  */
 function prepareUnstableRateDisplay(previousGameState, currentGameState, urStyle) {
-    let urElement = document.querySelector('#unstableRate');
     cache.urStyle = urStyle;
 
     // You cannot edit existing CountUps' properties, therefore redeclare it.
     if (cache.urStyle === 'Show only the value') {
-        unstableRate = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.' });
-    } else if (cache.urStyle === 'Show both the prefix and the value') {
-        unstableRate = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
+        unstableRateCountUp = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.' });
+    } else {
+        unstableRateCountUp = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
     };
 
     // Either during gameplay or when going to the results screen from gameplay.
-    urElement.style.opacity = Number((currentGameState === 'play' || (currentGameState === 'resultScreen' && previousGameState === 'play')) && urStyle !== 'Show nothing');
-};
-
-/**
- * Calculate standard deviation. Used to replace tosu's sometimes buggy (and even rarer crash-causing) implementation.
- * @param {number[]} values - An array of values to get a standard deviaton of.
- * @returns {number} Standard deviation of given numbers.
- * @see {@link https://www.w3schools.com/statistics/statistics_standard_deviation.php}
- */
-function calculateStandardDeviation(values) {
-    if (values.length <= 1) {
-        return 0;
-    };
-
-    let sum = 0, sumOfSquares = 0, mean = 0, diffs = [], standardDeviation = 0;
-
-    values.forEach(value => {
-        sum += value;
-    });
-
-    mean = sum / values.length;
-    values.forEach(value => {
-        diffs.push(Math.pow(value - mean, 2));
-    });
-
-    diffs.forEach(diff => {
-        sumOfSquares += diff;
-    });
-
-    standardDeviation = Math.sqrt(sumOfSquares / values.length);
-
-    return standardDeviation;
+    document.querySelector('#unstableRate').style.opacity = Number((currentGameState === 'play' || (currentGameState === 'resultScreen' && previousGameState === 'play')) && urStyle !== 'Show nothing');
 };
 
 /**
@@ -155,13 +123,8 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             cache.mods = play.mods.name;
             cache.rate = play.mods.rate;
 
-            // osu!mania has different hit windows on converts in osu!(stable).
-            if (cache.client === 'stable' && cache.rulesetName === 'mania' && cache.isConvert) {
-                cache.rulesetName = 'maniaConvert';
-            };
-
             prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
-            hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
+            hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.isConvert, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
             document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHemBeVisible());
             // osu!taiko applies a vertical offset to the map background only in some maps
             // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
@@ -177,7 +140,7 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             if (cache.rulesetName === 'fruits' || settings.scoreMeter.type.name === 'colour') {
                 // It's actually 21.5px, hovewer I will use that to my advantage to make sure it actually covers the entire thing.
                 document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(22 * cache.scoreMeterSize) / 16}rem`;
-                // 1 pixel for each side is added for a good measure in case the in-game hit error meter peaks on one side or the other.
+                // 1 pixel for each side is added for a good measure in case the in-game hit error meter peeks on one side or the other.
                 document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((639 + 2) * cache.scoreMeterSize) / 16}rem`;
 
             } else if (settings.scoreMeter.type.name === 'error') {
@@ -194,6 +157,11 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
                 document.querySelector('.inGameScoreMeterHider').style.height = '0';
             };
         };
+
+        if (cache.unstableRate !== play.unstableRate) {
+            cache.unstableRate = play.unstableRate;
+            unstableRateCountUp.update(cache.unstableRate);
+        }
 
         if (cache.isFullscreen !== settings.resolution.fullscreen || cache.gameWindowedHeight !== settings.resolution.height || cache.gameFullscreenHeight !== settings.resolution.heightFullscreen) {
             cache.isFullscreen = settings.resolution.fullscreen;
@@ -240,18 +208,13 @@ socket.api_v2_precise(({ hitErrors }) => {
         if (JSON.stringify(cache.hitErrors) !== JSON.stringify(hitErrors)) {
             cache.hitErrors = hitErrors;
 
-            let ur = calculateStandardDeviation(cache.hitErrors) * 10;
-            // The size of the hit error meter depends on the rate only in osu!(stable), therefore the Unstable Rate must be adjusted accordingly.
-            if (cache.client === 'stable' && (cache.rulesetName !== 'mania' || cache.rulesetName !== 'maniaConvert')) {
-                ur /= cache.rate;
-            };
-            cache.unstableRate = ur;
-            unstableRate.update(cache.unstableRate);
-
             let hitErrorsCurrentAmount = cache.hitErrors.length;
-            if (hitErrorsCurrentAmount === 0) {
+            if (hitErrorsCurrentAmount === 0 || !shouldHemBeVisible()) {
                 cache.relativeMovingAverageArrowPosition = 0;
                 document.querySelector('.movingAverageArrow').style.left = '0%';
+                document.querySelectorAll('.tick').forEach(tick => {
+                    tick.remove();
+                });
             };
 
             // This is only activated on the initial overlay load to not add every single hit error tick to the overlay.
