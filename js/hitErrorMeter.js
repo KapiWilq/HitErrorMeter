@@ -581,12 +581,12 @@ class HitErrorMeter {
     /**
    * A helper method to get the hit error's relative position. Used for the moving average arrow.
    * NOTE: This is a slight modification of the osu!(lazer)'s implementation of this functionality.
-   * @param {number} value - The hit error value.
+   * @param {number} hitError - The hit error value.
    * @returns {number} The position for the moving average arrow.
    * @see {@link https://github.com/ppy/osu/blob/master/osu.Game/Screens/Play/HUD/HitErrorMeters/BarHitErrorMeter.cs#L430-L435}
    */
-    getRelativeHitErrorPosition(value) {
-        return this.clamp((value / this.getMaxHitWindow()) / 2, -1, 1);
+    getRelativeHitErrorPosition(hitError) {
+        return hitError / this.getMaxHitWindow() / 2;
     };
 
     /**
