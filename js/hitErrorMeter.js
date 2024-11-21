@@ -3,7 +3,6 @@
  */
 class HitErrorMeter {
     constructor() {
-        // Default settings.
         this.client = 'stable';
         this.rulesetName = 'osu';
         this.isConvert = false;
@@ -20,48 +19,58 @@ class HitErrorMeter {
         };
 
         this.hitErrorMeterScale = 1;
+        this.movingAverageArrowAnimationDuration = 800;
+        this.movingAverageArrowAnimation = 'cubic-bezier(0.22, 1, 0.36, 1)';
         this.normalizeHitErrorMeterWidth = false;
         this.hitWindowsWidthMultiplier = 1;
-        this.tickAppearanceStyle = 'Expand from the center';
+        this.tickHeight = 36;
+        this.tickWidth = 4;
+        this.tickAppearanceStyle = 'Only expand';
+        this.tickAppearanceAnimation = 'cubic-bezier(0, 1, 0.33, 1)';
         this.tickAppearanceDuration = 250;
         this.tickDisappearanceStyle = 'Only fade out';
+        this.tickAppearanceAnimation = 'linear';
         this.tickDisappearanceDuration = 3000;
     };
 
     /**
-   * Applies user's settings.
-   * @param {{hitErrorMeterScale: number,
-   *          unstableRateStyle: 'Show nothing' | 'Show only the value' | 'Show both the prefix and the value',
-   *          unstableRateSize: number,
-   *          unstableRateFont: string,
-   *          unstableRateColor: string,
-   *          showMovingAverageArrow: boolean,
-   *          movingAverageArrowSize: number,
-   *          movingAverageArrowColor: string,
-   *          mainTickHeight: number,
-   *          mainTickColor: string,
-   *          showHitWindows: boolean,
-   *          showHitErrorMeterInCatch: boolean,
-   *          normalizeHitErrorMeterWidth: boolean
-   *          hitWindowsWidthMultiplier: number,
-   *          hit320Color: string,
-   *          hit300Color: string,
-   *          hit200Color: string,
-   *          hit100Color: string,
-   *          hit50Color: string,
-   *          tickHeight: number,
-   *          tickWidth: number,
-   *          tickAppearanceStyle: 'Expand from the center' | 'Fade in fully expanded',
-   *          tickAppearanceDuration: number,
-   *          tickDisappearanceStyle: 'Only fade out' | 'Only decrease the height' | 'Fade out and decrease the height',
-   *          tickDisappearanceDuration: number,
-   *          hideInGameScoreMeter: boolean}} settings - User settings.
-   */
+     * Applies user's settings.
+     * @param {{hitErrorMeterScale: number,
+     *          unstableRateStyle: 'Show nothing' | 'Show only the value' | 'Show both the prefix and the value',
+     *          unstableRateSize: number,
+     *          unstableRateFont: string,
+     *          unstableRateColor: string,
+     *          showMovingAverageArrow: boolean,
+     *          movingAverageArrowSize: number,
+     *          movingAverageArrowColor: string,
+     *          movingAverageArrowAnimationDuration: number,
+     *          movingAverageArrowAnimation: string,
+     *          mainTickHeight: number,
+     *          mainTickColor: string,
+     *          showHitWindows: boolean,
+     *          showHitErrorMeterInCatch: boolean,
+     *          normalizeHitErrorMeterWidth: boolean
+     *          hitWindowsWidthMultiplier: number,
+     *          hit320Color: string,
+     *          hit300Color: string,
+     *          hit200Color: string,
+     *          hit100Color: string,
+     *          hit50Color: string,
+     *          tickHeight: number,
+     *          tickWidth: number,
+     *          tickAppearanceStyle: 'Only expand' | 'Fade in and expand' | 'Fade in fully expanded',
+     *          tickAppearanceDuration: number,
+     *          tickAppearanceAnimation: string,
+     *          tickDisappearanceStyle: 'Only fade out' | 'Only decrease the height' | 'Fade out and decrease the height',
+     *          tickDisappearanceDuration: number,
+     *          tickDisappearanceAnimation: string,
+     *          hideInGameScoreMeter: boolean}} settings - User settings.
+     */
     applyUserSettings(settings) {
-        let mainTickHeight = Math.max(6, settings.mainTickHeight);
-        let tickHeight = Math.max(6, settings.tickHeight);
-        let tickWidth = this.clamp(settings.tickWidth, 1, 8);
-        let hemHeight = mainTickHeight > tickHeight ? mainTickHeight : tickHeight;
+        let mainTickHeight = Math.max(8, settings.mainTickHeight);
+        this.tickHeight = Math.max(8, settings.tickHeight);
+        this.tickWidth = this.clamp(settings.tickWidth, 1, 8);
+        let hemHeight = mainTickHeight > this.tickHeight ? mainTickHeight : this.tickHeight;
 
         this.hitErrorMeterScale = this.clamp(settings.hitErrorMeterScale, 0.5, 5);
         document.querySelector('.segments').style.transform = `scale(${this.hitErrorMeterScale})`;
@@ -69,7 +78,6 @@ class HitErrorMeter {
 
         if (settings.unstableRateSize >= 0)
             document.querySelector('#unstableRate').style.transform = `scale(${Math.max(0, settings.unstableRateSize) / 24})`;
-
         document.querySelector('#unstableRate').style.fontFamily = `"${settings.unstableRateFont}", "Roboto", sans-serif`;
         document.querySelector('#unstableRate').style.color = settings.unstableRateColor;
 
@@ -85,6 +93,10 @@ class HitErrorMeter {
         };
         document.querySelector('.movingAverageArrow').style.marginBottom = `${4 * this.hitErrorMeterScale / 16}rem`;
         document.querySelector('.movingAverageArrow').style.fill = settings.movingAverageArrowColor;
+        // Doing it this way allows me to put a safeguard against negative values while being able to change the transition timing function.
+        if (settings.movingAverageArrowAnimationDuration >= 0)
+            this.movingAverageArrowAnimationDuration = Math.min(settings.movingAverageArrowAnimationDuration, 3000);
+        document.querySelector('.movingAverageArrow').style.transition = `${settings.movingAverageArrowAnimation} ${this.movingAverageArrowAnimationDuration}ms`;
 
         document.querySelector('.mainTick').style.height = `${mainTickHeight / 16}rem`;
         document.querySelector('.mainTick').style.backgroundColor = settings.mainTickColor;
@@ -98,31 +110,28 @@ class HitErrorMeter {
         this.applyColorToRootProperty('--hit100BG', settings.hit100Color, settings.showHitWindows);
         this.applyColorToRootProperty('--hit50BG', settings.hit50Color, settings.showHitWindows);
 
-        document.querySelector(':root').style.setProperty('--tickHeightRem', tickHeight / 16);
-        document.querySelector(':root').style.setProperty('--tickWidthRem', tickWidth / 16);
-
         this.tickAppearanceStyle = settings.tickAppearanceStyle;
         this.tickDisappearanceStyle = settings.tickDisappearanceStyle;
         if (settings.tickAppearanceDuration >= 0)
             this.tickAppearanceDuration = Math.min(settings.tickAppearanceDuration, 5000);
-
         if (settings.tickDisappearanceDuration >= 0)
             this.tickDisappearanceDuration = Math.min(settings.tickDisappearanceDuration, 10000);
-
+        this.tickAppearanceAnimation = settings.tickAppearanceAnimation;
+        this.tickDisappearanceAnimation = settings.tickDisappearanceAnimation;
 
         this.prepareHitErrorMeter();
     };
 
     /**
-   * Prepares the hit error meter.
-   * @param {'stable' | 'lazer'} client - The currently played client.
-   * @param {'osu' | 'taiko' | 'fruits' | 'mania'} rulesetName - The currently played ruleset.
-   * @param {boolean} isConvert - Whether the currently played map is a converted one. 
-   * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
-   * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
-   * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
-   * @param {number} rate - The speed of the currently played beatmap.
-   */
+     * Prepares the hit error meter.
+     * @param {'stable' | 'lazer'} client - The currently played client.
+     * @param {'osu' | 'taiko' | 'fruits' | 'mania'} rulesetName - The currently played ruleset.
+     * @param {boolean} isConvert - Whether the currently played map is a converted one. 
+     * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
+     * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
+     * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
+     * @param {number} rate - The speed of the currently played beatmap.
+     */
     prepareHitErrorMeter(client = this.client, rulesetName = this.rulesetName, isConvert = this.isConvert, overallDiff = this.overallDiff, circleSize = this.circleSize, mods = this.mods, rate = this.rate) {
         this.applyBaseSettings(client, rulesetName, isConvert, overallDiff, circleSize, mods, rate);
         this.recalculateHitWindows();
@@ -195,15 +204,15 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to apply base play settings for use everywhere else.
-   * @param {'stable' | 'lazer'} client - The client version that the game is currently being played.
-   * @param {'osu' | 'taiko' | 'fruits' | 'mania'} rulesetName - The currently played ruleset.
-   * @param {boolean} isConvert - Whether the currently played map is a converted one. 
-   * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
-   * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
-   * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
-   * @param {number} rate - The speed of the map that is being currently played.
-   */
+     * A helper method to apply base play settings for use everywhere else.
+     * @param {'stable' | 'lazer'} client - The client version that the game is currently being played.
+     * @param {'osu' | 'taiko' | 'fruits' | 'mania'} rulesetName - The currently played ruleset.
+     * @param {boolean} isConvert - Whether the currently played map is a converted one. 
+     * @param {number} overallDiff - The Overall Difficulty value of the currently played map. NOTE: This is the original value (without any mods).
+     * @param {number} circleSize - The Circle Size value of the currently played map. NOTE: This is the original value (without any mods).
+     * @param {string} mods - A list of mods formatted as a not separate list of acronyms, e.g. `HDDT`.
+     * @param {number} rate - The speed of the map that is being currently played.
+     */
     applyBaseSettings(client, rulesetName, isConvert, overallDiff, circleSize, mods, rate) {
         this.client = client;
         this.rulesetName = rulesetName;
@@ -231,8 +240,8 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch - it uses Circle Size).
-   */
+     * A helper method to recalculate hit windows for given overall difficulty (except for osu!catch - it uses Circle Size).
+     */
     recalculateHitWindows() {
         switch (this.rulesetName) {
         case 'osu':
@@ -322,11 +331,11 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to set a property value in the root pseudo-class.
-   * @param {string} property - A property to be changed.
-   * @param {string} color - A color that should be set for this property.
-   * @param {boolean} shouldBeVisible - Whether the color should be opaque or transparent.
-   */
+     * A helper method to set a property value in the root pseudo-class.
+     * @param {string} property - A property to be changed.
+     * @param {string} color - A color that should be set for this property.
+     * @param {boolean} shouldBeVisible - Whether the color should be opaque or transparent.
+     */
     applyColorToRootProperty(property, color, shouldBeVisible) {
         if (color.length === 9)
             color = color.slice(0, -2);
@@ -337,22 +346,22 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to get a value with lower and upper bounds.
-   * @param {number} val - The value to be clamped.
-   * @param {number} min - The lower bound. If the value is below it, this will return `min`.
-   * @param {number} max - The upper bound. If the value is above it, this will return `max`.
-   * @returns {number} A number between `min` and `max` inclusive.
-   */
+     * A helper method to get a value with lower and upper bounds.
+     * @param {number} val - The value to be clamped.
+     * @param {number} min - The lower bound. If the value is below it, this will return `min`.
+     * @param {number} max - The upper bound. If the value is above it, this will return `max`.
+     * @returns {number} A number between `min` and `max` inclusive.
+     */
     clamp(val, min, max) {
         return Math.min(Math.max(min, val), max);
     };
 
     /**
-   * A helper method to determine where should a hit error tick be placed.
-   * @param {number} absHitError - The absolute value of the given hit error.
-   * @param {string} whichSegment - Whether the hit error tick should be placed either in the `early` or `late` half of the hit error meter.
-   * @returns {HTMLElement} HTML element that will store the hit error tick inside of it.
-   */
+     * A helper method to determine where should a hit error tick be placed.
+     * @param {number} absHitError - The absolute value of the given hit error.
+     * @param {string} whichSegment - Whether the hit error tick should be placed either in the `early` or `late` half of the hit error meter.
+     * @returns {HTMLElement} HTML element that will store the hit error tick inside of it.
+     */
     getHitWindowSegment(absHitError, whichSegment) {
         // osu!(lazer) does these comparisons differently than stable.
         // See https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#hit-window-edge-calculations-do-not-match-stable
@@ -438,10 +447,10 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to get a relative position of the hit error tick inside a hit error window.
-   * @param {number} absHitError - The absolute value of the given hit error.
-   * @returns {number} Relative position of the hit error tick.
-   */
+     * A helper method to get a relative position of the hit error tick inside a hit error window.
+     * @param {number} absHitError - The absolute value of the given hit error.
+     * @returns {number} Relative position of the hit error tick.
+     */
     getTickPositionPercentage(absHitError) {
         if (this.client === 'stable') {
             switch (this.rulesetName) {
@@ -546,9 +555,9 @@ class HitErrorMeter {
     }
 
     /**
-   * Adds a hit error tick in the hit error meter.
-   * @param {number} hitError - The hit error value.
-   */
+     * Adds a hit error tick in the hit error meter.
+     * @param {number} hitError - The hit error value.
+     */
     addTick(hitError) {
         // This is needed so that the expansion animation plays correctly, otherwise it just doesn't apply the transition.
         const ANIMATION_DELAY = 17;
@@ -567,27 +576,28 @@ class HitErrorMeter {
         // We don't know if hit error segments are hidden - extract RGB(A) values and set the opacity manually.
         // RegExp source: https://regex101.com/library/dVOwn0
         const RGBA_REGEXP = /rgba?\((?<r>[.\d]+)[, ]+(?<g>[.\d]+)[, ]+(?<b>[.\d]+)(?:\s?[,\/]\s?(?<a>[.\d]+%?))?\)/;
-        let tickColor = getComputedStyle(segmentForTheTick).backgroundColor.match(RGBA_REGEXP).groups;
-        tick.style.backgroundColor = `rgba(${tickColor.r}, ${tickColor.g}, ${tickColor.b}, 1)`;
+        let tickColors = getComputedStyle(segmentForTheTick).backgroundColor.match(RGBA_REGEXP).groups;
+        tick.style.backgroundColor = `rgba(${tickColors.r}, ${tickColors.g}, ${tickColors.b}, 1)`;
 
         tick.style.left = `${tickPositionPercentage * 100}%`;
-        tick.style.transition = `cubic-bezier(0, 1, 0.33, 1) ${this.tickAppearanceDuration}ms`;
+        tick.style.transition = `${this.tickAppearanceAnimation} ${this.tickAppearanceDuration}ms`;
+        tick.style.width = `${this.tickWidth / 16}rem`;
+        tick.style.borderRadius = `${this.tickWidth / 2 / 16}rem`;
 
-        if (this.tickAppearanceStyle === 'Fade in fully expanded') {
-            tick.style.height = 'calc(var(--tickHeightRem) * 1rem)';
+        if (this.tickAppearanceStyle !== 'Only expand')
             tick.style.opacity = 0;
-        }
+        if (this.tickAppearanceStyle === 'Fade in fully expanded')
+            tick.style.height = `${this.tickHeight / 16}rem`;
 
         segmentForTheTick.appendChild(tick);
         setTimeout(() => {
-            if (this.tickAppearanceStyle === 'Fade in fully expanded') {
+            if (this.tickAppearanceStyle !== 'Only expand')
                 tick.style.opacity = 1;
-            } else {
-                tick.style.height = 'calc(var(--tickHeightRem) * 1rem)';
-            };
+            if (this.tickAppearanceStyle !== 'Fade in fully expanded')
+                tick.style.height = `${this.tickHeight / 16}rem`;
         }, ANIMATION_DELAY);
         setTimeout(() => {
-            tick.style.transition = `linear ${this.tickDisappearanceDuration}ms`;
+            tick.style.transition = `${this.tickDisappearanceAnimation} ${this.tickDisappearanceDuration}ms`;
             if (this.tickDisappearanceStyle !== 'Only decrease the height')
                 tick.style.opacity = 0;
             if (this.tickDisappearanceStyle !== 'Only fade out')
@@ -599,20 +609,20 @@ class HitErrorMeter {
     };
 
     /**
-   * A helper method to get the hit error's relative position. Used for the moving average arrow.
-   * NOTE: This is a slight modification of the osu!(lazer)'s implementation of this functionality.
-   * @param {number} hitError - The hit error value.
-   * @returns {number} The position for the moving average arrow.
-   * @see {@link https://github.com/ppy/osu/blob/master/osu.Game/Screens/Play/HUD/HitErrorMeters/BarHitErrorMeter.cs#L430-L435}
-   */
+     * A helper method to get the hit error's relative position. Used for the moving average arrow.
+     * NOTE: This is a slight modification of the osu!(lazer)'s implementation of this functionality.
+     * @param {number} hitError - The hit error value.
+     * @returns {number} The position for the moving average arrow.
+     * @see {@link https://github.com/ppy/osu/blob/master/osu.Game/Screens/Play/HUD/HitErrorMeters/BarHitErrorMeter.cs#L430-L435}
+     */
     getRelativeHitErrorPosition(hitError) {
         return hitError / this.getMaxHitWindow() / 2;
     };
 
     /**
-   * A helper method to get the max hit window for given gamemode. NOTE: This uses the ruleset ID stored inside the class.
-   * @returns {number} Max hit window for given ruleset.
-   */
+     * A helper method to get the max hit window for given gamemode. NOTE: This uses the ruleset ID stored inside the class.
+     * @returns {number} Max hit window for given ruleset.
+     */
     getMaxHitWindow() {
         switch (this.rulesetName) {
         case 'osu':
