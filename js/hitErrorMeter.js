@@ -289,7 +289,7 @@ class HitErrorMeter {
                     hit100: (127 - 3 * this.overallDiff) * this.rate,
                     hit50: (151 - 3 * this.overallDiff) * this.rate
                 };
-            else if (this.client === 'mania' && this.isConvert)
+            else if (this.rulesetName === 'mania' && this.isConvert)
                 // osu!mania converts have different hit windows only in osu!(stable).
                 // See https://osu.ppy.sh/wiki/en/Gameplay/Judgement/osu%21mania#judgements.
                 //     https://osu.ppy.sh/wiki/en/Client/Release_stream/Lazer/Gameplay_differences_in_osu%21%28lazer%29#converts-no-longer-have-different-hit-windows
@@ -604,7 +604,6 @@ class HitErrorMeter {
                 tick.style.height = 0;
 
             setTimeout(() => tick.remove(), this.tickDisappearanceDuration);
-
         }, this.tickAppearanceDuration + ANIMATION_DELAY);
     };
 
