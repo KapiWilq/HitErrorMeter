@@ -574,10 +574,8 @@ class HitErrorMeter {
         tick.classList.add('tick');
 
         // We don't know if hit error segments are hidden - extract RGB(A) values and set the opacity manually.
-        // RegExp source: https://regex101.com/library/dVOwn0
-        const RGBA_REGEXP = /rgba?\((?<r>[.\d]+)[, ]+(?<g>[.\d]+)[, ]+(?<b>[.\d]+)(?:\s?[,\/]\s?(?<a>[.\d]+%?))?\)/;
-        let tickColors = getComputedStyle(segmentForTheTick).backgroundColor.match(RGBA_REGEXP).groups;
-        tick.style.backgroundColor = `rgba(${tickColors.r}, ${tickColors.g}, ${tickColors.b}, 1)`;
+        const [r, g, b] = getComputedStyle(segmentForTheTick).backgroundColor.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',').map(r => r.trim());
+        tick.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 1)`;
 
         tick.style.left = `${tickPositionPercentage * 100}%`;
         tick.style.transition = `${this.tickAppearanceAnimation} ${this.tickAppearanceDuration}ms`;
