@@ -58,6 +58,7 @@ body {
     margin-bottom: 0.25rem;
     /* easeOutQuint */
     transition: cubic-bezier(0.22, 1, 0.36, 1) 800ms;
+    fill: white;
 }
 
 /* ---------- HIT ERROR METER ---------- */

@@ -12,14 +12,11 @@
         "sourceType": "module"
     },
     "rules": {
-        "arrow-body-style": [
-            "error",
-            "always"
-        ],
         "indent": [
             "warn",
             4
         ],
+        "newline-before-return": "error",
         "no-undef": "off",
         "no-extra-semi": "off",
         "semi": [

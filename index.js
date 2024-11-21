@@ -3,10 +3,10 @@ import HitErrorMeter from './js/hitErrorMeter.js';
 const socket = new WebSocketManager(`${location.host}`);
 
 let cache = {
-    showHemInCatch: false,
-    hemScaleWithResolution: true,
+    showHitErrorMeterInCatch: false,
+    scaleHitErrorMeterWithResolution: true,
     hideInGameScoreMeter: true,
-    urStyle: '',
+    unstableRateStyle: '',
     client: '',
     previousState: '',
     currentState: '',
@@ -31,7 +31,7 @@ let cache = {
 
 let unstableRateCountUp = new CountUp('unstableRate', 0, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
 
-const hemManager = new HitErrorMeter();
+const hitErrorMeterManager = new HitErrorMeter();
 
 
 
@@ -39,28 +39,26 @@ const hemManager = new HitErrorMeter();
  * A helper method to prepare the Unstable Rate display.
  * @param {string} previousGameState - The game state before the current one.
  * @param {string} currentGameState - The current game state.
- * @param {'Show nothing' | 'Show only the value' | 'Show both the prefix and the value'} urStyle - The display style of the Unstable Rate display.
+ * @param {'Show nothing' | 'Show only the value' | 'Show both the prefix and the value'} unstableRateStyle - The display style of the Unstable Rate display.
  */
-function prepareUnstableRateDisplay(previousGameState, currentGameState, urStyle) {
-    cache.urStyle = urStyle;
+function prepareUnstableRateDisplay(previousGameState, currentGameState, unstableRateStyle) {
+    cache.unstableRateStyle = unstableRateStyle;
 
     // You cannot edit existing CountUps' properties, therefore redeclare it.
-    if (cache.urStyle === 'Show only the value') {
-        unstableRateCountUp = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.' });
-    } else {
-        unstableRateCountUp = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
-    };
+    unstableRateCountUp = cache.unstableRateStyle === 'Show only the value'
+        ? new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.' })
+        : new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
 
     // Either during gameplay or when going to the results screen from gameplay.
-    document.querySelector('#unstableRate').style.opacity = Number((currentGameState === 'play' || (currentGameState === 'resultScreen' && previousGameState === 'play')) && urStyle !== 'Show nothing');
+    document.querySelector('#unstableRate').style.opacity = Number((currentGameState === 'play' || (currentGameState === 'resultScreen' && previousGameState === 'play')) && unstableRateStyle !== 'Show nothing');
 };
 
 /**
  * A helper function to determine whether the hit error meter should be visible.
  * @returns {boolean} Whether the hit error meter should be visible.
  */
-function shouldHemBeVisible() {
-    return cache.currentState === 'play' && (cache.showHemInCatch || cache.rulesetName !== 'fruits');
+function shouldHitErrorMeterBeVisible() {
+    return cache.currentState === 'play' && (cache.showHitErrorMeterInCatch || cache.rulesetName !== 'fruits');
 };
 
 
@@ -70,28 +68,26 @@ socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
 socket.commands(({ command, message }) => {
     try {
         if (command === 'getSettings') {
-            cache.showHemInCatch = message.showHemInCatch;
-            cache.hemScaleWithResolution = message.hemScaleWithResolution;
+            cache.showHitErrorMeterInCatch = message.showHitErrorMeterInCatch;
+            cache.scaleHitErrorMeterWithResolution = message.scaleHitErrorMeterWithResolution;
             cache.hideInGameScoreMeter = message.hideInGameScoreMeter;
 
-            if (cache.hemScaleWithResolution && cache.client === 'stable') {
-                if (cache.isFullscreen) {
-                    document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
-                } else {
-                    document.querySelector('.main').style.transform = `scale(${cache.gameWindowedHeight / 1080})`;
-                };
-            } else {
+            // Here is a thing - osu!(lazer) already has way more flexibility when it comes to resizing (and moving, and scaling, and everything in between).
+            // It wouldn't make sense to scale this overlay in osu!lazer since not only you can have multiple hit error meters, you can scale them however you want.
+            // Therefore, limit this to osu!(stable) only.
+            if (cache.scaleHitErrorMeterWithResolution && cache.client === 'stable')
+                document.querySelector('.main').style.transform = cache.isFullscreen ? `scale(${cache.gameFullscreenHeight / 1080})` : `scale(${cache.gameWindowedHeight / 1080})`;
+            else
                 document.querySelector('.main').style.transform = `scale(1)`;
-            };
 
-            hemManager.applyUserSettings(message);
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHemBeVisible());
+            hitErrorMeterManager.applyUserSettings(message);
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHitErrorMeterBeVisible());
             // osu!taiko applies a vertical offset to the map background only in some maps
             // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
 
-            prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.urStyle);
+            prepareUnstableRateDisplay(cache.previousState, cache.currentState, message.unstableRateStyle);
         };
     } catch (error) {
         console.error(error);
@@ -123,15 +119,15 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             cache.mods = play.mods.name;
             cache.rate = play.mods.rate;
 
-            prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.urStyle);
-            hemManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.isConvert, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
-            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHemBeVisible());
+            prepareUnstableRateDisplay(cache.previousState, cache.currentState, cache.unstableRateStyle);
+            hitErrorMeterManager.prepareHitErrorMeter(cache.client, cache.rulesetName, cache.isConvert, cache.overallDiff, cache.circleSize, cache.mods, cache.rate);
+            document.querySelector('.hitErrorMeterContainer').style.opacity = Number(shouldHitErrorMeterBeVisible());
             // osu!taiko applies a vertical offset to the map background only in some maps
             // (can't determine why (and how) yet, therefore let's disable the in-game score meter hider in osu!taiko for now).
             // See https://github.com/ppy/osu/issues/14238#issuecomment-2167691307
             document.querySelector('.inGameScoreMeterHider').style.opacity = Number(cache.currentState === 'play' && cache.hideInGameScoreMeter && cache.rulesetName !== 'taiko');
 
-            let hitWindows = hemManager.hitWindows;
+            let hitWindows = hitErrorMeterManager.hitWindows;
 
             if (cache.scoreMeterSize !== settings.scoreMeter.size) {
                 cache.scoreMeterSize = settings.scoreMeter.size;
@@ -145,12 +141,11 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
 
             } else if (settings.scoreMeter.type.name === 'error') {
                 document.querySelector('.inGameScoreMeterHider').style.height = `${Math.ceil(27 * cache.scoreMeterSize) / 16}rem`;
-                if (cache.rulesetName === 'taiko') {
-                    // The additional 19px is for the 50's hit window that doesn't actually do anything in osu!taiko in osu!(stable).
-                    document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
-                } else {
-                    document.querySelector('.inGameScoreMeterHider').style.width = `${Math.ceil((hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
-                };
+
+                // The additional 19px is for the 50's hit window that doesn't actually do anything in osu!taiko in osu!(stable).
+                document.querySelector('.inGameScoreMeterHider').style.width = cache.rulesetName === 'taiko'
+                    ? `${Math.ceil(((hitWindows.hit100 * 1.125 + 19) * 2 + 2) * cache.scoreMeterSize) / 16}rem`
+                    : `${Math.ceil((hitWindows.hit50 * 1.125 * 2 + 2) * cache.scoreMeterSize) / 16}rem`;
 
             } else {
                 document.querySelector('.inGameScoreMeterHider').style.width = '0';
@@ -169,34 +164,25 @@ socket.api_v2(({ client, state, settings, beatmap, play, folders, files }) => {
             cache.gameFullscreenHeight = settings.resolution.heightFullscreen;
 
             // Here is a thing - osu!(lazer) already has way more flexibility when it comes to resizing (and moving, and scaling, and everything in between).
-            // It wouldn't make sense to scale it in osu!lazer since not only you can have multiple hit error meters, you can scale them however you want.
+            // It wouldn't make sense to scale this overlay in osu!lazer since not only you can have multiple hit error meters, you can scale them however you want.
             // Therefore, limit this to osu!(stable) only.
-            if (cache.hemScaleWithResolution && cache.client === 'stable') {
-                if (cache.isFullscreen) {
-                    document.querySelector('.main').style.transform = `scale(${cache.gameFullscreenHeight / 1080})`;
-                } else {
-                    document.querySelector('.main').style.transform = `scale(${cache.gameWindowedHeight / 1080})`;
-                };
-            } else {
+            if (cache.scaleHitErrorMeterWithResolution && cache.client === 'stable')
+                document.querySelector('.main').style.transform = cache.isFullscreen ? `scale(${cache.gameFullscreenHeight / 1080})` : `scale(${cache.gameWindowedHeight / 1080})`;
+            else
                 document.querySelector('.main').style.transform = `scale(1)`;
-            };
         };
 
         if (cache.foldersBeatmap !== folders.beatmap || cache.filesBackground !== files.background) {
             cache.foldersBeatmap = folders.beatmap;
             cache.filesBackground = files.background;
 
-            if (cache.filesBackground !== '') {
-                document.getElementById('background').src = `${location.origin}/files/beatmap/${cache.foldersBeatmap}/${cache.filesBackground}`;
-            } else {
-                document.getElementById('background').src = '';
-            };
+            document.querySelector('#background').src = cache.filesBackground !== '' ? `${location.origin}/files/beatmap/${cache.foldersBeatmap}/${cache.filesBackground}` : '';
         };
 
         if (cache.backgroundDim !== settings.background.dim) {
             cache.backgroundDim = settings.background.dim;
 
-            document.getElementById('background').style.filter = `brightness(${1 - cache.backgroundDim / 100})`;
+            document.querySelector('#background').style.filter = `brightness(${1 - cache.backgroundDim / 100})`;
         };
     } catch (error) {
         console.error(error);
@@ -209,12 +195,10 @@ socket.api_v2_precise(({ hitErrors }) => {
             cache.hitErrors = hitErrors;
 
             let hitErrorsCurrentAmount = cache.hitErrors.length;
-            if (hitErrorsCurrentAmount === 0 || !shouldHemBeVisible()) {
+            if (hitErrorsCurrentAmount === 0 || !shouldHitErrorMeterBeVisible()) {
                 cache.relativeMovingAverageArrowPosition = 0;
                 document.querySelector('.movingAverageArrow').style.left = '0%';
-                document.querySelectorAll('.tick').forEach(tick => {
-                    tick.remove();
-                });
+                hitErrorMeterManager.removeAllHitErrorTicks();
             };
 
             // This is only activated on the initial overlay load to not add every single hit error tick to the overlay.
@@ -225,17 +209,15 @@ socket.api_v2_precise(({ hitErrors }) => {
 
             for (let i = cache.hitErrorsPreviousAmount; i < hitErrorsCurrentAmount; i++) {
                 // Don't add new ticks when the hit error meter is invisible (or if the hit error value is stupid).
-                if (cache.hitErrors[i] != undefined && !isNaN(cache.hitErrors[i]) && cache.hitErrors[i] != null && shouldHemBeVisible()) {
-                    hemManager.addTick(cache.hitErrors[i]);
+                if (cache.hitErrors[i] != undefined && !isNaN(cache.hitErrors[i]) && cache.hitErrors[i] != null && shouldHitErrorMeterBeVisible()) {
+                    hitErrorMeterManager.addTick(cache.hitErrors[i]);
 
                     // This is pretty much a slight modification of osu!(lazer)'s implementation (except for the if).
                     // See more details by looking at the `getRelativeHitErrorPosition`'s JSDoc.
                     // Also, osu!catch stores fruits landing on the right side of the catcher as ""early hits"" - flip the hit error to correct it.
-                    if (cache.rulesetName !== 'fruits') {
-                        document.querySelector('.movingAverageArrow').style.left = `${hemManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 + cache.hitErrors[i] * 0.1) * 100}%`;
-                    } else {
-                        document.querySelector('.movingAverageArrow').style.left = `${hemManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 - cache.hitErrors[i] * 0.1) * 100}%`;
-                    };
+                    document.querySelector('.movingAverageArrow').style.left = cache.rulesetName !== 'fruits'
+                        ? `${hitErrorMeterManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 + cache.hitErrors[i] * 0.1) * 100}%`
+                        : `${hitErrorMeterManager.getRelativeHitErrorPosition(cache.relativeMovingAverageArrowPosition = cache.relativeMovingAverageArrowPosition * 0.9 - cache.hitErrors[i] * 0.1) * 100}%`;
                 };
             };
 

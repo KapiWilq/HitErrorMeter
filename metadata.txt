@@ -5,4 +5,4 @@ Author: KapiWilq
 CompatibleWith: tosu
 Resolution: 720 x 100
 authorLinks: https://github.com/KapiWilq
-Notes: Supports all rulesets! | The overlay resolution/size is for the default settings (both the overlay and the in-game score meter) in the osu!mania ruleset with EZDT at OD0.
+Notes: Supports all rulesets! | Very customizable! | The overlay resolution/size is for the default settings (both the overlay and the in-game score meter) in the osu!mania ruleset with EZDT at OD0.

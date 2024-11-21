@@ -10,7 +10,7 @@
 | Compatible with | tosu                |
 | Size            | 720 x 100           |
 
-> Supports all rulesets! | The overlay resolution/size is for the default settings (both the overlay and the in-game score meter) in the osu!mania ruleset with EZDT at OD0.
+> Supports all rulesets! | Very customizable! | The overlay resolution/size is for the default settings (both the overlay and the in-game score meter) in the osu!mania ruleset with EZDT at OD0.
 
 ## Gameplay preview
 
@@ -49,17 +49,19 @@
 | Setting                                                             | Type     | Default value                        | Customizability                                                                                     |
 | ------------------------------------------------------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
 | Hit error meter scale                                               | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
-| Automatically scale the overlay with resolution (osu!(stable) only) | Checkbox | `Enabled`                            | `Enabled` or `Disabled`                                                                             |
+| Automatically scale the overlay with resolution (osu!(stable) only) | Checkbox | `Enabled`                            |                                                                                                     |
 | Unstable Rate display style                                         | Options  | `Show both the prefix and the value` | `Show nothing`, `Show only the value`, `Show both the prefix and the value`                         |
 | Unstable Rate display font size (in pixels)                         | Number   | `24`                                 | A positive number                                                                                   |
 | Unstable Rate display font name                                     | Textbox  | `Roboto`                             | The font must be installed on your system (except for `Roboto` as it's the default for the overlay) |
 | Unstable Rate display text color                                    | Color    | `#ffffff`                            | Any RGB color in the full opacity                                                                   |
-| Show the moving average arrow                                       | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
+| Show the moving average arrow                                       | Checkbox | `true`                               |                                                                                                     |
 | Moving average arrow size (in pixels)                               | Number   | `8`                                  | A positive number                                                                                   |
+| Moving average arrow color                                          | Color    | `#ffffff`                            | Any RGB color in the full opacity                                                                   |
 | Main tick height (in pixels)                                        | Number   | `24`                                 | A number bigger or equal `6`                                                                        |
 | Main tick color                                                     | Color    | `#ffffff`                            | Any RGB color in the full opacity                                                                   |
-| Show hit windows                                                    | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
-| Show the hit error meter in osu!catch                               | Checkbox | `false`                              | `Enabled` or `Disabled`                                                                             |
+| Normalize the hit error meter's width                               | Checkbox | `false`                              |                                                                                                     |
+| Show hit windows                                                    | Checkbox | `true`                               |                                                                                                     |
+| Show the hit error meter in osu!catch                               | Checkbox | `false`                              |                                                                                                     |
 | Hit windows width multiplier                                        | Number   | `1`                                  | A number between `0.5` and `5`                                                                      |
 | 320's hit window color                                              | Color    | `#99ddff`                            | Any RGB color in the full opacity                                                                   |
 | 300's hit window color                                              | Color    | `#47b6eb`                            | Any RGB color in the full opacity                                                                   |
@@ -70,20 +72,23 @@
 | Hit error ticks width (in pixels)                                   | Number   | `4`                                  | A number between `1` and `8`                                                                        |
 | Hit error ticks appearance style                                    | Options  | `Expand from the center`             | `Expand from the center`, `Fade in fully expanded`                                                  |
 | Hit error ticks appearance animation duration (in milliseconds)     | Number   | `250`                                | A positive number smaller or equal `5000` (5 seconds)                                               |
+| Hit error ticks disappearance style                                 | Options  | `Only fade out`                      | `Only fade out`, `Only decrease the height`, `Fade out and decrease the height`                     |
 | Hit error ticks disappearance animation duration (in milliseconds)  | Number   | `3000`                               | A positive number smaller or equal `10000` (10 seconds)                                             |
-| Hide the in-game score meter (osu!(stable) only)                    | Checkbox | `true`                               | `Enabled` or `Disabled`                                                                             |
+| Hide the in-game score meter (osu!(stable) only)                    | Checkbox | `true`                               |                                                                                                     |
 
-## Roadmap to v1.0
+## Roadmap to v1.0 (DONE)
 - [X] Add support for hiding the in-game score meter
 - [X] Allow for slightly more customization of the Unstable Rate display
 - [X] Add support for adjusting hit error tick appear and disappear duration
 - [X] Add support for osu!mania converts
 - [X] Update `index.js` to properly support tosu v4
+- [X] Add support for changing the moving average arrow's color
 - [X] Test the overlay thoroughly
-- [ ] ~~Add support for adjusting the moving average arrow animation duration~~ Scrapped, requires more work to make the resizing animation fast while preserving the moving animation duration (both resizing and moving use the same CSS `transition` property)
 
-## Roadmap to v1.1
-- [ ] ~~Add support for StreamCompanion~~ Probably not going to do this
+
+## Scrapped ideas
+- [ ] Add support for adjusting the moving average arrow animation duration - Requires more work to make the resizing animation fast while preserving the moving animation duration (both resizing and moving use the same CSS `transition` property)
+- [ ] Add support for StreamCompanion - No reason for me to do this, unless there's enough demand
 
 ## Support
 
