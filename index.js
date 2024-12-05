@@ -45,9 +45,9 @@ function prepareUnstableRateDisplay(unstableRateStyle) {
 
     // You cannot edit existing CountUps' properties, therefore redeclare it.
     if (cache.unstableRateStyle === 'Show only the value')
-        new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.' });
+        unstableRateCountUp = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.' });
     else if (cache.unstableRateStyle === 'Show both the prefix and the value')
-        new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
+        unstableRateCountUp = new CountUp('unstableRate', cache.unstableRate, 0, 2, .5, { useEasing: true, useGrouping: true, separator: ' ', decimal: '.', prefix: 'UR: ' });
 
     // Show either during gameplay or when going to the results screen from gameplay (and when user wants to see it).
     document.querySelector('#unstableRate').style.opacity = Number((cache.currentState === 'play' || (cache.currentState === 'resultScreen' && cache.previousState === 'play')) && cache.unstableRateStyle !== 'Show nothing');
