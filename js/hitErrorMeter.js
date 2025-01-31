@@ -207,7 +207,7 @@ class HitErrorMeter {
             document.querySelectorAll('.hit100').forEach(segment => segment.style.borderRadius = '0');
             document.querySelectorAll('.hit50').forEach(segment => segment.style.borderRadius = '0');
 
-            const [r, g, b] = getComputedStyle(hit50Late).backgroundColor.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(', ').map(r => r.trim());
+            const [r, g, b] = getComputedStyle(hit50Late).backgroundColor.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',').map(r => r.trim());
             // The exact same dirty hack as in the `addColorToRootProperty` method.
             hit50Late.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${1 / 255})`;
         } else {
@@ -592,7 +592,7 @@ class HitErrorMeter {
         tick.classList.add('tick');
 
         // We don't know if hit error segments are hidden - extract RGB(A) values and set the opacity manually.
-        const [r, g, b] = getComputedStyle(segmentForTheTick).backgroundColor.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(', ').map(r => r.trim());
+        const [r, g, b] = getComputedStyle(segmentForTheTick).backgroundColor.replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',').map(r => r.trim());
         tick.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 1)`;
 
         tick.style.left = `${tickPositionPercentage * 100}%`;

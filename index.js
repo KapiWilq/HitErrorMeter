@@ -209,16 +209,16 @@ socket.api_v2_precise(({ hitErrors }) => {
             };
 
             // This is only activated on the initial overlay load to not add every single hit error tick to the overlay.
-            // Note that this will not protect against a situation where there is a lot of new hit errors to add.
+            // Note that this will not protect against a situation where there is a lot of new hit errors AFTER loading.
             if (hitErrorsCurrentAmount > 0 && cache.hitErrorsPreviousAmount === -1) {
                 cache.hitErrorsPreviousAmount = hitErrorsCurrentAmount - 50;
             };
 
             for (let i = cache.hitErrorsPreviousAmount; i < hitErrorsCurrentAmount; i++) {
                 // Don't handle a new tick when:
-                // - the hit error meter is invisible;
-                // - the hit error value does not make sense;
-                // - user does NOT want to see 50's late hit errors when playing osu!mania.
+                // - the hit error meter is invisible
+                // - the hit error value does not make sense
+                // - user does NOT want to see 50's late hit errors when playing osu!mania
                 if (cache.hitErrors[i] != undefined && !isNaN(cache.hitErrors[i]) && cache.hitErrors[i] != null
                     && shouldHitErrorMeterBeVisible() && shouldLateHitErrorBeConsideredInMania(cache.hitErrors[i])) {
                     hitErrorMeterManager.addTick(cache.hitErrors[i]);
